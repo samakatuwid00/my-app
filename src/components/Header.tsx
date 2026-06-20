@@ -19,9 +19,9 @@ export function Header() {
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
         <a href="#home" className="flex items-center gap-3 font-semibold text-zinc-950 dark:text-white">
           <span className="grid size-9 place-items-center rounded-lg bg-zinc-950 text-sm text-white dark:bg-white dark:text-zinc-950">
-            YN
+            RA
           </span>
-          <span>Your Name</span>
+          <span>Roger Abay</span>
         </a>
 
         <div className="hidden items-center gap-1 md:flex">
