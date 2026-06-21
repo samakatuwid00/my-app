@@ -4,9 +4,9 @@ import { useDarkMode } from '../hooks/useDarkMode'
 
 const navItems = [
   { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Experience', href: '#experience' },
+  { label: 'Teach Stack', href: '#stack' },
+  { label: 'Testimonials', href: '#testimonials' },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -21,7 +21,7 @@ export function Header() {
           <span className="grid size-9 place-items-center rounded-lg bg-zinc-950 text-sm text-white dark:bg-white dark:text-zinc-950">
             RA
           </span>
-          <span>Roger Abay</span>
+          <span>ROGER ABAY</span>
         </a>
 
         <div className="hidden items-center gap-1 md:flex">

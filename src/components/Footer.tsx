@@ -3,13 +3,14 @@ import { Mail } from 'lucide-react'
 const footerLinks = [
   { label: 'About', href: '#about' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Services', href: '#services' },
+  { label: 'Teach Stack', href: '#stack' },
+  { label: 'Testimonials', href: '#testimonials' },
   { label: 'Contact', href: '#contact' },
 ]
 
 const socialLinks = [
   { label: 'GitHub', href: 'https://github.com/', logo: 'https://cdn.simpleicons.org/github/181717' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/', logo: 'https://cdn.simpleicons.org/linkedin/0A66C2' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg' },
   { label: 'Facebook', href: 'https://www.facebook.com/', logo: 'https://cdn.simpleicons.org/facebook/0866FF' },
   { label: 'Email', href: 'mailto:hello@example.com', icon: Mail },
 ]
@@ -21,9 +22,9 @@ export function Footer() {
         <div>
           <a href="#home" className="flex items-center gap-3 font-semibold text-zinc-950 dark:text-white">
             <span className="grid size-9 place-items-center rounded-lg bg-zinc-950 text-sm text-white dark:bg-white dark:text-zinc-950">
-              YN
+              RA
             </span>
-            <span>Your Name</span>
+            <span>ROGER ABAY</span>
           </a>
           <p className="mt-3 max-w-md text-sm leading-6 text-zinc-600 dark:text-zinc-400">
             Full Stack Laravel and React developer building reliable enterprise systems.

@@ -1,81 +1,26 @@
 import {
-  BarChart3,
   CheckCircle2,
-  Code2,
   Database,
   Download,
   ExternalLink,
-  Gauge,
   GitBranch,
-  Layers3,
   Mail,
   Rocket,
-  Server,
   ShieldCheck,
-  Terminal,
-  Workflow,
   Eye,
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { ContactForm } from '../components/ContactForm'
 import { MotionSection } from '../components/MotionSection'
 import { SectionHeading } from '../components/SectionHeading'
-import type { Project, Service, SkillGroup, Technology, Testimonial, TimelineItem } from '../types/portfolio'
+import type { Project, Technology, Testimonial } from '../types/portfolio'
 import profilePhoto from "../assets/pic.jpg";
 
 const stats = [
   { label: 'Years Experience', value: '2+' },
   { label: 'Completed Projects', value: '6+' },
-  { label: 'Development Stack', value: '20+' },
+  { label: 'Development Stack', value: '12+' },
   { label: 'Client Satisfaction', value: '100%' },
-]
-
-const skillGroups: SkillGroup[] = [
-  {
-    category: 'Backend',
-    icon: Server,
-    skills: [
-      { name: 'Laravel', level: 96 },
-      { name: 'PHP', level: 92 },
-      { name: 'REST API', level: 94 },
-      { name: 'PostgreSQL', level: 91 },
-      { name: 'MySQL', level: 86 },
-      { name: 'Authentication & Authorization', level: 90 },
-    ],
-  },
-  {
-    category: 'Frontend',
-    icon: Code2,
-    skills: [
-      { name: 'React', level: 93 },
-      { name: 'TypeScript', level: 90 },
-      { name: 'JavaScript', level: 92 },
-      { name: 'Tailwind CSS', level: 91 },
-      { name: 'HTML5', level: 95 },
-      { name: 'CSS3', level: 90 },
-    ],
-  },
-  {
-    category: 'Tools',
-    icon: Terminal,
-    skills: [
-      { name: 'Git', level: 92 },
-      { name: 'GitHub', level: 90 },
-      { name: 'Docker', level: 82 },
-      { name: 'VS Code', level: 94 },
-      { name: 'Postman', level: 88 },
-      { name: 'Linux', level: 84 },
-    ],
-  },
-  {
-    category: 'Data Visualization',
-    icon: BarChart3,
-    skills: [
-      { name: 'ECharts', level: 90 },
-      { name: 'DataTables', level: 88 },
-      { name: 'Chart.js', level: 84 },
-    ],
-  },
 ]
 
 const projects: Project[] = [
@@ -90,7 +35,7 @@ const projects: Project[] = [
       'Dashboard Analytics',
       'Learning Resource Monitoring',
     ],
-    technologies: ['Laravel', 'PostgreSQL', 'ECharts', 'AJAX'],
+    technologies: ['Laravel', 'Vue.js', 'PostgreSQL', 'Tailwind CSS'],
     accent: 'from-[#E5FF00] to-[#E5FF00]',
   },
   {
@@ -98,7 +43,7 @@ const projects: Project[] = [
     description:
       'A workflow-driven platform for employee leave requests, approvals, notifications, balances, and printable HR reports.',
     features: ['Employee Leave Tracking', 'Approval Workflow', 'Notifications', 'Reports'],
-    technologies: ['Laravel', 'React', 'PostgreSQL'],
+    technologies: ['Laravel', 'React', 'MySQL', 'REST API'],
     accent: 'from-[#E5FF00] to-[#E5FF00]',
   },
   {
@@ -106,66 +51,24 @@ const projects: Project[] = [
     description:
       'A school operations system for enrollment, student records, grades, reporting, and administrative monitoring.',
     features: ['Student Management', 'Enrollment', 'Grade Monitoring', 'Reports'],
-    technologies: ['Laravel', 'React', 'PostgreSQL'],
+    technologies: ['PHP', 'Vue.js', 'PostgreSQL', 'SMTP'],
     accent: 'from-[#E5FF00] to-[#E5FF00]',
-  },
-]
-
-const timeline: TimelineItem[] = [
-  {
-    role: 'System Developer',
-    summary: 'Designed enterprise web applications and system workflows for operational teams.',
-    achievements: [
-      'Developed REST APIs',
-      'Optimized PostgreSQL databases',
-      'Built analytics dashboards',
-      'Implemented access-controlled business modules',
-    ],
-  },
-  {
-    role: 'Full Stack Developer',
-    summary: 'Delivered frontend and backend features from database architecture through deployment.',
-    achievements: [
-      'Frontend and backend development',
-      'Database architecture',
-      'Deployment and maintenance',
-      'Production support and performance tuning',
-    ],
-  },
-]
-
-const services: Service[] = [
-  {
-    title: 'Web Application Development',
-    description: 'Custom business systems and enterprise solutions.',
-    icon: Layers3,
-  },
-  {
-    title: 'API Development',
-    description: 'Secure and scalable Laravel REST APIs.',
-    icon: Workflow,
-  },
-  {
-    title: 'Database Design',
-    description: 'PostgreSQL schema optimization and management.',
-    icon: Database,
-  },
-  {
-    title: 'System Maintenance',
-    description: 'Performance optimization and support.',
-    icon: Gauge,
   },
 ]
 
 const technologies: Technology[] = [
   { name: 'Laravel', logo: 'https://cdn.simpleicons.org/laravel/FF2D20', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
+  { name: 'Vue.js', logo: 'https://cdn.simpleicons.org/vuedotjs/4FC08D', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
   { name: 'React', logo: 'https://cdn.simpleicons.org/react/61DAFB', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
   { name: 'TypeScript', logo: 'https://cdn.simpleicons.org/typescript/3178C6', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
+  { name: 'JavaScript', logo: 'https://cdn.simpleicons.org/javascript/F7DF1E', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
+  { name: 'PHP', logo: 'https://cdn.simpleicons.org/php/777BB4', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
   { name: 'PostgreSQL', logo: 'https://cdn.simpleicons.org/postgresql/4169E1', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
-  { name: 'Docker', logo: 'https://cdn.simpleicons.org/docker/2496ED', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
-  { name: 'Git', logo: 'https://cdn.simpleicons.org/git/F05032', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
+  { name: 'MySQL', logo: 'https://cdn.simpleicons.org/mysql/4479A1', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
+  { name: 'HTML-5', logo: 'https://cdn.simpleicons.org/html5/E34F26', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
   { name: 'Tailwind CSS', logo: 'https://cdn.simpleicons.org/tailwindcss/06B6D4', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
-  { name: 'Linux', logo: 'https://cdn.simpleicons.org/linux/FCC624', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
+  { name: 'REST API', logo: 'https://cdn.simpleicons.org/postman/FF6C37', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
+  { name: 'SMTP', logo: 'https://cdn.simpleicons.org/gmail/EA4335', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
 ]
 
 const testimonials: Testimonial[] = [
@@ -188,44 +91,6 @@ const testimonials: Testimonial[] = [
       'The system architecture was clean, responsive, and reliable enough for daily school operations and reporting.',
   },
 ]
-
-function SkillCard({ group }: { group: SkillGroup }) {
-  const Icon = group.icon
-
-  return (
-    <motion.article
-      className="rounded-none border-4 border-[#0A0A0A] dark:border-[#333] bg-[#ECEBE6] dark:bg-[#1a1a1a] p-6 shadow-[8px_8px_0_#0A0A0A] dark:shadow-[8px_8px_0_#333] transition-all duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[10px_10px_0_#0A0A0A] dark:hover:shadow-[10px_10px_0_#333]"
-      whileHover={{ y: -2 }}
-      transition={{ duration: 0.2 }}
-    >
-      <div className="mb-5 flex items-center gap-3">
-        <div className="grid size-11 place-items-center rounded-none border-2 border-[#0A0A0A] dark:border-[#333] bg-[#E5FF00] text-[#0A0A0A]">
-          <Icon size={22} />
-        </div>
-        <h3 className="font-mono text-lg font-bold uppercase text-[#0A0A0A] dark:text-[#ECEBE6]">{group.category}</h3>
-      </div>
-      <div className="grid gap-4">
-        {group.skills.map((skill) => (
-          <div key={skill.name}>
-            <div className="mb-2 flex items-center justify-between gap-3 text-sm">
-              <span className="font-mono font-bold text-[#0A0A0A] dark:text-[#ECEBE6]">{skill.name}</span>
-              <span className="font-mono text-[#666] dark:text-[#999]">{skill.level}%</span>
-            </div>
-            <div className="h-2 overflow-hidden border-2 border-[#0A0A0A] dark:border-[#333] bg-[#fff] dark:bg-[#2a2a2a]">
-              <motion.div
-                className="h-full bg-[#E5FF00]"
-                initial={{ width: 0 }}
-                whileInView={{ width: `${skill.level}%` }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.9, ease: 'easeOut' }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-    </motion.article>
-  )
-}
 
 function ProjectCard({ project }: { project: Project }) {
   return (
@@ -362,8 +227,8 @@ export function HomePage() {
 
           {/* Subtitle */}
           <p className="mt-6 max-w-[480px] font-mono text-base leading-6 text-[#333] dark:text-[#aaa]">
-            Laravel APIs, React interfaces, PostgreSQL databases — I build enterprise-grade web applications
-            that teams can trust every day.
+            Laravel and PHP backends, Vue.js and React interfaces, PostgreSQL and MySQL databases — I build
+            enterprise-grade web applications that teams can trust every day.
           </p>
 
           {/* Upload Dropzone Style CTA */}
@@ -391,7 +256,7 @@ export function HomePage() {
                   View Projects
                 </span>
                 <span className="mt-2 font-mono text-xs text-[#666] dark:text-[#999]">
-                  Laravel • React • PostgreSQL
+                  Laravel • Vue.js • React • PostgreSQL
                 </span>
 
                 <div className="mt-6 flex w-full gap-3">
@@ -481,7 +346,7 @@ export function HomePage() {
                     <div className="font-mono text-[0.65rem] leading-tight font-bold text-[#0A0A0A] dark:text-[#aaa]">
                       ROGER A. ABAY JR.<br />
                       FULL STACK DEVELOPER<br />
-                      SPECIALTY: REACT • NODE • TS
+                      SPECIALTY: LARAVEL • VUE • REACT
                     </div>
                   </div>
                 </div>
@@ -512,19 +377,20 @@ export function HomePage() {
             >
               <h3 className="font-display text-2xl font-extrabold uppercase text-[#0A0A0A] dark:text-[#ECEBE6]">Professional Summary</h3>
               <p className="mt-5 font-mono leading-8 text-[#333] dark:text-[#aaa]">
-                I specialize in Laravel development, React development, PostgreSQL database design, REST API
-                development, system architecture, and enterprise solutions. My work focuses on building dependable
-                business platforms with clean role-based workflows, maintainable APIs, responsive interfaces, and
-                analytics dashboards that turn operational data into useful decisions.
+                I specialize in Laravel and PHP development, Vue.js and React interfaces, TypeScript and JavaScript
+                frontends, PostgreSQL and MySQL database design, REST API development, SMTP email integration,
+                HTML-5 and Tailwind CSS styling, system architecture, and enterprise solutions. My work focuses
+                on building dependable business platforms with clean role-based workflows, maintainable APIs,
+                responsive interfaces, and analytics dashboards that turn operational data into useful decisions.
               </p>
               <div className="mt-7 grid gap-3 sm:grid-cols-2">
                 {[
-                  'Laravel application architecture',
-                  'React and TypeScript interfaces',
-                  'PostgreSQL schema design',
+                  'Laravel and PHP application architecture',
+                  'Vue.js and React interfaces',
+                  'PostgreSQL and MySQL schema design',
                   'Secure REST API development',
-                  'Enterprise workflow automation',
-                  'Dashboard analytics and reporting',
+                  'SMTP email service configuration',
+                  'JavaScript, TypeScript, HTML-5, Tailwind CSS',
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-2 font-mono text-sm font-bold text-[#0A0A0A] dark:text-[#ECEBE6]">
                     <ShieldCheck className="text-[#E5FF00]" size={17} />
@@ -555,29 +421,13 @@ export function HomePage() {
         </div>
       </MotionSection>
 
-      {/* Skills Section */}
-      <MotionSection id="skills" className="bg-[#f2f2f2] dark:bg-[#0a0a0a] transition-colors duration-300">
-        <div className="mx-auto max-w-7xl">
-          <SectionHeading
-            eyebrow="Skills"
-            title="A practical stack for enterprise-grade web systems"
-            description="Backend, frontend, infrastructure, and analytics tools organized around building maintainable production applications."
-          />
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {skillGroups.map((group) => (
-              <SkillCard key={group.category} group={group} />
-            ))}
-          </div>
-        </div>
-      </MotionSection>
-
       {/* Projects Section */}
       <MotionSection id="projects" className="border-y-4 border-[#0A0A0A] dark:border-[#333] bg-[#ECEBE6] dark:bg-[#1a1a1a] transition-colors duration-300">
         <div className="mx-auto max-w-7xl">
           <SectionHeading
             eyebrow="Featured Projects"
             title="Portfolio systems built around operations, data, and usability"
-            description="Representative projects showcasing Laravel, React, PostgreSQL, analytics, reporting, and enterprise workflow development."
+            description="Representative projects showcasing Laravel, Vue.js, React, PostgreSQL, MySQL, REST API, SMTP, and enterprise workflow development."
           />
           <div className="grid gap-6 lg:grid-cols-3">
             {projects.map((project) => (
@@ -587,84 +437,16 @@ export function HomePage() {
         </div>
       </MotionSection>
 
-      {/* Experience Section */}
-      <MotionSection id="experience" className="bg-[#f2f2f2] dark:bg-[#0a0a0a] transition-colors duration-300">
-        <div className="mx-auto max-w-5xl">
-          <SectionHeading
-            eyebrow="Experience"
-            title="From architecture to deployment"
-            description="A concise timeline of full-stack responsibilities across system development and long-term application support."
-          />
-          <div className="relative border-l-4 border-[#E5FF00] pl-7">
-            {timeline.map((item, index) => (
-              <motion.article
-                key={item.role}
-                className="relative mb-10 border-4 border-[#0A0A0A] dark:border-[#333] bg-[#ECEBE6] dark:bg-[#1a1a1a] p-6 shadow-[8px_8px_0_#0A0A0A] dark:shadow-[8px_8px_0_#333] last:mb-0"
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <span className="absolute -left-[2.4rem] top-7 grid size-4 border-4 border-[#0A0A0A] dark:border-[#333] bg-[#E5FF00]" />
-                <h3 className="font-display text-xl font-extrabold uppercase text-[#0A0A0A] dark:text-[#ECEBE6]">{item.role}</h3>
-                <p className="mt-3 font-mono leading-7 text-[#333] dark:text-[#aaa]">{item.summary}</p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {item.achievements.map((achievement) => (
-                    <span
-                      key={achievement}
-                      className="border-2 border-[#0A0A0A] dark:border-[#333] bg-[#fff] dark:bg-[#2a2a2a] px-3 py-1.5 font-mono text-sm font-bold text-[#0A0A0A] dark:text-[#ECEBE6]"
-                    >
-                      {achievement}
-                    </span>
-                  ))}
-                </div>
-              </motion.article>
-            ))}
-          </div>
-        </div>
-      </MotionSection>
-
-      {/* Services Section */}
-      <MotionSection id="services" className="border-y-4 border-[#0A0A0A] dark:border-[#333] bg-[#ECEBE6] dark:bg-[#1a1a1a] transition-colors duration-300">
-        <div className="mx-auto max-w-7xl">
-          <SectionHeading
-            eyebrow="Services"
-            title="Focused development services for business systems"
-          />
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {services.map((service, index) => {
-              const Icon = service.icon
-
-              return (
-                <motion.article
-                  key={service.title}
-                  className="border-4 border-[#0A0A0A] dark:border-[#333] bg-[#ECEBE6] dark:bg-[#1a1a1a] p-6 shadow-[8px_8px_0_#0A0A0A] dark:shadow-[8px_8px_0_#333] transition-all duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[10px_10px_0_#0A0A0A] dark:hover:shadow-[10px_10px_0_#333]"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -2 }}
-                >
-                  <div className="grid size-12 place-items-center border-2 border-[#0A0A0A] dark:border-[#333] bg-[#E5FF00] text-[#0A0A0A]">
-                    <Icon size={23} />
-                  </div>
-                  <h3 className="mt-5 font-display text-lg font-extrabold uppercase text-[#0A0A0A] dark:text-[#ECEBE6]">{service.title}</h3>
-                  <p className="mt-3 font-mono leading-7 text-[#333] dark:text-[#aaa]">{service.description}</p>
-                </motion.article>
-              )
-            })}
-          </div>
-        </div>
-      </MotionSection>
-
       {/* Tech Stack Section */}
       <MotionSection id="stack" className="bg-[#f2f2f2] dark:bg-[#0a0a0a] transition-colors duration-300">
         <div className="mx-auto max-w-7xl">
-          <SectionHeading
-            eyebrow="Tech Stack"
-            title="Core technologies with official brand marks"
-            description="The stack behind scalable Laravel APIs, responsive React products, and database-centered enterprise systems."
-          />
+          <a href="#stack" className="block">
+            <SectionHeading
+              eyebrow="Tech Stack"
+              title="Core technologies with official brand marks"
+              description="The stack behind scalable Laravel and PHP backends, responsive Vue.js and React products, PostgreSQL and MySQL databases, REST APIs, and SMTP email systems."
+            />
+          </a>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {technologies.map((technology, index) => (
               <motion.article
@@ -687,10 +469,12 @@ export function HomePage() {
       {/* Testimonials Section */}
       <MotionSection id="testimonials" className="border-y-4 border-[#0A0A0A] dark:border-[#333] bg-[#ECEBE6] dark:bg-[#1a1a1a] transition-colors duration-300">
         <div className="mx-auto max-w-7xl">
-          <SectionHeading
-            eyebrow="Testimonials"
-            title="Trusted for practical, maintainable systems"
-          />
+          <a href="#testimonials" className="block">
+            <SectionHeading
+              eyebrow="Testimonials"
+              title="Trusted for practical, maintainable systems"
+            />
+          </a>
           <div className="grid gap-6 lg:grid-cols-3">
             {testimonials.map((testimonial, index) => (
               <motion.article
@@ -726,17 +510,17 @@ export function HomePage() {
           <div>
             <p className="mb-3 font-mono text-sm font-bold uppercase text-[#E5FF00] bg-[#0A0A0A] dark:bg-[#333] inline-block px-3 py-1">Contact</p>
             <h2 className="font-display text-3xl font-extrabold uppercase text-[#0A0A0A] dark:text-[#ECEBE6] md:text-4xl">
-              Let us build a dependable system for your team
+              Let us turn your ideas into a scalable systems
             </h2>
             <p className="mt-5 font-mono leading-8 text-[#333] dark:text-[#aaa]">
-              Send a message about your Laravel API, React application, PostgreSQL database, dashboard, or enterprise
-              workflow requirement.
+              Send a message about your Laravel or PHP backend, Vue.js or React frontend, PostgreSQL or MySQL
+              database, REST API, SMTP integration, or enterprise workflow requirement.
             </p>
             <div className="mt-8 grid gap-4">
               {[
-                { icon: Mail, label: 'hello@example.com' },
+                { icon: Mail, label: 'abaygherjr07@.gmail.com' },
                 { icon: GitBranch, label: 'Version-controlled delivery' },
-                { icon: Database, label: 'Database-first planning' },
+                { icon: Database, label: 'PostgreSQL & MySQL database planning' },
               ].map((item, index) => {
                 const Icon = item.icon
 
