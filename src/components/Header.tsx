@@ -5,7 +5,7 @@ import { useDarkMode } from '../hooks/useDarkMode'
 const navItems = [
   { label: 'About', href: '#about' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Teach Stack', href: '#stack' },
+  { label: 'Tech Stack', href: '#stack' },
   { label: 'Testimonials', href: '#testimonials' },
   { label: 'Contact', href: '#contact' },
 ]

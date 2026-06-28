@@ -15,6 +15,9 @@ export type Project = {
   features: string[]
   technologies: string[]
   accent: string
+  liveUrl?: string
+  githubUrl?: string // optional: same pattern for GitHub
+  previewImage?: string  
 }
 
 export type TimelineItem = {

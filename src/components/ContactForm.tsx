@@ -75,7 +75,7 @@ export function ContactForm() {
           value={form.message}
           onChange={(event) => updateField('message', event.target.value)}
           className="resize-none rounded-lg border border-zinc-200 bg-white px-4 py-3 text-zinc-950 outline-none transition focus:border-teal-400 focus:ring-4 focus:ring-teal-100 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:ring-teal-500/20"
-          placeholder="Tell me about your system, API, or dashboard requirements."
+          placeholder="Tell me about your ideas."
         />
       </label>
       <button
