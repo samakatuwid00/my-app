@@ -22,21 +22,14 @@ import profilePhoto from '../assets/pic.jpg'
 import resortPreview from '../assets/eurasian.png'
 import eduleavePreview from '../assets/eduleave.png'
 import irimsvPreview from '../assets/irims-v.png'
+import libraryPreview from '../assets/library.png'
+import projectPreviewPlaceholder from '../assets/project-preview-placeholder.png'
 
 const stats = [
   { label: 'Years Experience', value: '2+' },
   { label: 'DepEd Systems', value: 'Regional + National' },
   { label: 'Sector Experience', value: 'Gov + Private' },
   { label: 'Recognition', value: 'Awarded' },
-]
-
-const capabilities = [
-  'Enterprise Web Applications',
-  'Government Information Systems',
-  'Workflow Automation',
-  'Analytics Dashboards',
-  'Database Architecture',
-  'Reporting & RBAC',
 ]
 
 const deliverables = [
@@ -87,7 +80,27 @@ const projects: Project[] = [
     liveUrl: 'https://eurasian.freehosting.dev/', // ← add this
     previewImage: resortPreview
   },
+  {
+    title: 'Library Management System',
+    description:
+      'Placeholder description for an upcoming library platform project. Replace this copy with the final project summary when it is ready.',
+    features: ['Catalog Management', 'Resource Reservations', 'Member Records', 'QR Code Support', 'Inventory Tracking'],
+    technologies: ['React', 'TypeScript', 'Tailwind CSS', 'REST API'],
+    accent: 'from-[#E5FF00] to-[#E5FF00]',
+    previewImage: libraryPreview,
+  },
+  {
+    title: 'Upcoming Project',
+    description:
+      'Placeholder project card reserved for the next live demo. Replace the title, description, features, technologies, link, and preview when available.',
+    features: ['Feature Placeholder One', 'Feature Placeholder Two', 'Feature Placeholder Three', 'Responsive Interface'],
+    technologies: ['Technology One', 'Technology Two', 'Technology Three'],
+    accent: 'from-[#E5FF00] to-[#E5FF00]',
+  },
 ]
+
+const flagshipProject = projects[0]
+const secondaryProjects = projects.slice(1)
 
 const technologies: Technology[] = [
   { name: 'Laravel', logo: 'https://cdn.simpleicons.org/laravel/FF2D20', color: 'bg-[#ECEBE6] dark:bg-[#1a1a1a]' },
@@ -124,22 +137,49 @@ const testimonials: Testimonial[] = [
   }
 ]
 
-function ProjectCard({ project }: { project: Project }) {
+type ProjectCardProps = {
+  project: Project
+  variant?: 'default' | 'featured'
+}
+
+function ProjectCard({ project, variant = 'default' }: ProjectCardProps) {
+  const isFeatured = variant === 'featured'
+
   return (
     <motion.article
-      className="flex h-full flex-col overflow-hidden border-4 border-[#0A0A0A] bg-[#ECEBE6] shadow-[8px_8px_0_#0A0A0A] transition-all duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[10px_10px_0_#0A0A0A] dark:border-[#333] dark:bg-[#1a1a1a] dark:shadow-[8px_8px_0_#333] dark:hover:shadow-[10px_10px_0_#333]"
+      className={`h-full overflow-hidden border-4 border-[#0A0A0A] bg-[#ECEBE6] shadow-[8px_8px_0_#0A0A0A] transition-all duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[10px_10px_0_#0A0A0A] dark:border-[#333] dark:bg-[#1a1a1a] dark:shadow-[8px_8px_0_#333] dark:hover:shadow-[10px_10px_0_#333] ${
+        isFeatured
+          ? 'flex flex-col lg:grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:min-h-[480px]'
+          : 'flex flex-col'
+      }`}
       whileHover={{ y: -2 }}
       transition={{ duration: 0.2 }}
     >
-<div className={`h-48 relative border-b-4 border-[#0A0A0A] dark:border-[#333] overflow-hidden`}>
-  {project.previewImage ? (
-    <img
-      src={project.previewImage}
-      alt={`${project.title} preview`}
-      className="h-full w-full object-cover object-[center_100%]"
-    />
-  ) : (
-          <div className={`h-full bg-gradient-to-br ${project.accent} p-4`}>            
+      <div
+        className={`relative overflow-hidden border-b-4 border-[#0A0A0A] bg-[#D6D5CF] dark:border-[#333] dark:bg-[#101010] ${
+          isFeatured
+            ? 'aspect-video lg:aspect-auto lg:h-full lg:min-h-0 lg:border-r-4 lg:border-b-0'
+            : 'aspect-video'
+        }`}
+      >
+        {project.previewImage ? (
+          <>
+            {isFeatured && (
+              <img
+                src={projectPreviewPlaceholder}
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover object-center"
+              />
+            )}
+            <img
+              src={project.previewImage}
+              alt={`${project.title} preview`}
+              className="relative z-10 h-full w-full object-cover object-top"
+            />
+          </>
+        ) : (
+          <div className={`h-full bg-gradient-to-br ${project.accent} p-4`}>
             <div className="mb-4 flex items-center justify-between">
               <div className="flex gap-1.5">
                 <span className="size-3 border-2 border-[#0A0A0A] bg-[#ff6b6b] dark:border-[#333]" />
@@ -159,10 +199,21 @@ function ProjectCard({ project }: { project: Project }) {
           </div>
         )}
       </div>
-      <div className="flex flex-1 flex-col p-6">
-        <h3 className="font-display text-xl font-extrabold uppercase text-[#0A0A0A] dark:text-[#ECEBE6]">{project.title}</h3>
+      <div className={`flex flex-1 flex-col ${isFeatured ? 'p-6 sm:p-8 lg:p-10' : 'p-6'}`}>
+        {isFeatured && (
+          <span className="mb-4 inline-flex w-fit border-2 border-[#0A0A0A] bg-[#E5FF00] px-3 py-1 font-mono text-xs font-extrabold uppercase tracking-[0.16em] text-[#0A0A0A] dark:border-[#333]">
+            Flagship Project
+          </span>
+        )}
+        <h3
+          className={`font-display font-extrabold uppercase text-[#0A0A0A] dark:text-[#ECEBE6] ${
+            isFeatured ? 'text-2xl sm:text-3xl lg:text-4xl' : 'text-xl'
+          }`}
+        >
+          {project.title}
+        </h3>
         <p className="mt-3 font-mono leading-7 text-[#333] dark:text-[#aaa]">{project.description}</p>
-        <div className="mt-5 grid gap-2">
+        <div className={`mt-5 grid gap-2 ${isFeatured ? 'sm:grid-cols-2' : ''}`}>
           {project.features.map((feature) => (
             <div key={feature} className="flex items-center gap-2 font-mono text-sm text-[#0A0A0A] dark:text-[#ECEBE6]">
               <CheckCircle2 className="shrink-0 text-[#E5FF00]" size={16} />
@@ -262,10 +313,8 @@ export function HomePage() {
           </h1>
 
           <p className="mt-6 max-w-[560px] font-mono text-base leading-7 text-[#333] dark:text-[#aaa]">
-            I build production web systems that help government offices and businesses replace manual processes with
-            reliable workflows, records management, reporting, and analytics dashboards. My experience includes regional
-            and national Department of Education platforms, private-sector operations software, and division-level HR
-            automation.
+            I build production web systems that help government offices, businesses, and privates replace manual processes with
+            reliable workflows, records management, reporting, and analytics dashboards. 
           </p>
 
           <div className="mt-12 max-w-[520px]">
@@ -371,11 +420,72 @@ export function HomePage() {
             description="Two years building government and private-sector platforms — DepEd regional and national systems, HR automation, and operations software."
           />
 
-          {/* Top row: bio card + award photo side by side */}
-          <div className="grid items-stretch gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_420px]">
-            {/* Bio + capabilities */}
+          {/* Top row: award photo + bio card side by side */}
+          <div className="grid items-stretch gap-6 lg:grid-cols-[360px_minmax(0,1fr)] xl:grid-cols-[420px_minmax(0,1fr)]">
+            {/* Award photo */}
             <motion.div
-              className="flex h-full flex-col justify-between border-4 border-[#0A0A0A] bg-white p-6 shadow-[8px_8px_0_#0A0A0A] dark:border-[#333] dark:bg-[#1a1a1a] dark:shadow-[8px_8px_0_#333] sm:p-8"
+              className="group relative flex flex-col overflow-hidden border-4 border-[#0A0A0A] shadow-[8px_8px_0_#0A0A0A] dark:border-[#333] dark:shadow-[8px_8px_0_#333]"
+              initial={{ opacity: 0, x: 40, rotateY: -5 }}
+              whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.7, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+              whileHover={{ scale: 1.02, y: -4 }}
+            >
+              {/* Image zone — explicit height so the award is always visible */}
+              <div className="relative h-72 sm:h-80 lg:h-96 overflow-hidden cursor-pointer" onClick={() => setAwardLightboxOpen(true)}>
+                <motion.img
+                  src={awardPhoto}
+                  alt="Full Stack Developer Award plaque"
+                  className="h-full w-full object-cover object-center"
+                  whileHover={{ scale: 1.08 }}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/60 via-transparent to-transparent" />
+
+                {/* Zoom icon on hover */}
+                <div className="absolute inset-0 flex items-center justify-center bg-[#0A0A0A]/0 transition-colors duration-300 group-hover:bg-[#0A0A0A]/30">
+                  <motion.button
+                    onClick={() => setAwardLightboxOpen(true)}
+                    className="flex size-12 items-center justify-center border-2 border-[#E5FF00] bg-[#0A0A0A] text-[#E5FF00] opacity-0 shadow-[4px_4px_0_#E5FF00] transition-all duration-300 group-hover:opacity-100 hover:bg-[#E5FF00] hover:text-[#0A0A0A]"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="View award image"
+                  >
+                    <ZoomIn className="size-5" />
+                  </motion.button>
+                </div>
+
+                {/* Pulsing glow border */}
+                <motion.div
+                  className="pointer-events-none absolute inset-0 border-4 border-[#E5FF00]/0"
+                  animate={{ borderColor: ['rgba(229,255,0,0)', 'rgba(229,255,0,0.4)', 'rgba(229,255,0,0)'] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              </div>
+
+              {/* Award badge — sits below the image, not overlapping it */}
+              <motion.div
+                className="border-t-4 border-[#E5FF00] bg-[#0A0A0A] px-5 py-4"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <p className="font-mono text-[0.65rem] font-bold uppercase tracking-widest text-[#E5FF00]">
+                  Awards &amp; Recognition
+                </p>
+                <p className="mt-0.5 font-display text-base font-extrabold uppercase text-white">
+                  Full Stack Developer Award
+                </p>
+                <p className="mt-1 font-mono text-xs leading-5 text-white/60">
+                  Regional government system launch
+                </p>
+              </motion.div>
+            </motion.div>
+
+            {/* Bio card */}
+            <motion.div
+              className="flex h-full flex-col justify-center border-4 border-[#0A0A0A] bg-white p-6 shadow-[8px_8px_0_#0A0A0A] dark:border-[#333] dark:bg-[#1a1a1a] dark:shadow-[8px_8px_0_#333] sm:p-8"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -387,182 +497,41 @@ export function HomePage() {
                 into maintainable software with secure roles, records, reporting, and dashboards.
               </p>
 
-              {/* Capabilities */}
-              <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-3 border-t-4 border-[#0A0A0A] pt-6 dark:border-[#333] sm:grid-cols-2">
-                {capabilities.map((item, i) => (
+              {/* Stats grid */}
+              <div className="mt-8 grid grid-cols-2 gap-3">
+                {stats.map((stat, index) => (
                   <motion.div
-                    key={item}
-                    className="flex min-w-0 items-center gap-2 font-mono text-sm font-bold leading-6 text-[#0A0A0A] dark:text-[#ECEBE6]"
-                    initial={{ opacity: 0, x: -8 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    key={stat.label}
+                    className="group border-4 border-[#0A0A0A] bg-[#ECEBE6] p-4 shadow-[4px_4px_0_#0A0A0A] transition-all duration-200 hover:-translate-y-1 hover:shadow-[6px_6px_0_#0A0A0A] dark:border-[#333] dark:bg-[#2a2a2a] dark:shadow-[4px_4px_0_#333] dark:hover:shadow-[6px_6px_0_#333]"
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: 0.15 + i * 0.05 }}
+                    transition={{ duration: 0.4, delay: 0.15 + index * 0.08 }}
+                    whileHover={{ scale: 1.03 }}
                   >
-                    <span className="size-2 shrink-0 bg-[#E5FF00] border border-[#0A0A0A] dark:border-[#555]" />
-                    {item}
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Award photo */}
-            <motion.div
-              className="group relative min-h-[320px] overflow-hidden border-4 border-[#0A0A0A] shadow-[8px_8px_0_#0A0A0A] dark:border-[#333] dark:shadow-[8px_8px_0_#333] lg:min-h-0"
-              initial={{ opacity: 0, x: 40, rotateY: -5 }}
-              whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.7, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
-              whileHover={{ scale: 1.02, y: -4 }}
-            >
-              <motion.img
-                src={awardPhoto}
-                alt="Full Stack Developer Award plaque"
-                className="absolute inset-0 h-65 w-full object-cover mb-12 cursor-pointer"
-                onClick={() => setAwardLightboxOpen(true)}
-                whileHover={{ scale: 1.08 }}
-                transition={{ duration: 0.6, ease: 'easeOut' }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/80 via-[#0A0A0A]/20 to-transparent" />
-
-              {/* Zoom icon on hover */}
-              <motion.div
-                className="absolute inset-0 flex items-center justify-center bg-[#0A0A0A]/0 transition-colors duration-300 group-hover:bg-[#0A0A0A]/30"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-              >
-                <motion.button
-                  onClick={() => setAwardLightboxOpen(true)}
-                  className="flex size-12 items-center justify-center border-2 border-[#E5FF00] bg-[#0A0A0A] text-[#E5FF00] opacity-0 shadow-[4px_4px_0_#E5FF00] transition-all duration-300 group-hover:opacity-100 hover:bg-[#E5FF00] hover:text-[#0A0A0A]"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  aria-label="View award image"
-                >
-                  <ZoomIn className="size-5" />
-                </motion.button>
-              </motion.div>
-
-              {/* Pulsing glow border effect */}
-              <motion.div
-                className="pointer-events-none absolute inset-0 border-4 border-[#E5FF00]/0"
-                animate={{
-                  borderColor: ['rgba(229,255,0,0)', 'rgba(229,255,0,0.4)', 'rgba(229,255,0,0)'],
-                }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-              />
-
-              {/* Award badge */}
-              <motion.div
-                className="absolute bottom-0 left-0 right-0 border-t-4 border-[#E5FF00] bg-[#0A0A0A] px-5 py-4"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-              >
-                <motion.p
-                  className="font-mono text-[0.65rem] font-bold uppercase tracking-widest text-[#E5FF00]"
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.55 }}
-                >
-                  Awards &amp; Recognition
-                </motion.p>
-                <motion.p
-                  className="mt-0.5 font-display text-base font-extrabold uppercase text-white"
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.65 }}
-                >
-                  Full Stack Developer Award
-                </motion.p>
-                <motion.p
-                  className="mt-1 font-mono text-xs leading-5 text-white/60"
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.75 }}
-                >
-                  Regional government system launch
-                </motion.p>
-              </motion.div>
-            </motion.div>
-          </div>
-
-          {/* Stats row */}
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                className="border-4 border-[#0A0A0A] bg-white p-5 shadow-[6px_6px_0_#0A0A0A] dark:border-[#333] dark:bg-[#1a1a1a] dark:shadow-[6px_6px_0_#333]"
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.07 }}
-              >
-                <p className="font-display text-2xl font-extrabold leading-tight text-[#0A0A0A] dark:text-[#ECEBE6]">
-                  {stat.value}
-                </p>
-                <p className="mt-2 font-mono text-xs font-bold uppercase leading-tight tracking-wide text-[#666] dark:text-[#777]">
-                  {stat.label}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Bottom row: Experience list + Deliverables */}
-          <div className="mt-6 grid gap-6 lg:grid-cols-2">
-
-            {/* Experience */}
-            <motion.div
-              className="border-4 border-[#0A0A0A] bg-white shadow-[8px_8px_0_#0A0A0A] dark:border-[#333] dark:bg-[#1a1a1a] dark:shadow-[8px_8px_0_#333]"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <div className="border-b-4 border-[#0A0A0A] bg-[#0A0A0A] px-6 py-3 dark:border-[#333]">
-                <p className="font-mono text-xs font-bold uppercase tracking-widest text-[#E5FF00]">Selected Experience</p>
-              </div>
-              <div className="divide-y-4 divide-[#0A0A0A] dark:divide-[#333]">
-                {[
-                  { num: '01', label: 'National Education Systems', sub: 'DepEd — learners, teachers, admins' },
-                  { num: '02', label: 'Regional Information Systems', sub: 'IRIMS-V, library mgmt, allocation' },
-                  { num: '03', label: 'HR Leave Monitoring', sub: 'Teaching & non-teaching automation' },
-                  { num: '04', label: 'Resort Management Platform', sub: 'Reservations, booking, dashboards' },
-                ].map((item, index) => (
-                  <motion.div
-                    key={item.label}
-                    className="group flex items-center gap-5 px-6 py-4 transition-colors duration-150 hover:bg-[#f9f9f4] dark:hover:bg-[#222]"
-                    initial={{ opacity: 0, x: -12 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.35, delay: index * 0.07 }}
-                  >
-                    <span className="shrink-0 font-mono text-xs font-bold text-[#0A0A0A]/25 dark:text-[#ECEBE6]/25">{item.num}</span>
                     <motion.div
-                      className="h-2 w-2 shrink-0 bg-[#E5FF00] border-2 border-[#0A0A0A] dark:border-[#555]"
-                      initial={{ scale: 0 }}
-                      whileInView={{ scale: 1 }}
+                      className="mb-2 h-1 w-8 bg-black transition-colors duration-300 dark:bg-[#E5FF00]"
+                      initial={{ width: 0 }}
+                      whileInView={{ width: 32 }}
                       viewport={{ once: true }}
-                      transition={{ type: 'spring', stiffness: 300, delay: 0.15 + index * 0.07 }}
+                      transition={{ duration: 0.5, delay: 0.3 + index * 0.08 }}
                     />
-                    <div className="min-w-0">
-                      <p className="font-display text-sm font-extrabold uppercase text-[#0A0A0A] dark:text-[#ECEBE6]">{item.label}</p>
-                      <p className="mt-0.5 font-mono text-xs text-[#777] dark:text-[#777]">{item.sub}</p>
-                    </div>
-                    <motion.span
-                      className="ml-auto shrink-0 translate-x-2 font-mono text-xs font-bold text-[#0A0A0A] opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 dark:text-[#ECEBE6]"
-                    >
-                      →
-                    </motion.span>
+                    <p className="font-display text-xl font-extrabold leading-tight text-[#0A0A0A] dark:text-[#ECEBE6]">
+                      {stat.value}
+                    </p>
+                    <p className="mt-1 font-mono text-[0.6rem] font-bold uppercase leading-tight tracking-wide text-[#666] dark:text-[#777]">
+                      {stat.label}
+                    </p>
                   </motion.div>
                 ))}
               </div>
             </motion.div>
+          </div>
 
-            {/* Deliverables */}
+          {/* Bottom row: Deliverables */}
+          <div className="mt-6">
+
+            {/* Deliverables - full width */}
             <motion.div
               className="border-4 border-[#0A0A0A] bg-white shadow-[8px_8px_0_#0A0A0A] dark:border-[#333] dark:bg-[#1a1a1a] dark:shadow-[8px_8px_0_#333]"
               initial={{ opacity: 0, y: 20 }}
@@ -604,10 +573,15 @@ export function HomePage() {
             title="Production systems built around operations, reporting, and automation"
             description="These projects show experience with the kind of software organizations actually depend on: inventory, HR, reservations, dashboards, and role-based workflows."
           />
-          <div className="grid gap-6 lg:grid-cols-3">
-            {projects.map((project) => (
-              <ProjectCard key={project.title} project={project} />
-            ))}
+          <div className="space-y-8">
+            {flagshipProject && <ProjectCard project={flagshipProject} variant="featured" />}
+            {secondaryProjects.length > 0 && (
+              <div className="grid gap-6 md:grid-cols-2">
+                {secondaryProjects.map((project) => (
+                  <ProjectCard key={project.title} project={project} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </MotionSection>
@@ -677,7 +651,7 @@ export function HomePage() {
               Contact
             </p>
             <h2 className="font-display text-3xl font-extrabold uppercase text-[#0A0A0A] dark:text-[#ECEBE6] md:text-4xl">
-              Let us turn your workflow into a dependable system
+              Let us turn your ideas into a scalable system
             </h2>
             <p className="mt-5 font-mono leading-8 text-[#333] dark:text-[#aaa]">
               Send a message about your government system, business platform, dashboard, HR workflow, reporting process,

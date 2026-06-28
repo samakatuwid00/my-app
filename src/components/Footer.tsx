@@ -9,7 +9,7 @@ const footerLinks = [
 ]
 
 const socialLinks = [
-  { label: 'GitHub', href: 'https://github.com/', logo: 'https://cdn.simpleicons.org/github/181717' },
+  { label: 'GitHub', href: 'https://github.com/', logo: 'https://cdn.simpleicons.org/github/FFFFFF', darkLogo: 'https://cdn.simpleicons.org/github/181717' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg' },
   { label: 'Facebook', href: 'https://www.facebook.com/', logo: 'https://cdn.simpleicons.org/facebook/0866FF' },
   { label: 'Email', href: 'mailto:hello@example.com', icon: Mail },
@@ -60,7 +60,9 @@ export function Footer() {
                   {Icon ? (
                     <Icon size={18} />
                   ) : (
-                    <img src={link.logo} alt="" className="size-[18px]" loading="lazy" />
+                    <>
+                    <img src={link.darkLogo || link.logo} alt="" className="size-[18px] block dark:hidden" loading="lazy" />
+                    <img src={link.logo} alt="" className="size-[18px] hidden dark:block" loading="lazy" />                    </>
                   )}
                 </a>
               )
