@@ -566,7 +566,11 @@ export function HomePage() {
         </div>
       </MotionSection>
 
-      <MotionSection id="projects" className="border-y-4 border-[#0A0A0A] bg-[#ECEBE6] transition-colors duration-300 dark:border-[#333] dark:bg-[#1a1a1a]">
+      <MotionSection
+        id="projects"
+        viewportAmount={0.01}
+        className="border-y-4 border-[#0A0A0A] bg-[#ECEBE6] transition-colors duration-300 dark:border-[#333] dark:bg-[#1a1a1a]"
+      >
         <div className="mx-auto max-w-7xl">
           <SectionHeading
             eyebrow="Featured Projects"
