@@ -25,6 +25,7 @@ import irimsvPreview from '../assets/irims-v.png'
 import libraryPreview from '../assets/library.png'
 import lrmisPreview from '../assets/lrmis.png'
 import projectPreviewPlaceholder from '../assets/project-preview-placeholder.png'
+import resumeUrl from '../assets/Resume.pdf?url'
 
 const stats = [
   { label: 'Years Experience', value: '2+' },
@@ -355,8 +356,8 @@ export function HomePage() {
                     Projects
                   </a>
                   <a
-                    href="/resume.pdf"
-                    download
+                    href={resumeUrl}
+                    download="Roger-Abay-Resume.pdf"
                     className="flex-1 border-4 border-[#0A0A0A] bg-teal-600 px-4 py-2.5 text-center font-mono text-sm font-bold text-white transition-all duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#0A0A0A] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none dark:border-[#333] dark:hover:shadow-[4px_4px_0_#333]"
                   >
                     <Download size={16} className="mr-2 inline" />
