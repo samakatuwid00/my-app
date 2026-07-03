@@ -89,7 +89,7 @@ export function ContactForm() {
       <div className="min-h-6 text-sm" role="status" aria-live="polite">
         {status === 'success' ? <p className="text-teal-700 dark:text-teal-300">Message sent successfully.</p> : null}
         {status === 'error' ? (
-          <p className="text-rose-600 dark:text-rose-300">Unable to send right now. Check the Laravel API endpoint.</p>
+          <p className="text-rose-600 dark:text-rose-300">Unable to send right now. Please try again later.</p>
         ) : null}
       </div>
     </form>

@@ -9,10 +9,10 @@ const footerLinks = [
 ]
 
 const socialLinks = [
-  { label: 'GitHub', href: 'https://github.com/', logo: 'https://cdn.simpleicons.org/github/FFFFFF', darkLogo: 'https://cdn.simpleicons.org/github/181717' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg' },
-  { label: 'Facebook', href: 'https://www.facebook.com/', logo: 'https://cdn.simpleicons.org/facebook/0866FF' },
-  { label: 'Email', href: 'mailto:hello@example.com', icon: Mail },
+  { label: 'GitHub', href: 'https://github.com/samakatuwid00', logo: 'https://cdn.simpleicons.org/github/FFFFFF', darkLogo: 'https://cdn.simpleicons.org/github/181717' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/roger-abay-30394441b', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg' },
+  { label: 'Facebook', href: 'https://www.facebook.com/niko.0y', logo: 'https://cdn.simpleicons.org/facebook/0866FF' },
+  { label: 'Email', href: 'mailto:abaygherjr07@gmail.com', icon: Mail },
 ]
 
 export function Footer() {

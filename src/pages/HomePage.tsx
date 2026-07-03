@@ -23,6 +23,7 @@ import resortPreview from '../assets/eurasian.png'
 import eduleavePreview from '../assets/eduleave.png'
 import irimsvPreview from '../assets/irims-v.png'
 import libraryPreview from '../assets/library.png'
+import lrmisPreview from '../assets/lrmis.png'
 import projectPreviewPlaceholder from '../assets/project-preview-placeholder.png'
 
 const stats = [
@@ -56,46 +57,49 @@ const projects: Project[] = [
     ],
     technologies: ['Laravel', 'Node.js', 'PHP', 'PostgreSQL', 'Tailwind CSS', 'REST API', 'ApacheEcharts'],
     accent: 'from-[#E5FF00] to-[#E5FF00]',
-    liveUrl: 'https://irimsv.net/', // ← add this
+    liveUrl: 'https://irimsv.net/',
     previewImage: irimsvPreview
   },
   {
-    title: 'Leave Card Monitoring System',
+    title: 'EDULEAVE',
     description:
       'Division-level HR platform built to automate leave credit monitoring for teaching and non-teaching personnel, replacing manual records with a clearer digital workflow.',
     features: ['Leave Credit Monitoring', 'Approval Workflow', 'Teaching & Non-Teaching Support', 'HR Reports', 'Import Excel Records'],
     technologies: ['Laravel', 'PHP', 'MySQL', 'REST API', 'Javascript', 'SMTP', 'DataTables', 'Bootstrap'],
     accent: 'from-[#E5FF00] to-[#E5FF00]',
-    liveUrl: 'https://eduleave.com/welcome', // ← add this
+    liveUrl: 'https://eduleave.com/welcome',
     previewImage: eduleavePreview
 
   },
   {
-    title: 'Resort Management System',
+    title: 'Eurasian',
     description:
       'End-to-end resort operations platform built to streamline reservations, booking workflows, guest records, reporting, and management visibility.',
     features: ['Online Reservations', 'Booking Workflows', 'Business Automation', 'Management Dashboards', 'AI Chatbot', 'Dashboard Projection'],
     technologies: ['PHP', 'MySQL', 'PHPMailer', 'ApexCharts', 'FullCalendar', 'DataTables', 'Javascript'],
     accent: 'from-[#E5FF00] to-[#E5FF00]',
-    liveUrl: 'https://eurasian.freehosting.dev/', // ← add this
+    liveUrl: 'https://eurasian.freehosting.dev/',
     previewImage: resortPreview
   },
   {
-    title: 'Library Management System',
+    title: 'IRIMS-V Library',
     description:
-      'Placeholder description for an upcoming library platform project. Replace this copy with the final project summary when it is ready.',
+      'A smart library management platform designed to organize learning resources, monitor inventory, streamline borrowing records, and support efficient library operations for schools and offices.',
     features: ['Catalog Management', 'Resource Reservations', 'Member Records', 'QR Code Support', 'Inventory Tracking'],
-    technologies: ['React', 'TypeScript', 'Tailwind CSS', 'REST API'],
+    technologies: ['Vue', 'Inertia.js', 'Ziggy', 'Laravel', 'Bacon QR Code', 'Pest', 'Vite 7', 'Chart.js'],
     accent: 'from-[#E5FF00] to-[#E5FF00]',
+    liveUrl: 'https://irimsv-library.net/',
     previewImage: libraryPreview,
   },
   {
-    title: 'Upcoming Project',
+    title: 'LRMIS',
     description:
-      'Placeholder project card reserved for the next live demo. Replace the title, description, features, technologies, link, and preview when available.',
-    features: ['Feature Placeholder One', 'Feature Placeholder Two', 'Feature Placeholder Three', 'Responsive Interface'],
-    technologies: ['Technology One', 'Technology Two', 'Technology Three'],
+      'Full-stack national web application for managing learning resources across educational institutions in the Philippines.',
+    features: ['Dashboard Analytics', 'Multi-Level Station Hierarchy', 'Resource Allocation & Distribution', 'Borrowing & Checkout System', 'Analytics Dashboard', 'Role-Based Access Control'],
+    technologies: ['Laravel', 'Tailwind CSS', 'ClickHouse Three', 'Maatwebsite Excel', 'Intervention Image', 'Google Sheets API'],
     accent: 'from-[#E5FF00] to-[#E5FF00]',
+    previewImage: lrmisPreview,
+    liveUrl: 'https://lrmis.deped.gov.ph/',
   },
 ]
 
@@ -578,11 +582,28 @@ export function HomePage() {
             description="These projects show experience with the kind of software organizations actually depend on: inventory, HR, reservations, dashboards, and role-based workflows."
           />
           <div className="space-y-8">
-            {flagshipProject && <ProjectCard project={flagshipProject} variant="featured" />}
+            {flagshipProject && (
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.5 }}
+              >
+                <ProjectCard project={flagshipProject} variant="featured" />
+              </motion.div>
+            )}
             {secondaryProjects.length > 0 && (
               <div className="grid gap-6 md:grid-cols-2">
-                {secondaryProjects.map((project) => (
-                  <ProjectCard key={project.title} project={project} />
+                {secondaryProjects.map((project, index) => (
+                  <motion.div
+                    key={project.title}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-50px' }}
+                    transition={{ duration: 0.5, delay: index * 0.15 }}
+                  >
+                    <ProjectCard project={project} />
+                  </motion.div>
                 ))}
               </div>
             )}
@@ -655,7 +676,7 @@ export function HomePage() {
               Contact
             </p>
             <h2 className="font-display text-3xl font-extrabold uppercase text-[#0A0A0A] dark:text-[#ECEBE6] md:text-4xl">
-              Let us turn your ideas into a scalable system
+              LET'S TURN YOUR IDEAS TO SCALABLE SYSTEM
             </h2>
             <p className="mt-5 font-mono leading-8 text-[#333] dark:text-[#aaa]">
               Send a message about your government system, business platform, dashboard, HR workflow, reporting process,
