@@ -1,73 +1,85 @@
-# React + TypeScript + Vite
+# Roger A. Abay Jr. — Developer Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive personal portfolio showcasing production web systems built for government offices and private organizations. The site highlights full-stack projects, technical capabilities, awards, testimonials, and ways to get in touch.
 
-Currently, two official plugins are available:
+## Highlights
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Featured systems including IRIMS-V, EDULEAVE, Eurasian, IRIMS-V Library, and LRMIS
+- Project previews, feature summaries, technology tags, and live-demo links
+- Responsive neo-brutalist interface with light and dark themes
+- Scroll and interaction animations powered by Framer Motion
+- Downloadable resume and award-image lightbox
+- Contact form delivery through FormSubmit
+- Accessible, reusable React components and typed portfolio data
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- TypeScript 6
+- Vite 8
+- Tailwind CSS 4
+- React Router 7
+- Framer Motion
+- Lucide React
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js 20 or newer
+- npm
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone <repository-url>
+cd my-app
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Vite will print the local development URL, typically `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Available Scripts
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the Vite development server |
+| `npm run build` | Type-check and create a production build |
+| `npm run lint` | Run ESLint across the project |
+| `npm run preview` | Preview the production build locally |
+
+## Project Structure
+
+```text
+src/
+├── assets/       # Project images, profile media, and resume
+├── components/   # Reusable UI and form components
+├── hooks/        # Shared React hooks, including dark mode
+├── layouts/      # Site-wide layout
+├── pages/        # Portfolio page content
+├── routes/       # Application routing
+├── services/     # Contact-form integration
+├── types/        # Shared TypeScript types
+├── App.tsx
+└── main.tsx
 ```
+
+## Contact Form
+
+The contact form submits inquiries to FormSubmit through `src/services/contactApi.ts`. If the destination email changes, update `FORM_ENDPOINT` and the generated inquiry subject in that file. FormSubmit may require a one-time email confirmation before accepting submissions.
+
+## Production Build
+
+```bash
+npm run build
+npm run preview
+```
+
+The optimized output is generated in `dist/` and can be deployed to any static hosting provider. Because the app uses browser-based routing, configure the host to fall back to `index.html` for unknown routes.
+
+## Author
+
+**Roger A. Abay Jr.** — Full Stack Developer specializing in workflow automation, records management, reporting, dashboards, APIs, and database-backed systems.
+
+Email: [abaygherjr07@gmail.com](mailto:abaygherjr07@gmail.com)
