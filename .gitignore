@@ -24,3 +24,6 @@ SKILL.md
 *.njsproj
 *.sln
 *.sw?
+
+# local simulation scratch
+.sim/
