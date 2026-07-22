@@ -15,7 +15,7 @@ export function Awards() {
     <>
       <Prompt command="ls awards/" />
 
-      <Reveal dissolve>
+      <Reveal>
         <button
           type="button"
           onClick={() => setIsDetailOpen(true)}
