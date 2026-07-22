@@ -4,8 +4,10 @@ import { useElementSize } from '../hooks/useElementSize'
 
 // Tiles stay near-square at every viewport by deriving the grid from the measured
 // region instead of a fixed 12x7 that stretches to the pane's aspect ratio.
-const TILE_PX = 28
-const MAX_TILES = 1200
+// Large regions grow the tile rather than dropping the effect — capping the count
+// and bailing out silently killed the wipe on any window wider than ~1300px.
+const MIN_TILE_PX = 28
+const TILE_BUDGET = 900
 
 const TILE_DURATION = 90
 const SWEEP = 100
@@ -41,10 +43,11 @@ export function PixelCurtain({ trigger, scope = 'pane' }: PixelCurtainProps) {
     return () => clearTimeout(timer)
   }, [runId])
 
-  const columns = Math.max(1, Math.round(width / TILE_PX))
-  const rows = Math.max(1, Math.round(height / TILE_PX))
+  const tileSize = Math.max(MIN_TILE_PX, Math.sqrt((width * height) / TILE_BUDGET))
+  const columns = Math.max(1, Math.ceil(width / tileSize))
+  const rows = Math.max(1, Math.ceil(height / tileSize))
   const tileCount = columns * rows
-  const isRunning = runId !== null && width > 0 && height > 0 && tileCount <= MAX_TILES
+  const isRunning = runId !== null && width > 0 && height > 0
   const lastDiagonal = Math.max(1, columns + rows - 2)
 
   return (
