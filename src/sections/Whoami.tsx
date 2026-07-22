@@ -45,7 +45,7 @@ export function Whoami() {
           </dl>
         </Reveal>
 
-        <Reveal delay={0.04} className="rounded-panel border border-line bg-panel p-1">
+        <Reveal delay={0.04} className="rounded-panel border border-line bg-panel p-1" dissolve>
           <img
             src={profilePhoto}
             alt={`${site.name}, full-stack developer`}

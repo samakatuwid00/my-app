@@ -10,7 +10,7 @@ export function History() {
       <ol className="flex flex-col gap-3">
         {experience.map((entry, index) => (
           <li key={entry.role}>
-            <Reveal delay={index * 0.04}>
+            <Reveal delay={index * 0.04} dissolve>
               <article className="rounded-panel border border-line bg-panel px-4 py-3">
                 <div className="flex flex-wrap items-baseline gap-x-3">
                   <h2 className="text-[15px] font-semibold text-text">{entry.role}</h2>
@@ -34,7 +34,7 @@ export function History() {
         ))}
       </ol>
 
-      <Reveal delay={0.08}>
+      <Reveal delay={0.08} dissolve>
         <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-panel border border-line bg-panel px-4 py-3">
           <span className="label">Education</span>
           <h2 className="text-[15px] font-semibold text-text">{education.school}</h2>

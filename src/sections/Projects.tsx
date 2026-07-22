@@ -15,7 +15,7 @@ export function Projects() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((project, index) => (
-          <Reveal key={project.title} delay={index * 0.04} className="h-full">
+          <Reveal key={project.title} delay={index * 0.04} className="h-full" dissolve>
             <ProjectCard project={project} index={index} onOpen={() => setSelected(project)} />
           </Reveal>
         ))}

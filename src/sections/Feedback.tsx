@@ -24,7 +24,7 @@ export function Feedback() {
 
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
         {testimonials.map((testimonial, index) => (
-          <Reveal key={testimonial.name} delay={index * 0.04} className="h-full">
+          <Reveal key={testimonial.name} delay={index * 0.04} className="h-full" dissolve>
             <figure className="flex h-full flex-col rounded-panel border border-line bg-panel p-4">
               <blockquote className="prose-body text-[13px] leading-relaxed">“{testimonial.quote}”</blockquote>
               <figcaption className="mt-4 flex items-center gap-3 border-t border-line pt-3">
