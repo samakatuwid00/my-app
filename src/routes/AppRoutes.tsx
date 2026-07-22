@@ -1,27 +1,26 @@
-import { AnimatePresence, motion } from 'framer-motion'
-import { Route, Routes, useLocation } from 'react-router-dom'
-import { HomePage } from '../pages/HomePage'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { AboutView } from '../views/AboutView'
+import { ContactView } from '../views/ContactView'
+import { FeedbackView } from '../views/FeedbackView'
+import { ProjectsView } from '../views/ProjectsView'
 
 export function AppRoutes() {
   const location = useLocation()
 
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route
-          path="/"
-          element={
-            <motion.main
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-            >
-              <HomePage />
-            </motion.main>
-          }
-        />
-      </Routes>
-    </AnimatePresence>
+    <Routes location={location}>
+      <Route path="/" element={<Navigate to="/about" replace />} />
+      <Route path="/about" element={<AboutView />} />
+      <Route path="/projects" element={<ProjectsView />} />
+      <Route path="/feedback" element={<FeedbackView />} />
+      <Route path="/contact" element={<ContactView />} />
+
+      {/* retired paths from the seven-view build — keep bookmarks working */}
+      <Route path="/history" element={<Navigate to="/about" replace />} />
+      <Route path="/stack" element={<Navigate to="/projects" replace />} />
+      <Route path="/awards" element={<Navigate to="/feedback" replace />} />
+
+      <Route path="*" element={<Navigate to="/about" replace />} />
+    </Routes>
   )
 }

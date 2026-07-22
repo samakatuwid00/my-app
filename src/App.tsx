@@ -1,15 +1,13 @@
 import { BrowserRouter } from 'react-router-dom'
-import { SiteLayout } from './layouts/SiteLayout'
+import { ShellLayout } from './layouts/ShellLayout'
 import { AppRoutes } from './routes/AppRoutes'
 
-function App() {
+export default function App() {
   return (
     <BrowserRouter>
-      <SiteLayout>
+      <ShellLayout>
         <AppRoutes />
-      </SiteLayout>
+      </ShellLayout>
     </BrowserRouter>
   )
 }
-
-export default App

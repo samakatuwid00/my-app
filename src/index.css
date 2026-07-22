@@ -3,58 +3,133 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-coral-50: #fff1ed;
-  --color-coral-100: #ffe0d6;
-  --color-coral-300: #ff9a7a;
-  --color-coral-400: #ff7651;
-  --color-coral-500: #f25d3d;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-window: 8px;
+  --radius-panel: 4px;
+
+  --shadow-window: 0 1px 3px rgba(25, 28, 29, 0.06), 0 8px 24px rgba(25, 28, 29, 0.05);
+
+  --color-canvas: #f4f3ef;
+  --color-surface: #fbfaf7;
+  --color-panel: #ffffff;
+  --color-line: #e3e0d9;
+  --color-line-strong: #d2cec4;
+  /* borders on interactive controls — holds 3:1 against panel and surface */
+  --color-control: #949086;
+  --color-text: #191c1d;
+  --color-text-2: #565c60;
+  --color-text-3: #686e72;
+  --color-accent: #2e7a63;
+  --color-accent-soft: #2e7a6314;
+  --color-accent-2: #8a5d2c;
+
+  /* macOS window controls — decorative, identical in both themes */
+  --color-dot-close: #ff5f57;
+  --color-dot-minimize: #febc2e;
+  --color-dot-zoom: #28c840;
+}
+
+.dark {
+  --color-canvas: #0c0e0f;
+  --color-surface: #121516;
+  --color-panel: #171a1c;
+  --color-line: #23282b;
+  --color-line-strong: #2e3437;
+  --color-control: #666e72;
+  --color-text: #e4e7e8;
+  --color-text-2: #98a0a5;
+  --color-text-3: #858d92;
+  --color-accent: #5ea88b;
+  --color-accent-soft: #5ea88b1f;
+  --color-accent-2: #c0925f;
+  --shadow-window: none;
 }
 
 @layer base {
-  * {
-    box-sizing: border-box;
-  }
-
   html {
     scroll-behavior: smooth;
   }
 
   body {
     margin: 0;
-    font-family:
-      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-      sans-serif;
-    letter-spacing: 0;
-    background: #fafafa;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
+    background: var(--color-canvas);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 14px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   button,
   input,
   textarea {
     font: inherit;
-    letter-spacing: 0;
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
 
   ::selection {
-    background: rgba(20, 184, 166, 0.22);
+    background: var(--color-accent-soft);
   }
 }
 
 @layer utilities {
-  .glass-panel {
-    border: 1px solid rgba(255, 255, 255, 0.55);
-    background: rgba(255, 255, 255, 0.72);
-    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
-    backdrop-filter: blur(22px);
+  .prose-body {
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    color: var(--color-text-2);
   }
 
-  .dark .glass-panel {
-    border-color: rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.07);
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+  .label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-3);
+  }
+
+  .cursor-blink {
+    animation: cursor-blink 1s step-end infinite;
+  }
+
+  .pixel-tile {
+    animation: pixel-fade 90ms steps(3, end) forwards;
+  }
+}
+
+@keyframes pixel-fade {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes cursor-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
