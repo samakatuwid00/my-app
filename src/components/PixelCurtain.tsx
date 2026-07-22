@@ -70,10 +70,14 @@ export function PixelCurtain({ trigger, scope = 'pane' }: PixelCurtainProps) {
             const row = Math.floor(index / columns)
             const sweepDelay = ((column + row) / lastDiagonal) * SWEEP
 
+            // Two alternating tones give the dissolve a dithered texture and,
+            // unlike the old surface-coloured tiles, are actually visible.
+            const isEvenTile = (column + row) % 2 === 0
+
             return (
               <span
                 key={index}
-                className={`pixel-tile ${scope === 'window' ? 'bg-panel' : 'bg-surface'}`}
+                className={`pixel-tile ${isEvenTile ? 'bg-curtain' : 'bg-curtain-2'}`}
                 style={{ animationDelay: `${sweepDelay + jitterFor(index)}ms` }}
               />
             )

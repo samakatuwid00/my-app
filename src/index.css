@@ -25,6 +25,11 @@
   --color-accent-soft: #2e7a6314;
   --color-accent-2: #8a5d2c;
 
+  /* Transition curtain — must read against surface AND panel in both themes;
+     the old panel-coloured tiles sat at 1.00 contrast and were invisible. */
+  --color-curtain: #b8b3a6;
+  --color-curtain-2: #c6c1b5;
+
   /* macOS window controls — decorative, identical in both themes */
   --color-dot-close: #ff5f57;
   --color-dot-minimize: #febc2e;
@@ -44,6 +49,8 @@
   --color-accent: #5ea88b;
   --color-accent-soft: #5ea88b1f;
   --color-accent-2: #c0925f;
+  --color-curtain: #414a4e;
+  --color-curtain-2: #383f43;
   --shadow-window: none;
 }
 
