@@ -13,7 +13,7 @@ export const projectFacts: ProjectFacts[] = [
       'Learning Resource Monitoring',
       'Station Management',
     ],
-    technologies: ['Laravel', 'Node.js', 'PHP', 'PostgreSQL', 'Tailwind CSS', 'REST API', 'ApacheEcharts'],
+    technologies: ['Laravel', 'Node.js', 'PHP', 'PostgreSQL', 'Tailwind CSS', 'REST API', 'Apache ECharts'],
     status: 'live',
     liveUrl: 'https://irimsv.net/',
   },
@@ -28,7 +28,7 @@ export const projectFacts: ProjectFacts[] = [
       'HR Reports',
       'Import Excel Records',
     ],
-    technologies: ['Laravel', 'PHP', 'MySQL', 'REST API', 'Javascript', 'SMTP', 'DataTables', 'Bootstrap'],
+    technologies: ['Laravel', 'PHP', 'MySQL', 'REST API', 'JavaScript', 'SMTP', 'DataTables', 'Bootstrap'],
     status: 'live',
     liveUrl: 'https://eduleave.com/welcome',
   },
@@ -44,7 +44,7 @@ export const projectFacts: ProjectFacts[] = [
       'AI Chatbot',
       'Dashboard Projection',
     ],
-    technologies: ['PHP', 'MySQL', 'PHPMailer', 'ApexCharts', 'FullCalendar', 'DataTables', 'Javascript'],
+    technologies: ['PHP', 'MySQL', 'PHPMailer', 'ApexCharts', 'FullCalendar', 'DataTables', 'JavaScript'],
     status: 'live',
     liveUrl: 'https://eurasian.freehosting.dev/',
   },
@@ -59,7 +59,7 @@ export const projectFacts: ProjectFacts[] = [
       'QR Code Support',
       'Inventory Tracking',
     ],
-    technologies: ['Vue', 'Inertia.js', 'Ziggy', 'Laravel', 'Bacon QR Code', 'Pest', 'Vite 7', 'Chart.js'],
+    technologies: ['Vue.js', 'Inertia.js', 'Ziggy', 'Laravel', 'Bacon QR Code', 'Pest', 'Vite', 'Chart.js'],
     status: 'live',
     liveUrl: 'https://irimsv-library.net/',
   },
@@ -88,18 +88,37 @@ export const projectFacts: ProjectFacts[] = [
   },
 ]
 
-export const technologyNames = [
-  'Laravel',
-  'Vue.js',
-  'React',
-  'TypeScript',
-  'JavaScript',
-  'PHP',
-  'PostgreSQL',
-  'MySQL',
-  'HTML5',
-  'Tailwind CSS',
-  'REST API',
-  'SMTP',
-  'Git',
+export type SkillGroup = {
+  label: string
+  items: string[]
+}
+
+// Grouped as the résumé groups them, so the two never drift apart.
+const CURATED: SkillGroup[] = [
+  { label: 'Languages', items: ['PHP', 'JavaScript', 'TypeScript', 'HTML5'] },
+  {
+    label: 'Frameworks & libraries',
+    items: ['Laravel', 'React', 'Vue.js', 'Node.js', 'Inertia.js', 'Tailwind CSS', 'Bootstrap'],
+  },
+  {
+    label: 'Databases & tooling',
+    items: ['PostgreSQL', 'MySQL', 'REST API', 'SMTP', 'Git', 'Vite', 'Pest (PHP testing)'],
+  },
 ]
+
+// Compare on the bare name so an annotated entry — "Pest (PHP testing)" — still
+// suppresses the plain "Pest" that the project stacks would otherwise duplicate.
+const curated = new Set(CURATED.flatMap((group) => group.items.map((item) => item.replace(/\s*\(.+\)$/, ''))))
+
+// Everything else the shipped systems actually run on. Derived rather than
+// listed, so adding a project surfaces its stack here automatically.
+export const skillGroups: SkillGroup[] = [
+  ...CURATED,
+  {
+    label: 'Also shipped in production',
+    items: [...new Set(projectFacts.flatMap((project) => project.technologies))]
+      .filter((name) => !curated.has(name))
+      .sort((a, b) => a.localeCompare(b)),
+  },
+]
+

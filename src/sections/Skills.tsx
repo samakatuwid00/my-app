@@ -1,7 +1,7 @@
 import { Prompt } from '../components/ui/Prompt'
 import { Reveal } from '../components/Reveal'
 import { deliverables } from '../data/deliverables'
-import { technologies } from '../data/technologies'
+import { skills } from '../data/skills'
 
 export function Skills() {
   return (
@@ -21,18 +21,28 @@ export function Skills() {
           ))}
         </ul>
 
-        <p className="label mt-5 mb-2">Stack</p>
-        <ul className="flex flex-wrap gap-2">
-          {technologies.map((technology) => (
-            <li
-              key={technology.name}
-              className="flex items-center gap-2 rounded-panel border border-line bg-panel px-2.5 py-1.5 transition-colors duration-200 hover:border-line-strong"
-            >
-              <img src={technology.logo} alt="" aria-hidden="true" loading="lazy" className="size-4 shrink-0" />
-              <span className="text-xs text-text-2">{technology.name}</span>
-            </li>
+        <div className="mt-5 grid gap-5 border-t border-line pt-4 sm:grid-cols-2">
+          {skills.map((group) => (
+            <section key={group.label}>
+              <h3 className="label mb-2">{group.label}</h3>
+              <ul className="flex flex-wrap gap-2">
+                {group.items.map(({ name, logo, icon: Icon }) => (
+                  <li
+                    key={name}
+                    className="flex items-center gap-2 rounded-panel border border-line bg-panel px-2.5 py-1.5 transition-colors duration-200 hover:border-line-strong"
+                  >
+                    {logo ? (
+                      <img src={logo} alt="" aria-hidden="true" loading="lazy" className="size-4 shrink-0" />
+                    ) : (
+                      Icon && <Icon size={15} aria-hidden="true" className="shrink-0 text-text-3" />
+                    )}
+                    <span className="text-xs text-text-2">{name}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
           ))}
-        </ul>
+        </div>
       </Reveal>
     </>
   )

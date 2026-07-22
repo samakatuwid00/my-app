@@ -18,11 +18,6 @@ export type Project = ProjectFacts & {
   icon: LucideIcon
 }
 
-export type Technology = {
-  name: string
-  logo: string
-}
-
 export type Testimonial = {
   name: string
   position: string

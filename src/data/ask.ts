@@ -2,7 +2,7 @@
 // file to build the assistant's system prompt.
 import { deliverables } from './deliverables'
 import { education, experience } from './experience'
-import { projectFacts, technologyNames } from './facts'
+import { projectFacts, skillGroups } from './facts'
 import { GITHUB_URL, site } from './site'
 import { stats } from './stats'
 
@@ -22,8 +22,8 @@ export const intents: Intent[] = [
     id: 'stack',
     patterns: [/\bstack\b/, /\btech(nolog)/, /\bskills?\b/, /\blanguages?\b/, /what do you (use|work with)/],
     answer: () =>
-      `Core stack: ${technologyNames.join(' · ')}.\n` +
-      'Most production work is Laravel + PostgreSQL/MySQL on the back end, React or Vue on the front.',
+      'Most production work is Laravel with PostgreSQL or MySQL on the back end, React or Vue on the front.\n\n' +
+      skillGroups.map((group) => `${group.label}: ${group.items.join(', ')}`).join('\n\n'),
   },
   {
     id: 'government',
@@ -119,8 +119,8 @@ export function buildContext(): string {
       ...e.points.map((p) => `  · ${p}`),
     ]),
     '',
-    'Technologies:',
-    technologyNames.join(', '),
+    'Skills:',
+    ...skillGroups.map((group) => `- ${group.label}: ${group.items.join(', ')}`),
     '',
     'Services:',
     ...deliverables.map((d) => `- ${d}`),
