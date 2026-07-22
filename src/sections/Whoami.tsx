@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Prompt } from '../components/ui/Prompt'
 import { ActionLink } from '../components/ui/ActionLink'
+import { Reveal } from '../components/Reveal'
 import { GITHUB_HANDLE, site } from '../data/site'
 import { stats } from '../data/stats'
 import profilePhoto from '../assets/pic.jpg'
@@ -18,7 +19,7 @@ export function Whoami() {
       <Prompt command="whoami" />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_220px] lg:items-start">
-        <div>
+        <Reveal>
           <h1 className="text-[clamp(1.5rem,4vw,2.5rem)] font-bold uppercase leading-[1.1] tracking-[0.08em] text-text">
             {site.name}
           </h1>
@@ -42,9 +43,9 @@ export function Whoami() {
               </div>
             ))}
           </dl>
-        </div>
+        </Reveal>
 
-        <div className="rounded-panel border border-line bg-panel p-1">
+        <Reveal delay={0.04} className="rounded-panel border border-line bg-panel p-1">
           <img
             src={profilePhoto}
             alt={`${site.name}, full-stack developer`}
@@ -58,7 +59,7 @@ export function Whoami() {
               </div>
             ))}
           </dl>
-        </div>
+        </Reveal>
       </div>
     </>
   )
