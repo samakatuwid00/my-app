@@ -3,7 +3,10 @@ import type { ContactPayload } from '../types/portfolio'
 // Form ID only — Formspree endpoints are public by design, so this is safe to
 // inline in the bundle. Never put a secret behind a VITE_ prefix.
 const FORM_ID = import.meta.env.VITE_FORMSPREE_FORM_ID
-const FORM_ENDPOINT = `https://formspree.io/f/${FORM_ID}`
+
+// Accepts either the bare form ID or the full endpoint URL, because it is easy
+// to paste the whole thing from Formspree into the environment variable.
+const FORM_ENDPOINT = FORM_ID?.startsWith('http') ? FORM_ID : `https://formspree.io/f/${FORM_ID}`
 
 export async function submitContactForm(payload: ContactPayload) {
   if (!FORM_ID) {
