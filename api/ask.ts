@@ -59,7 +59,7 @@ function parseTurns(value: unknown): Turn[] | null {
 
   if (turns.some((turn) => turn === null)) return null
   const valid = turns as Turn[]
-  return valid.at(-1)?.role === 'user' ? valid : null
+  return valid[valid.length - 1]?.role === 'user' ? valid : null
 }
 
 export const config = { maxDuration: 15 }

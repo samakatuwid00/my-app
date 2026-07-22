@@ -4,5 +4,21 @@
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" },
     { "path": "./tsconfig.functions.json" }
-  ]
+  ],
+
+  // `tsc -b` drives everything through the references above and ignores these.
+  // They exist for Vercel, which type-checks api/*.ts against the root config
+  // and otherwise falls back to nodenext resolution — which rejects the
+  // extensionless imports the rest of src/ is written with.
+  "compilerOptions": {
+    "target": "es2023",
+    "lib": ["ES2023", "DOM"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true
+  }
 }
