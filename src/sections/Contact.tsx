@@ -84,7 +84,7 @@ export function Contact() {
           </ul>
         </Reveal>
 
-        <Reveal delay={0.05}>
+        <Reveal delay={0.05} dissolve>
           <div className="rounded-panel border border-line bg-panel p-4 lg:p-5">
             <ContactForm />
           </div>
