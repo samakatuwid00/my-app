@@ -1,6 +1,9 @@
 import Groq from 'groq-sdk'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { buildContext } from '../src/data/ask.js'
+// Generated from src/data by scripts/generate-context.mjs on prebuild. Imports
+// must not leave api/ — Vercel does not bundle across that boundary, and the
+// module fails to resolve at runtime if they do.
+import { CONTEXT } from './context.js'
 
 // llama-3.3-70b-versatile was deprecated on 2026-06-17; gpt-oss-120b is Groq's
 // recommended replacement and stays inside the free tier.
@@ -25,7 +28,7 @@ Rules:
 - Reply with the final answer only. Do not narrate your reasoning.
 
 FACTS
-${buildContext()}`
+${CONTEXT}`
 
 // Per-instance and lost on cold start, so this throttles bursts rather than
 // enforcing a real quota. Groq's own free-tier limits are the hard ceiling, and
