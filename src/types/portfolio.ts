@@ -2,13 +2,18 @@ import type { LucideIcon } from 'lucide-react'
 
 export type ProjectStatus = 'live' | 'internal'
 
-export type Project = {
+// Text only, and deliberately free of asset imports: the serverless assistant
+// bundles this data for its system prompt and cannot resolve Vite asset URLs.
+export type ProjectFacts = {
   title: string
   description: string
   features: string[]
   technologies: string[]
   status: ProjectStatus
   liveUrl?: string
+}
+
+export type Project = ProjectFacts & {
   previewImage: string
   icon: LucideIcon
 }
@@ -33,6 +38,17 @@ export type NavItem = {
   label: string
   to: string
   id: string
+}
+
+export type AskRole = 'user' | 'assistant'
+
+export type AskTurn = {
+  role: AskRole
+  text: string
+}
+
+export type AskMessage = AskTurn & {
+  id: number
 }
 
 export type ContactPayload = {

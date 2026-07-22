@@ -8,9 +8,9 @@ const ICON_BUTTON =
 export function SiteFooter() {
   return (
     <footer className="flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-line px-6 py-4 lg:px-12">
-      <p className="text-xs text-text-3">
-        {site.shellTitle}$ <span className="cursor-blink text-accent">▌</span>
-      </p>
+      {/* The blinking caret moved to the command bar, where it marks the one
+          prompt that actually accepts input. */}
+      <p className="text-xs text-text-3">{site.shellTitle}$</p>
 
       <div className="ml-auto flex items-center gap-2">
         {socialLinks.map((link) => (

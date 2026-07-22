@@ -11,6 +11,7 @@ Built for government IT decision-makers and hiring managers evaluating productio
 - Featured systems: IRIMS-V, LRMIS, EDULEAVE, Eurasian, IRIMS-V Library, each with a detail dialog
 - Elegant light and dark themes built on CSS custom properties, persisted to `localStorage`
 - Pixel-dissolve transitions on view change and theme toggle, disabled under `prefers-reduced-motion`
+- Terminal command bar pinned to the bottom of the window — press `/` to ask about the work
 - Downloadable résumé, award lightbox, and a contact form delivered through FormSubmit
 - No external runtime requests: fonts and technology logos are bundled
 
@@ -90,7 +91,26 @@ Site content is data, not markup. To update the portfolio, edit the modules in `
 
 ## Contact Form
 
-The form posts to FormSubmit via `src/services/contactApi.ts`. To change the destination, update `FORM_ENDPOINT` in that file. FormSubmit requires a one-time email confirmation before it accepts submissions.
+The form posts to Formspree via `src/services/contactApi.ts`, using the form ID in `VITE_FORMSPREE_FORM_ID`. Set that variable in `.env.local` locally and in the Vercel project environment for production. The `VITE_` prefix is correct here and only here — Formspree endpoints are public by design, so the ID is safe to inline in the bundle. Formspree requires a one-time email confirmation before it accepts submissions.
+
+## Assistant
+
+The command bar at the bottom of the window answers questions about the work. It resolves two ways:
+
+1. **Scripted** — `src/data/ask.ts` holds an intent table built from the same modules that render the site. Stack, projects, government systems, availability, résumé, contact, location, education, experience, award, and services all answer instantly in the browser at no cost.
+2. **Groq** — anything else posts to `api/ask.ts`, a Vercel Function that calls Groq's `openai/gpt-oss-120b` with a system prompt assembled by `buildContext()`. If the function is unreachable, the bar falls back to pointing the visitor at `/contact`.
+
+Because the function bundles the site's copy, the text lives in `src/data/facts.ts` — free of Vite asset imports — and `projects.ts` / `technologies.ts` layer the images and logos on top. Keep new copy in `facts.ts`.
+
+### Setup
+
+Set `GROQ_API_KEY` in the Vercel project environment. Never give it a `VITE_` prefix — Vite inlines every `VITE_*` variable into the client bundle.
+
+Locally, put `GROQ_API_KEY` in `.env.local` and run `npm run dev`. The `askDevServer` plugin in `vite.config.ts` mounts the same `api/ask.ts` handler behind the dev server, so the assistant works end to end without the Vercel CLI. The plugin is `apply: 'serve'`, so it never reaches the production build.
+
+Without the key the scripted answers still work; off-script questions return the client-side fallback in `AskProvider.tsx`. The two are easy to tell apart — the fallback names Roger's email directly, while a real model reply cites `/contact`.
+
+Requests are capped at 6 turns, 500 characters per message, and 400 output tokens. The per-IP limit of 20 requests per hour lives in function memory, so it throttles bursts but resets on cold start — Groq's own free-tier limits (30 requests/minute, 14,400/day) are the hard ceiling, and there is no per-token bill behind them. Move the counter to Upstash Redis if the endpoint ever sits behind paid inference.
 
 ## Production Build
 
@@ -99,7 +119,7 @@ npm run build
 npm run preview
 ```
 
-Output lands in `dist/` and deploys to any static host. Because the app uses browser-based routing, configure the host to rewrite unknown routes to `index.html` — `public/_redirects` covers Netlify-style hosts.
+Output lands in `dist/`. The project targets Vercel: `vercel.json` sets the build command, the output directory, and the SPA rewrite that sends unknown routes to `index.html` while leaving `/api/*` to the function. On any other static host, reproduce that rewrite and drop the assistant's remote half.
 
 ## Author
 

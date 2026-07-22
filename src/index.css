@@ -109,6 +109,56 @@
   .pixel-tile {
     animation: pixel-fade 90ms steps(3, end) forwards;
   }
+
+  /* Two slow accent sweeps across the command bar on first load, so the prompt
+     reads as interactive before anyone thinks to click it. Drops away for good
+     on first interaction. */
+  .command-hint {
+    animation: command-hint 2.6s ease-in-out 1.2s 2;
+  }
+
+  /* The portraits are shot on a flat white sweep, which glares against the dark
+     panel. In dark mode the white is keyed to transparent (see #photo-key-white
+     in Whoami) and the frame falls back to the canvas colour, so the portrait
+     reads as a recessed plate inside the panel gutter rather than a lit cut-out. */
+  .photo-frame {
+    background: #ffffff;
+  }
+
+  .dark .photo-frame {
+    background: var(--color-canvas);
+  }
+
+  .dark .photo-key {
+    filter: url(#photo-key-white);
+  }
+
+  /* Dark mode sits the portrait one step back so it never glares; hover brings
+     it to full strength. The fade lives on the stack, not the images, so it
+     never fights the blink swap below. */
+  .photo-stack {
+    transition: opacity 320ms cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  .dark .photo-stack {
+    opacity: 0.85;
+  }
+
+  .dark .photo-frame:hover .photo-stack {
+    opacity: 1;
+  }
+
+  /* The blink frame stacks on top of the open-eye frame and only ever fades in.
+     Cross-fading the two would leave a mid-transition beat where both sit at
+     half opacity — a visible brightness dip on near-identical images. */
+  .photo-blink {
+    opacity: 0;
+    transition: opacity 240ms cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  .photo-frame:hover .photo-blink {
+    opacity: 1;
+  }
 }
 
 @keyframes pixel-fade {
@@ -117,6 +167,18 @@
   }
   to {
     opacity: 0;
+  }
+}
+
+@keyframes command-hint {
+  0%,
+  100% {
+    border-top-color: var(--color-line);
+    background: var(--color-panel);
+  }
+  50% {
+    border-top-color: var(--color-accent);
+    background: var(--color-accent-soft);
   }
 }
 
