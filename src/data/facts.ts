@@ -13,7 +13,21 @@ export const projectFacts: ProjectFacts[] = [
       'Learning Resource Monitoring',
       'Station Management',
     ],
-    technologies: ['Laravel', 'Node.js', 'PHP', 'PostgreSQL', 'Tailwind CSS', 'REST API', 'Apache ECharts'],
+    technologies: [
+      'Laravel',
+      'PHP',
+      'PostgreSQL',
+      'Blade',
+      'Tailwind CSS',
+      'Alpine.js',
+      'htmx',
+      'Vite',
+      'Apache ECharts',
+      'Docker',
+      'Pest (PHP testing)',
+      'PHPStan / Larastan',
+      'REST API',
+    ],
     status: 'live',
     liveUrl: 'https://irimsv.net/',
   },
@@ -28,7 +42,20 @@ export const projectFacts: ProjectFacts[] = [
       'HR Reports',
       'Import Excel Records',
     ],
-    technologies: ['Laravel', 'PHP', 'MySQL', 'REST API', 'JavaScript', 'SMTP', 'DataTables', 'Bootstrap'],
+    technologies: [
+      'Laravel',
+      'PHP',
+      'MySQL',
+      'Blade',
+      'Tailwind CSS',
+      'Alpine.js',
+      'Vite',
+      'Pest (PHP testing)',
+      'SimpleXLSX',
+      'Cloudflare Turnstile',
+      'Laravel Queues',
+      'SMTP',
+    ],
     status: 'live',
     liveUrl: 'https://eduleave.com/welcome',
   },
@@ -44,7 +71,20 @@ export const projectFacts: ProjectFacts[] = [
       'AI Chatbot',
       'Dashboard Projection',
     ],
-    technologies: ['PHP', 'MySQL', 'PHPMailer', 'ApexCharts', 'FullCalendar', 'DataTables', 'JavaScript'],
+    technologies: [
+      'PHP',
+      'MySQL',
+      'JavaScript',
+      'Bootstrap',
+      'Apache',
+      'PHPMailer',
+      'SMTP',
+      'ApexCharts',
+      'FullCalendar',
+      'DataTables',
+      'WhatsApp Cloud API',
+      'REST API',
+    ],
     status: 'live',
     liveUrl: 'https://eurasian.freehosting.dev/',
   },
@@ -59,7 +99,21 @@ export const projectFacts: ProjectFacts[] = [
       'QR Code Support',
       'Inventory Tracking',
     ],
-    technologies: ['Vue.js', 'Inertia.js', 'Ziggy', 'Laravel', 'Bacon QR Code', 'Pest', 'Vite', 'Chart.js'],
+    technologies: [
+      'Laravel',
+      'PHP',
+      'Vue.js',
+      'Inertia.js',
+      'Ziggy',
+      'Tailwind CSS',
+      'Vite',
+      'SQLite',
+      'Chart.js',
+      'Bacon QR Code',
+      'html5-qrcode',
+      'html2pdf.js',
+      'Pest (PHP testing)',
+    ],
     status: 'live',
     liveUrl: 'https://irimsv-library.net/',
   },
@@ -75,8 +129,14 @@ export const projectFacts: ProjectFacts[] = [
       'Analytics Dashboard',
       'Role-Based Access Control',
     ],
+    // NOTE: "ClickHouse Three" is unverified — no source in the knowledge vault
+    // documents this system's stack, and the name does not match any library
+    // this project is known to use. Confirm or replace it; do not treat the
+    // rest of this list as vault-grounded either.
     technologies: [
       'Laravel',
+      'PHP',
+      'Blade',
       'Tailwind CSS',
       'ClickHouse Three',
       'Maatwebsite Excel',
@@ -94,15 +154,47 @@ export type SkillGroup = {
 }
 
 // Grouped as the résumé groups them, so the two never drift apart.
+//
+// Every name below is grounded in a system that actually shipped — the stacks
+// were reconciled against the project READMEs and deployment records on
+// 2026-07-26. Deployment & infrastructure is its own group on purpose: running
+// what you build is the offer most independent developers cannot make, and it
+// is what the maintenance retainer in `services.ts` is sold on.
 const CURATED: SkillGroup[] = [
-  { label: 'Languages', items: ['PHP', 'JavaScript', 'TypeScript', 'HTML5'] },
+  { label: 'Languages', items: ['PHP', 'JavaScript', 'TypeScript', 'Python', 'HTML5'] },
   {
     label: 'Frameworks & libraries',
-    items: ['Laravel', 'React', 'Vue.js', 'Node.js', 'Inertia.js', 'Tailwind CSS', 'Bootstrap'],
+    items: [
+      'Laravel',
+      'React',
+      'Vue.js',
+      'Inertia.js',
+      'FastAPI',
+      'Node.js',
+      'Alpine.js',
+      'htmx',
+      'Tailwind CSS',
+      'Bootstrap',
+    ],
+  },
+  { label: 'Databases', items: ['PostgreSQL', 'MySQL', 'SQLite'] },
+  {
+    label: 'Testing & code quality',
+    items: ['Pest (PHP testing)', 'PHPStan / Larastan', 'Laravel Pint', 'pytest', 'ESLint', 'Git'],
   },
   {
-    label: 'Databases & tooling',
-    items: ['PostgreSQL', 'MySQL', 'REST API', 'SMTP', 'Git', 'Vite', 'Pest (PHP testing)'],
+    label: 'Deployment & infrastructure',
+    items: [
+      'Docker',
+      'Docker Compose',
+      'Coolify',
+      'Dokploy',
+      'Traefik',
+      'Nginx',
+      'Linux VPS',
+      'Vercel',
+      'Grafana',
+    ],
   },
 ]
 

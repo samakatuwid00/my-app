@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { Prompt } from '../components/ui/Prompt'
 import { ActionLink } from '../components/ui/ActionLink'
 import { Reveal } from '../components/Reveal'
-import { GITHUB_HANDLE, site } from '../data/site'
+import { aboutBlocks, GITHUB_HANDLE, site } from '../data/site'
 import { stats } from '../data/stats'
 import profilePhoto from '../assets/pic.jpg'
 import profilePhotoBlink from '../assets/blink.jpg'
@@ -25,7 +25,15 @@ export function Whoami() {
             {site.name}
           </h1>
           <p className="mt-1.5 text-base text-accent-2">{site.role}_</p>
-          <p className="prose-body mt-4 max-w-[62ch] text-[13px]">{site.intro}</p>
+          <div className="mt-4 flex max-w-[62ch] flex-col gap-3">
+            {aboutBlocks.map((block) => (
+              <div key={block.label}>
+                <p className="label">{block.label}</p>
+                <p className="prose-body mt-1 text-[13px]">{block.body}</p>
+                {'extra' in block && <p className="prose-body mt-2 text-[13px]">{block.extra}</p>}
+              </div>
+            ))}
+          </div>
 
           <div className="mt-5 flex flex-wrap gap-x-8 gap-y-2">
             <ActionLink as={Link} to="/projects">
