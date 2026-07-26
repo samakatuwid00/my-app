@@ -1,3 +1,4 @@
+import { Tag } from './ui/Tag'
 import type { Project } from '../types/portfolio'
 
 type ProjectCardProps = {
@@ -24,7 +25,24 @@ export function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
         </span>
       </div>
 
-      <p className="prose-body mt-3 line-clamp-3 text-[13px]">{project.description}</p>
+      {/* The problem, not the feature list: a prospect recognises their own
+          situation faster than they recognise a system category. Falls back to
+          the description for any project without case-study copy. */}
+      <p className="prose-body mt-3 line-clamp-3 text-[13px]">{project.problem ?? project.description}</p>
+
+      {/* Spans, not a ul — a button accepts phrasing content only, and this whole
+          card is one. `!!…length` rather than a bare array: an empty array is
+          truthy and would render an empty row of margin, and a bare `.length`
+          would render the number 0. */}
+      {!!project.capabilities?.length && (
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {project.capabilities.map((capability) => (
+            <Tag key={capability} variant="meta">
+              {capability}
+            </Tag>
+          ))}
+        </div>
+      )}
 
       <div className="mt-auto w-full pt-4">
         <span className="mb-3 block h-px w-full bg-line" />

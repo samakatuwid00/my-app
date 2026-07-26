@@ -1,6 +1,6 @@
 import { Prompt } from '../components/ui/Prompt'
 import { Reveal } from '../components/Reveal'
-import { deliverables } from '../data/deliverables'
+import { services } from '../data/services'
 import { skills } from '../data/skills'
 
 export function Skills() {
@@ -9,14 +9,17 @@ export function Skills() {
       <Prompt command="cat skills.txt" />
 
       <Reveal>
-        <p className="label mb-2">What I deliver</p>
-        <ul className="grid gap-x-6 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
-          {deliverables.map((item) => (
-            <li key={item} className="flex gap-1.5 text-xs text-text-2">
+        <p className="label mb-2">What I can build for you</p>
+        <ul className="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+          {services.map((service) => (
+            <li key={service.id} className="flex gap-1.5">
               <span aria-hidden="true" className="text-accent">
                 +
               </span>
-              {item}
+              <span>
+                <span className="block text-xs text-text-2">{service.name}</span>
+                <span className="prose-body mt-0.5 block text-[11px]">{service.pitch}</span>
+              </span>
             </li>
           ))}
         </ul>

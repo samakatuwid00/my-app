@@ -22,7 +22,9 @@ export function Feedback() {
         </h2>
       </Reveal>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-3">
+      {/* Column count follows the quote count, so removing one does not leave a
+          hole in the row. */}
+      <div className={`mt-6 grid gap-4 ${testimonials.length > 2 ? 'lg:grid-cols-3' : 'sm:grid-cols-2'}`}>
         {testimonials.map((testimonial, index) => (
           <Reveal key={testimonial.name} delay={index * 0.04} className="h-full" dissolve>
             <figure className="flex h-full flex-col rounded-panel border border-line bg-panel p-4">

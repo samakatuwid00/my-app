@@ -4,6 +4,7 @@ import { BrandIcon } from '../components/BrandIcon'
 import type { BrandName } from '../components/BrandIcon'
 import { ContactForm } from '../components/ContactForm'
 import { Reveal } from '../components/Reveal'
+import { Tag } from '../components/ui/Tag'
 import { GITHUB_HANDLE, GITHUB_URL, site } from '../data/site'
 
 type ContactRow = {
@@ -74,6 +75,14 @@ export function Contact() {
         <Reveal>
           <h2 className="max-w-[26ch] text-base font-semibold leading-snug text-text">{site.contact.heading}</h2>
           <p className="prose-body mt-2 max-w-[60ch] text-xs">{site.contact.paragraph}</p>
+
+          <ul className="mt-3 flex flex-wrap gap-1.5">
+            {site.trustBadges.map((badge) => (
+              <li key={badge}>
+                <Tag variant="meta">{badge}</Tag>
+              </li>
+            ))}
+          </ul>
 
           <ul className="mt-5 grid gap-2 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
             {CONTACT_ROWS.map((row) => (

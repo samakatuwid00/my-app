@@ -1,5 +1,9 @@
 import type { Testimonial } from '../types/portfolio'
 
+// Every quote must name something a visitor can actually see on this site. A
+// third quote praising a mood-tracking app was removed for that reason — the app
+// appears nowhere here, so the quote read as borrowed. A private-sector quote
+// belongs in this list once a real one is obtained; nothing is placeheld.
 export const testimonials: Testimonial[] = [
   {
     name: 'Cesar Arriola',
@@ -12,11 +16,5 @@ export const testimonials: Testimonial[] = [
     position: 'DEPED HR Coordinator',
     quote:
       'Our leave approval process became faster, auditable, and easier for employees and administrators to manage.',
-  },
-  {
-    name: 'Chloe Kealsay Iñigo',
-    position: 'Student',
-    quote:
-      'Clean, responsive, and incredibly easy to use. It turned daily mood tracking into a habit as simple as journaling.',
   },
 ]
