@@ -119,7 +119,7 @@ export function buildContext(): string {
     'About:',
     ...aboutBlocks.flatMap((block) => [
       `- ${block.label}: ${block.body}`,
-      ...('extra' in block ? [`  ${block.extra}`] : []),
+      ...(block.points ?? []).map((point) => `  · ${point.term} — ${point.detail}`),
     ]),
     '',
     `Education: ${education.degree}, ${education.honors} — ${education.school}, ${education.location}, ${education.period}`,

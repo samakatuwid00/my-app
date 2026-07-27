@@ -3,30 +3,74 @@
 export const GITHUB_URL = 'https://github.com/mr-nikoo'
 export const GITHUB_HANDLE = 'mr-nikoo'
 
-// The About copy, split at its own sentence boundaries into the three blocks
-// /about renders. `site.intro` is rejoined from the `body` fields rather than
-// stored twice, so the hero and the assistant's context can never drift apart.
-// `extra` is deliberately outside that join — it deepens a block on the page
-// without lengthening the one-paragraph intro.
-export const aboutBlocks = [
+// The About copy. Each block is a one-line lead plus scannable points, because
+// a prospective client skims this section rather than reading it: five dense
+// paragraphs asked them to read an essay before finding out whether I solve
+// their problem. The lead answers that question; the points are the evidence.
+//
+// `term` is the label a client would recognise, `detail` the outcome in their
+// words. Keep both to one line: the moment a detail wraps past two lines the
+// section has quietly become prose again.
+//
+// `site.intro` is rejoined from these fields rather than stored twice, so the
+// page and the assistant's context can never drift apart. The points fold into
+// that join — leaving them out would strip the assistant of most of the
+// substance, since the leads carry almost none of it.
+export type AboutPoint = {
+  term: string
+  detail: string
+}
+
+export type AboutBlock = {
+  label: string
+  body: string
+  points?: readonly AboutPoint[]
+}
+
+export const aboutBlocks: readonly AboutBlock[] = [
   {
     label: 'who',
-    body:
-      "I'm a full-stack developer who turns manual, paper-and-spreadsheet processes into web systems people actually use.",
+    body: "I'm a full-stack developer who turns manual, paper-and-spreadsheet processes into web systems people actually use.",
   },
   {
     label: 'what I build',
-    body:
-      "I started at DepEd's Central Office building a national learning-resource platform, and now design, ship, and maintain systems at the regional level — alongside project-based work for clients: HR automation, booking platforms, dashboards, and business systems.",
-    extra:
-      'Alongside my government work I take on project-based engagements. HR at DepEd Naga hired me to build EDULEAVE, a leave-credit system that replaced their manual leave cards for teaching and non-teaching staff with an approval workflow they can audit — scoped, built, deployed, and supported by me directly. I work the same way with private clients: understand the process as it actually runs today, build the system that fixes it, deploy it, and stay available when it needs to change.',
+    body: 'Systems that replace a manual process end to end:',
+    points: [
+      { term: 'Records & inventory', detail: 'one searchable source instead of scattered spreadsheets' },
+      { term: 'Approval workflows', detail: 'requests route themselves, every decision recorded' },
+      { term: 'Booking & reservations', detail: 'customers book themselves in, one calendar holds it all' },
+      { term: 'Dashboards & reports', detail: "what came in, what's pending, what needs attention today" },
+    ],
+  },
+  {
+    label: 'where I have built it',
+    body: 'Government and private, employed and project-based:',
+    points: [
+      { term: 'DepEd Central Office', detail: 'a national learning-resource platform' },
+      { term: 'DepEd Region V', detail: 'regional systems I design, deploy, and maintain' },
+      { term: 'DepEd Naga · project-based', detail: 'EDULEAVE — leave credits for teaching and non-teaching staff' },
+      { term: 'Private clients', detail: 'resort operations: reservations, guest records, dashboards' },
+    ],
   },
   {
     label: 'how I work',
-    body:
-      "Whether it's a government office or a resort, the problem is usually the same: scattered records, slow approvals, no visibility. I build the system that fixes that, then keep it running.",
+    body: "Government office or resort, the problem is the same — scattered records, slow approvals, no visibility:",
+    points: [
+      { term: 'Scope', detail: 'understand the process as it actually runs today' },
+      { term: 'Build', detail: 'the system that fixes it, tested before it ships' },
+      { term: 'Deploy', detail: 'on infrastructure I set up and manage myself' },
+      { term: 'Support', detail: "stay available when it needs to change" },
+    ],
   },
 ] as const
+
+// Folds each block back into one paragraph. A block with points reads as
+// "lead term — detail; term — detail." so nothing on the page is missing from
+// the assistant's prompt.
+const flattenBlock = (block: AboutBlock) =>
+  block.points?.length
+    ? `${block.body} ${block.points.map((point) => `${point.term} — ${point.detail}`).join('; ')}.`
+    : block.body
 
 export const site = {
   name: 'Roger A. Abay Jr.',
@@ -36,7 +80,7 @@ export const site = {
   phone: '+63 956-642-2783',
   // Region only — the résumé's street address is deliberately not published.
   location: 'Pasacao, Camarines Sur, Philippines',
-  intro: aboutBlocks.map((block) => block.body).join(' '),
+  intro: aboutBlocks.map(flattenBlock).join(' '),
   award: {
     label: 'Awards & Recognition',
     title: 'Full Stack Developer Award',

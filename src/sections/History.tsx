@@ -1,49 +1,43 @@
-import { Prompt } from '../components/ui/Prompt'
 import { Reveal } from '../components/Reveal'
-import { education, experience } from '../data/experience'
+import { experience } from '../data/experience'
 
 export function History() {
   return (
-    <>
-      <Prompt command="history --experience" />
+    // Two columns, and the points inside each entry go back to one — the entries
+    // stack about half as tall this way, and a point list two columns deep
+    // inside a half-width card wraps every line.
+    <ol className="grid gap-0.5 lg:grid-cols-2">
+      {experience.map((entry, index) => (
+        <li key={entry.role}>
+          <Reveal delay={index * 0.04} className="h-full" dissolve>
+            <article className="h-full rounded-panel border border-line bg-panel px-2.5 py-1">
+              {/* Role and period on one line, organisation on the next. The
+                  three used to share one wrapping flex row, where `ml-auto` on
+                  the period forced a break as soon as a long organisation name
+                  arrived: "DepEd Central Office — National Learning Resource
+                  Platform" pushed that header to 70px against another card's
+                  21px, and because the cards are `h-full` the taller one set the
+                  height of its whole row. */}
+              <div className="flex items-baseline gap-x-3">
+                <h2 className="min-w-0 text-[13px] font-semibold leading-snug text-text">{entry.role}</h2>
+                <p className="label ml-auto shrink-0">{entry.location ?? entry.period}</p>
+              </div>
+              <p className="text-[11px] leading-snug text-accent">{entry.organization}</p>
 
-      <ol className="flex flex-col gap-3">
-        {experience.map((entry, index) => (
-          <li key={entry.role}>
-            <Reveal delay={index * 0.04} dissolve>
-              <article className="rounded-panel border border-line bg-panel px-4 py-3">
-                <div className="flex flex-wrap items-baseline gap-x-3">
-                  <h2 className="text-[15px] font-semibold text-text">{entry.role}</h2>
-                  <p className="text-xs text-accent">{entry.organization}</p>
-                  <p className="label ml-auto">{entry.location ?? entry.period}</p>
-                </div>
-
-                <ul className="mt-2 grid gap-x-6 gap-y-1 lg:grid-cols-2">
-                  {entry.points.map((point) => (
-                    <li key={point} className="prose-body flex gap-1.5 text-[13px] leading-relaxed">
-                      <span aria-hidden="true" className="text-accent">
-                        ·
-                      </span>
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            </Reveal>
-          </li>
-        ))}
-      </ol>
-
-      <Reveal delay={0.08} dissolve>
-        <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-panel border border-line bg-panel px-4 py-3">
-          <span className="label">Education</span>
-          <h2 className="text-[15px] font-semibold text-text">{education.school}</h2>
-          <p className="prose-body text-[13px]">
-            {education.degree} — <span className="text-accent-2">{education.honors}</span>
-          </p>
-          <p className="label ml-auto">{education.period}</p>
-        </div>
-      </Reveal>
-    </>
+              <ul className="mt-0.5 flex flex-col">
+                {entry.points.map((point) => (
+                  <li key={point} className="prose-body flex gap-1.5 text-[13px] leading-snug">
+                    <span aria-hidden="true" className="shrink-0 text-accent">
+                      ·
+                    </span>
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </Reveal>
+        </li>
+      ))}
+    </ol>
   )
 }

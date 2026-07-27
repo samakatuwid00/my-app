@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
-import { Prompt } from '../components/ui/Prompt'
 import { ActionLink } from '../components/ui/ActionLink'
 import { Reveal } from '../components/Reveal'
+import { Education } from './Education'
 import { aboutBlocks, GITHUB_HANDLE, site } from '../data/site'
 import { stats } from '../data/stats'
 import profilePhoto from '../assets/pic.jpg'
@@ -14,23 +14,24 @@ const CAPTION_ROWS = [
   { label: 'Base', value: 'Camarines Sur, PH' },
 ]
 
+// The blocks with no points — the standfirst. The rest carry the evidence and
+// live on the `what I do` tab, routed by shape rather than by index so
+// reordering aboutBlocks cannot silently move copy between tabs.
+const LEAD_BLOCKS = aboutBlocks.filter((block) => !block.points?.length)
+
 export function Whoami() {
   return (
     <>
-      <Prompt command="whoami" />
-
       <div className="grid gap-6 lg:grid-cols-[1fr_220px] lg:items-start">
         <Reveal>
-          <h1 className="text-[clamp(1.5rem,4vw,2.5rem)] font-bold uppercase leading-[1.1] tracking-[0.08em] text-text">
-            {site.name}
-          </h1>
-          <p className="mt-1.5 text-base text-accent-2">{site.role}_</p>
-          <div className="mt-4 flex max-w-[62ch] flex-col gap-3">
-            {aboutBlocks.map((block) => (
+          {/* The name and role moved to AboutHeader — they sit above the tab bar
+              now and stay put while the panels swap, so repeating them here
+              would print them twice on this tab and nowhere on the others. */}
+          <div className="flex max-w-[62ch] flex-col gap-3.5">
+            {LEAD_BLOCKS.map((block) => (
               <div key={block.label}>
                 <p className="label">{block.label}</p>
                 <p className="prose-body mt-1 text-[13px]">{block.body}</p>
-                {'extra' in block && <p className="prose-body mt-2 text-[13px]">{block.extra}</p>}
               </div>
             ))}
           </div>
@@ -44,6 +45,9 @@ export function Whoami() {
             </ActionLink>
           </div>
 
+          {/* Stacking these under the photo was tried and reverted: four rows of
+              label-over-value ran 241px and made the photo column the tallest
+              thing on the view. Four across the text column costs 75px. */}
           <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-line pt-4 sm:grid-cols-4">
             {stats.map((stat) => (
               <div key={stat.label}>
@@ -80,6 +84,8 @@ export function Whoami() {
           </dl>
         </Reveal>
       </div>
+
+      <Education />
 
       {/* Keys the studio-white backdrop out of the portraits. Alpha is driven by
           mean channel value: everything above 0.94 (the sweep sits at 0.99+)
