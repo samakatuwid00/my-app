@@ -30,8 +30,32 @@ export function Feedback() {
         {testimonials.map((testimonial, index) => (
           <Reveal key={testimonial.name} delay={index * 0.04} className="h-full" dissolve>
             <figure className="flex h-full flex-col rounded-panel border border-line bg-panel p-2">
-              <blockquote className="prose-body leading-relaxed">“{testimonial.quote}”</blockquote>
-              <figcaption className="mt-3 flex items-center gap-3 border-t border-line pt-2">
+              {/* The quote takes the slack so every card's attribution sits on
+                  the floor of its cell. Quotes run two to four lines, and with
+                  the caption following the text directly the three names landed
+                  at three different heights across the row. */}
+              <div className="flex-1">
+                <blockquote className="prose-body leading-relaxed">“{testimonial.quote}”</blockquote>
+
+                {/* Provenance belongs to the quote, not to the person: it says
+                    which document these words come from, so the quotation marks
+                    above are not read as speech. Keeping it here also leaves
+                    every attribution exactly two lines tall, which is what lets
+                    the names line up. */}
+                {testimonial.source && (
+                  <cite className="label mt-1.5 block not-italic text-text-3">{testimonial.source}</cite>
+                )}
+              </div>
+
+              {/* Fixed height and top-aligned, so the rule and the name sit at the
+                  same y in every card of the row. Bottom-anchoring alone was not
+                  enough: a position that wraps to two lines — "Regional Director,
+                  DepEd Region V" at this column width — makes its caption taller
+                  and lifts its rule 17px above the others, measured. 64px covers
+                  a two-line position; a three-line one would lift the rule again
+                  without anything failing, so check the row if a longer title
+                  lands here. */}
+              <figcaption className="mt-3 flex min-h-16 items-start gap-3 border-t border-line pt-2">
                 <span
                   aria-hidden="true"
                   className="grid size-8 shrink-0 place-items-center rounded-panel border border-line text-[11px] text-text-3"
@@ -41,13 +65,6 @@ export function Feedback() {
                 <span className="min-w-0">
                   <span className="block text-[13px] text-text">{testimonial.name}</span>
                   <span className="label block">{testimonial.position}</span>
-                  {/* Provenance, only when the words are a citation rather than
-                      speech. Without it the quotation marks above would imply he
-                      said this to someone; with it, the card says which signed
-                      document it is quoting. */}
-                  {testimonial.source && (
-                    <cite className="label mt-0.5 block not-italic text-text-3">{testimonial.source}</cite>
-                  )}
                 </span>
               </figcaption>
             </figure>
