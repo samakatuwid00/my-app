@@ -30,7 +30,7 @@ const CONTACT_ROWS: ContactRow[] = [
 ]
 
 const ROW_CLASS =
-  'flex h-full items-start gap-3 rounded-panel border border-line bg-panel px-3 py-3 transition-colors duration-200 lg:py-2.5'
+  'flex h-full items-start gap-3 rounded-panel border border-line bg-panel px-3 py-3 transition-colors duration-200 lg:py-2'
 
 function ContactRow({ row }: { row: ContactRow }) {
   const Icon = row.icon ?? Mail

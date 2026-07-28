@@ -17,17 +17,15 @@ export const testimonials: Testimonial[] = [
     quote:
       'Our leave approval process became faster, auditable, and easier for employees and administrators to manage.',
   },
-  // Verbatim from the Certificate of Recognition he signed — the same document
-  // photographed in the award card on this view. An earlier version of this entry
-  // was wording drafted in this repo and attributed to him, which put invented
-  // words in a serving official's mouth; a citation he actually signed says more
-  // and needs nobody's permission. `source` is what keeps it honest: it is a
-  // quotation from a document, not something he said.
+  // Verbatim from the Certificate of Recognition he signed — the document
+  // photographed in the award card on this view. Cut at a clause boundary to
+  // match the length of the other two, with nothing removed from inside the
+  // sentence: the citation continues "…of the Integrated Resource Inventory and
+  // Mapping System for Region V (IRIMS-V)", which the award card already names.
   {
     name: 'Gilbert T. Sadsad',
     position: 'Regional Director, DepEd Region V',
     quote:
-      'For his invaluable contributions, dedication, and exemplary service as Full Stack Systems Programmer of the Integrated Resource Inventory and Mapping System for Region V (IRIMS-V).',
-    source: 'Certificate of Recognition · 23 June 2026',
+      'For his invaluable contributions, dedication, and exemplary service as Full Stack Systems Programmer.',
   },
 ]

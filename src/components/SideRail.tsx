@@ -33,7 +33,11 @@ export function SideRail({ isOpen, onClose, isCollapsed, onToggleCollapse }: Sid
   const offCanvas = isOpen ? 'translate-x-0' : '-translate-x-full invisible'
   // The group-data variant only reaches descendants, so the rail's own width
   // and padding have to come off the state directly.
-  const frameSize = isCollapsed ? 'lg:w-[68px] lg:px-3' : 'lg:w-60'
+  // `lg:w-52` up to xl, `xl:w-60` above it. At 1024 the full 240px rail was
+  // taking 23% of the viewport and the pane paid for it in wrapped lines — the
+  // views that overflow at that width overflow by wrapping, not by content. The
+  // labels still fit at 208px; nothing is clipped.
+  const frameSize = isCollapsed ? 'lg:w-[68px] lg:px-3' : 'lg:w-52 xl:w-60'
 
   return (
     <>

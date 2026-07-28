@@ -60,9 +60,12 @@ export function AboutView() {
       </div>
 
       {/* Keyed on the tab so each panel remounts and its Reveal runs — the same
-          opacity move the router transitions already use, not a new vocabulary. */}
+          opacity move the router transitions already use, not a new vocabulary.
+          `mt-2` rather than `mt-2.5` because `experience` lands at exactly 601 of
+          the 601px budget at 1024×800 after the timeline compaction, and a view
+          sitting on its ceiling breaks on the next line of copy. */}
       <div
-        className="mt-2.5"
+        className="mt-2"
         key={current.id}
         id={`panel-${current.id}`}
         role="tabpanel"

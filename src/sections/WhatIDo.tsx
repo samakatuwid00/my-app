@@ -6,11 +6,21 @@ import { aboutBlocks } from '../data/site'
 // measure costs a little extra wrapping, and halves the stack height.
 const DETAILED = aboutBlocks.filter((block) => block.points?.length)
 
+// An odd count leaves the last block alone on the second row at half width,
+// where it wraps to the same height as the two above it. Spanning it across both
+// columns costs nothing at 1200 and took ~80px off this panel at 1024, where the
+// view was overflowing.
+const SPANS_LAST_ROW = DETAILED.length % 2 === 1
+
 export function WhatIDo() {
   return (
     <div className="grid gap-x-6 gap-y-4 lg:grid-cols-2">
       {DETAILED.map((block, index) => (
-        <Reveal key={block.label} delay={index * 0.04}>
+        <Reveal
+          key={block.label}
+          delay={index * 0.04}
+          className={SPANS_LAST_ROW && index === DETAILED.length - 1 ? 'lg:col-span-2' : undefined}
+        >
           <p className="label">{block.label}</p>
           <p className="prose-body mt-1">{block.body}</p>
           <ul className="mt-1 flex flex-col gap-0.5">
