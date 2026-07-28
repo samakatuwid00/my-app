@@ -21,12 +21,17 @@ const rest = skills.filter((group) => group !== widest)
 function SkillGroup({ group }: { group: (typeof skills)[number] }) {
   return (
     <section className="mb-3 break-inside-avoid">
-      <h3 className="label mb-1.5">{group.label}</h3>
-      <ul className="flex flex-wrap gap-1.5">
+      <h3 className="label mb-1">{group.label}</h3>
+      {/* The chip is the unit this panel is made of — 57 of them — so its own
+          height and the gap between rows are the only levers that scale. `py-1`
+          and `gap-1.5` put the panel 57px over the pane at 1024×800; `py-0.5`
+          and `gap-1` take 26px rows to 22 and 6px gutters to 4, which is the
+          whole overflow and then some. The text size is untouched. */}
+      <ul className="flex flex-wrap gap-1">
         {group.items.map(({ name, logo, icon: Icon }) => (
           <li
             key={name}
-            className="flex items-center gap-2 rounded-panel border border-line bg-panel px-2.5 py-1 transition-colors duration-200 hover:border-line-strong"
+            className="flex items-center gap-2 rounded-panel border border-line bg-panel px-2.5 py-0.5 transition-colors duration-200 hover:border-line-strong"
           >
             {logo ? (
               <img src={logo} alt="" aria-hidden="true" loading="lazy" className="size-4 shrink-0" />
