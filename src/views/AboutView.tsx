@@ -83,6 +83,7 @@ export function AboutView() {
         hrefFor={hrefFor}
         endHref="/projects"
         endLabel="see projects"
+        label="About section progress"
       />
     </ViewShell>
   )

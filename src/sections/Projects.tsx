@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Prompt } from '../components/ui/Prompt'
 import { ProjectCard } from '../components/ProjectCard'
 import { ProjectDetail } from '../components/ProjectDetail'
 import { Reveal } from '../components/Reveal'
@@ -11,8 +10,8 @@ export function Projects() {
 
   return (
     <>
-      <Prompt command="ls projects" />
-
+      {/* The section's own `$ ls projects` line moved up to ProjectsView as one
+          prompt for the whole view — the tab bar names this panel now. */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((project, index) => (
           <Reveal key={project.title} delay={index * 0.04} className="h-full" dissolve>

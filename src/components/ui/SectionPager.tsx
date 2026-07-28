@@ -12,6 +12,10 @@ type SectionPagerProps = {
   hrefFor: (id: string) => string
   endHref: string
   endLabel: string
+  // Required, not defaulted: the nav landmark is the one thing here a screen
+  // reader reads out of context, and a default would have every view that
+  // reuses this announce whichever view happened to land first.
+  label: string
 }
 
 // Fires after the read rather than before it: the tabs say a control exists, this
@@ -24,13 +28,13 @@ type SectionPagerProps = {
 //
 // Kept to one line on purpose. The `experience` tab has 19px of spare height at
 // 1200×800, so a bordered button row would not fit; see the plan's trap section.
-export function SectionPager({ sections, active, hrefFor, endHref, endLabel }: SectionPagerProps) {
+export function SectionPager({ sections, active, hrefFor, endHref, endLabel, label }: SectionPagerProps) {
   const index = sections.findIndex((section) => section.id === active)
   const next = sections[index + 1]
 
   return (
     <nav
-      aria-label="About section progress"
+      aria-label={label}
       className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-line pt-1"
     >
       <span aria-hidden="true" className="flex items-center gap-1.5">
