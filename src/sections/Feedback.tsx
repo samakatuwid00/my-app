@@ -29,8 +29,8 @@ export function Feedback() {
       <div className={`mt-3 grid gap-3 ${testimonials.length > 2 ? 'lg:grid-cols-3' : 'sm:grid-cols-2'}`}>
         {testimonials.map((testimonial, index) => (
           <Reveal key={testimonial.name} delay={index * 0.04} className="h-full" dissolve>
-            <figure className="flex h-full flex-col rounded-panel border border-line bg-panel p-2.5">
-              <blockquote className="prose-body text-xs leading-relaxed">“{testimonial.quote}”</blockquote>
+            <figure className="flex h-full flex-col rounded-panel border border-line bg-panel p-2">
+              <blockquote className="prose-body leading-relaxed">“{testimonial.quote}”</blockquote>
               <figcaption className="mt-3 flex items-center gap-3 border-t border-line pt-2">
                 <span
                   aria-hidden="true"

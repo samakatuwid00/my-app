@@ -1,8 +1,8 @@
 import { Reveal } from '../components/Reveal'
 import { skills } from '../data/skills'
 
-// The stack only. The services list that used to sit above it lives in
-// Services.tsx, rendered on /feedback.
+// The stack only. The services list that used to sit above it is gone from the
+// site's pages — `services.ts` still feeds the assistant's answers in ask.ts.
 //
 // The one group with the most chips is pulled out and given the full panel
 // width, and the rest balance across two CSS columns. Both halves of that are

@@ -15,8 +15,14 @@ type TagProps = {
 }
 
 export function Tag({ children, variant = 'default' }: TagProps) {
+  // `inline-block`, not the default inline: a bordered inline box that wraps
+  // gets its border drawn once per line fragment, which on a phone turned the
+  // longer trust badge into two half-open pills. An inline-block wraps its text
+  // inside one rectangle.
   return (
-    <span className={`rounded-panel border border-line uppercase tracking-[0.06em] ${VARIANTS[variant]}`}>
+    <span
+      className={`inline-block max-w-full rounded-panel border border-line uppercase tracking-[0.06em] ${VARIANTS[variant]}`}
+    >
       {children}
     </span>
   )

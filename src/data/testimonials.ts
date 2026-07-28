@@ -17,4 +17,12 @@ export const testimonials: Testimonial[] = [
     quote:
       'Our leave approval process became faster, auditable, and easier for employees and administrators to manage.',
   },
+  // Wording drafted here, not transcribed from him — confirm it with the office
+  // before this ships, since it is attributed to a named public official.
+  {
+    name: 'Gilbert Sadsad',
+    position: 'DEPED Region V Regional Director',
+    quote:
+      'IRIMS-V put the region on one system — division and school inventories now report in a single view.',
+  },
 ]

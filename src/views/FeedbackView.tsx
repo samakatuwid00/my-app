@@ -4,7 +4,6 @@ import { ActionLink } from '../components/ui/ActionLink'
 import { Prompt } from '../components/ui/Prompt'
 import { Awards } from '../sections/Awards'
 import { Feedback } from '../sections/Feedback'
-import { Services } from '../sections/Services'
 
 // One column, three sections, no tab bar. /about and /projects split because
 // their content does not fit a pane; this one does, so the sections are just
@@ -22,10 +21,6 @@ export function FeedbackView() {
       <Feedback />
 
       <div className="mt-3 border-t border-line pt-2">
-        <Services />
-      </div>
-
-      <div className="mt-3 border-t border-line pt-2">
         <Awards />
       </div>
 
@@ -35,7 +30,7 @@ export function FeedbackView() {
           history like the pagers do. */}
       <nav
         aria-label="Next step"
-        className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-line pt-1"
+        className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-line pt-1"
       >
         <span className="label">Ready to start?</span>
         <ActionLink as={Link} to="/contact" className="ml-auto">

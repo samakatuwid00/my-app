@@ -1,5 +1,6 @@
 import { ExternalLink } from 'lucide-react'
 import { Modal } from './Modal'
+import { Picture } from './ui/Picture'
 import { Tag } from './ui/Tag'
 import type { Project } from '../types/portfolio'
 
@@ -41,9 +42,10 @@ export function ProjectDetail({ project, onClose }: ProjectDetailProps) {
     >
       {project && (
         <>
-          <img
-            src={project.previewImage}
+          <Picture
+            source={project.previewImage}
             alt={`${project.title} interface preview`}
+            sizes="(max-width: 640px) 100vw, 900px"
             className="w-full border-b border-line bg-surface object-cover"
           />
 
@@ -59,7 +61,7 @@ export function ProjectDetail({ project, onClose }: ProjectDetailProps) {
               </div>
             )}
 
-            <p className="prose-body text-sm">{project.description}</p>
+            <p className="prose-body">{project.description}</p>
 
             {/* Problem → approach → result. Rendered per field, so a project with
                 only some of the copy confirmed shows what exists and no empty
@@ -70,7 +72,7 @@ export function ProjectDetail({ project, onClose }: ProjectDetailProps) {
                 {caseStudy.map((entry) => (
                   <div key={entry.term}>
                     <dt className="label">{entry.term}</dt>
-                    <dd className="prose-body mt-1 text-sm">{entry.body}</dd>
+                    <dd className="prose-body mt-1">{entry.body}</dd>
                   </div>
                 ))}
               </dl>
@@ -89,7 +91,7 @@ export function ProjectDetail({ project, onClose }: ProjectDetailProps) {
             <p className="label mt-6 mb-2">Features</p>
             <ul className="grid gap-1.5 sm:grid-cols-2">
               {project.features.map((feature) => (
-                <li key={feature} className="flex gap-2 text-xs text-text-2">
+                <li key={feature} className="flex gap-2 text-[13px] text-text-2">
                   <span aria-hidden="true" className="text-accent">
                     ·
                   </span>

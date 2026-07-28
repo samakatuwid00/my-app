@@ -29,8 +29,11 @@ type ViewTabsProps = {
 // The shared baseline rule is what makes three labels read as one control; the
 // 2px accent underline is the selected state. No enclosure, so nothing clips the
 // global :focus-visible outline.
+// `pt-2 lg:pt-0` is the touch allowance: the segments are 25px tall, which is
+// under any thumb-target guidance, and the extra 8px is spent only where there
+// is a thumb. On lg the pane budget is measured to the pixel, so it goes back.
 const SEGMENT =
-  'relative -mb-px cursor-pointer border-b-2 pb-1.5 text-[11px] uppercase tracking-[0.08em] transition-colors duration-200'
+  'relative -mb-px cursor-pointer border-b-2 pb-1.5 pt-2 text-[11px] uppercase tracking-[0.08em] transition-colors duration-200 lg:pt-0'
 
 const ACTIVE = 'border-accent font-semibold text-text'
 const INACTIVE = 'border-transparent text-text-2 hover:border-line-strong hover:text-text'

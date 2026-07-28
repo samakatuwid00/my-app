@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
+import type { PictureSource } from '../components/ui/Picture'
 
 export type ProjectStatus = 'live' | 'internal'
 
@@ -36,7 +37,9 @@ export type ProjectFacts = {
 }
 
 export type Project = ProjectFacts & {
-  previewImage: string
+  // A vite-imagetools `as=picture` object, not a URL: the preview is rendered
+  // through <Picture> so it can carry AVIF/WebP srcsets and its intrinsic size.
+  previewImage: PictureSource
   icon: LucideIcon
 }
 

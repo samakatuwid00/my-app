@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from 'vite'
 import type { Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { imagetools } from 'vite-imagetools'
 
 // In production Vercel serves api/ask.ts. This runs the same handler behind the
 // Vite dev server so `npm run dev` exercises the real function — no Vercel CLI,
@@ -60,6 +61,14 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
   return {
-    plugins: [react(), tailwindcss(), askDevServer(env)],
+    plugins: [react(), tailwindcss(), imagetools(), askDevServer(env)],
+    build: {
+      // Images must stay files. The default 4096-byte inline limit turns the
+      // small AVIF variants — a 192px award thumbnail lands near 6KB, some
+      // srcset candidates land under 4 — into base64 inside the JS bundle,
+      // which grows the one asset that blocks rendering and defeats the point
+      // of generating the variant at all.
+      assetsInlineLimit: 0,
+    },
   }
 })

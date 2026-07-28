@@ -88,10 +88,26 @@
 }
 
 @layer utilities {
+  /* One size for every run of prose on the site. It used to inherit the 14px
+     body size and then get overridden per component — 13px here, 12px there,
+     14px in the modal — so two paragraphs beside each other rarely matched.
+     The size lives here now and the call sites carry none.
+
+     13px at every width on purpose. A phone-only bump to 14px was tried and
+     dropped: it left prose one pixel off every mono value beside it, which is
+     the exact mismatch this pass exists to remove. Small screens get the extra
+     leading instead, which buys the same readability without a second size. */
   .prose-body {
     font-family: var(--font-sans);
+    font-size: 13px;
     line-height: 1.65;
     color: var(--color-text-2);
+  }
+
+  @media (max-width: 639px) {
+    .prose-body {
+      line-height: 1.75;
+    }
   }
 
   .label {

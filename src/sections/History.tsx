@@ -26,7 +26,7 @@ export function History() {
 
               <ul className="mt-0.5 flex flex-col">
                 {entry.points.map((point) => (
-                  <li key={point} className="prose-body flex gap-1.5 text-[13px] leading-snug">
+                  <li key={point} className="prose-body flex gap-1.5 leading-snug">
                     <span aria-hidden="true" className="shrink-0 text-accent">
                       ·
                     </span>

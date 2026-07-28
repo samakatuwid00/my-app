@@ -30,7 +30,7 @@ const CONTACT_ROWS: ContactRow[] = [
 ]
 
 const ROW_CLASS =
-  'flex h-full items-start gap-3 rounded-panel border border-line bg-panel px-3 py-2.5 transition-colors duration-200'
+  'flex h-full items-start gap-3 rounded-panel border border-line bg-panel px-3 py-3 transition-colors duration-200 lg:py-2.5'
 
 function ContactRow({ row }: { row: ContactRow }) {
   const Icon = row.icon ?? Mail
@@ -71,10 +71,16 @@ export function Contact() {
     <>
       <Prompt command="contact --info" />
 
-      <div className="grid gap-6 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-start">
+      {/* Two changes, one cause. The form panel used to hug its own content and
+          stop two rows short of the contact grid beside it; it stretches to the
+          row now, and the textarea absorbs the slack. That made the old 0.9/1.1
+          split pointless — the form no longer needs the extra width, and the
+          narrower contact cells it left behind were breaking the email address
+          mid-word. */}
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
         <Reveal>
           <h2 className="max-w-[26ch] text-base font-semibold leading-snug text-text">{site.contact.heading}</h2>
-          <p className="prose-body mt-2 max-w-[60ch] text-xs">{site.contact.paragraph}</p>
+          <p className="prose-body mt-2 max-w-[60ch]">{site.contact.paragraph}</p>
 
           <ul className="mt-3 flex flex-wrap gap-1.5">
             {site.trustBadges.map((badge) => (
@@ -93,8 +99,8 @@ export function Contact() {
           </ul>
         </Reveal>
 
-        <Reveal delay={0.05} dissolve>
-          <div className="rounded-panel border border-line bg-panel p-4 lg:p-5">
+        <Reveal delay={0.05} dissolve className="h-full">
+          <div className="flex h-full flex-col rounded-panel border border-line bg-panel p-3 sm:p-4 lg:p-5">
             <ContactForm />
           </div>
         </Reveal>

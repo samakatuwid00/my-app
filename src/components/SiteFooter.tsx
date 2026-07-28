@@ -2,8 +2,11 @@ import { Mail } from 'lucide-react'
 import { BrandIcon } from './BrandIcon'
 import { site, socialLinks } from '../data/site'
 
+// size-9 on touch, size-7 from lg: 28px is a miss-prone target with a thumb, and
+// the footer is inside the scroll pane, so the extra 8px is only spent where the
+// pane is scrolling anyway.
 const ICON_BUTTON =
-  'grid size-7 place-items-center rounded-panel border border-control text-text-2 transition-colors duration-200 hover:border-line-strong hover:text-text'
+  'grid size-9 place-items-center rounded-panel border border-control text-text-2 transition-colors duration-200 hover:border-line-strong hover:text-text lg:size-7'
 
 export function SiteFooter() {
   return (

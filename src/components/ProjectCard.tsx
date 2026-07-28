@@ -1,6 +1,30 @@
 import { Tag } from './ui/Tag'
 import type { Project } from '../types/portfolio'
 
+// The grid itself ships no image bytes — the previews live in the detail modal.
+// Hover and keyboard focus are the earliest honest signals of intent, so the
+// preview is warmed then and the modal opens against a filled cache.
+//
+// Module-level, so a visitor sweeping the mouse across five cards pays for each
+// preview once per session rather than once per hover.
+const warmed = new Set<string>()
+
+function prefetchPreview(project: Project) {
+  if (warmed.has(project.title)) return
+  // Respects the OS/browser data saver: someone who has asked for fewer bytes
+  // should not be spending them on a modal they have not opened.
+  const connection = (navigator as { connection?: { saveData?: boolean } }).connection
+  if (connection?.saveData) return
+
+  warmed.add(project.title)
+  const image = new Image()
+  // The mid candidate, not the largest: enough to paint the modal immediately at
+  // laptop width, and the browser upgrades from srcset if the screen wants more.
+  image.sizes = '(max-width: 640px) 100vw, 900px'
+  image.srcset = project.previewImage.sources.avif ?? project.previewImage.sources.webp ?? ''
+  image.src = project.previewImage.img.src
+}
+
 type ProjectCardProps = {
   project: Project
   index: number
@@ -14,6 +38,8 @@ export function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
     <button
       type="button"
       onClick={onOpen}
+      onMouseEnter={() => prefetchPreview(project)}
+      onFocus={() => prefetchPreview(project)}
       aria-label={`View ${project.title} details`}
       className="group flex h-full w-full flex-col rounded-panel border border-line bg-panel p-4 text-left transition-colors duration-200 hover:border-line-strong"
     >
@@ -28,7 +54,7 @@ export function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
       {/* The problem, not the feature list: a prospect recognises their own
           situation faster than they recognise a system category. Falls back to
           the description for any project without case-study copy. */}
-      <p className="prose-body mt-3 line-clamp-3 text-[13px]">{project.problem ?? project.description}</p>
+      <p className="prose-body mt-3 line-clamp-3">{project.problem ?? project.description}</p>
 
       {/* Spans, not a ul — a button accepts phrasing content only, and this whole
           card is one. `!!…length` rather than a bare array: an empty array is

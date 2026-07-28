@@ -82,7 +82,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-3">
+    <form onSubmit={handleSubmit} noValidate className="flex h-full flex-col gap-3">
       <div className="grid gap-3 sm:grid-cols-2">
         {FIELDS.map((field) => (
           <div key={field.name} className={`min-w-0 ${field.fullWidth ? 'sm:col-span-2' : ''}`}>
@@ -107,7 +107,10 @@ export function ContactForm() {
         ))}
       </div>
 
-      <div className="min-w-0">
+      {/* The field that absorbs the panel's spare height: `flex-1` on the wrapper
+          and `h-full` on the control, with rows={4} kept as the floor for the
+          stacked layout where there is no spare height to absorb. */}
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <label htmlFor="message" className="label mb-1 block">
           Message
         </label>
@@ -121,7 +124,7 @@ export function ContactForm() {
           onBlur={() => handleBlur('message')}
           aria-invalid={Boolean(errors.message)}
           aria-describedby={errors.message ? 'message-error' : undefined}
-          className={`${FIELD_CLASS} resize-y`}
+          className={`${FIELD_CLASS} h-full min-h-24 flex-1 resize-y`}
         />
         <FieldError name="message" message={errors.message} />
       </div>

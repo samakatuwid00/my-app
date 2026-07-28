@@ -60,7 +60,7 @@ export function AskDrawer() {
                   ) : (
                     <p
                       key={message.id}
-                      className="prose-body max-w-[78ch] whitespace-pre-line text-[13px] leading-relaxed"
+                      className="prose-body max-w-[78ch] whitespace-pre-line leading-relaxed"
                     >
                       {message.text}
                     </p>

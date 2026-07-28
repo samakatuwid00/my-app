@@ -12,7 +12,7 @@ export function WhatIDo() {
       {DETAILED.map((block, index) => (
         <Reveal key={block.label} delay={index * 0.04}>
           <p className="label">{block.label}</p>
-          <p className="prose-body mt-1 text-[13px]">{block.body}</p>
+          <p className="prose-body mt-1">{block.body}</p>
           <ul className="mt-1 flex flex-col gap-0.5">
             {block.points?.map((point) => (
               <li key={point.term} className="flex gap-2 text-[13px] leading-snug">

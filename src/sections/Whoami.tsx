@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom'
 import { ActionLink } from '../components/ui/ActionLink'
+import { Picture } from '../components/ui/Picture'
 import { Reveal } from '../components/Reveal'
 import { Education } from './Education'
 import { aboutBlocks, GITHUB_HANDLE, site } from '../data/site'
 import { stats } from '../data/stats'
-import profilePhoto from '../assets/pic.jpg'
-import profilePhotoBlink from '../assets/blink.jpg'
-import resumeUrl from '../assets/Resume.pdf?url'
+// 240px is the frame's widest rendered size, 480 covers 2×. The key frame is the
+// LCP element on /about; the blink frame is decoration and is loaded lazily so
+// it cannot compete for the first paint.
+import profilePhoto from '../assets/pic.jpg?w=240;480&format=avif;webp&as=picture'
+import profilePhotoBlink from '../assets/blink.jpg?w=240;480&format=avif;webp&as=picture'
+import resumeUrl from '../assets/full.pdf'
 
 const CAPTION_ROWS = [
   { label: 'GitHub', value: GITHUB_HANDLE },
@@ -31,7 +35,7 @@ export function Whoami() {
             {LEAD_BLOCKS.map((block) => (
               <div key={block.label}>
                 <p className="label">{block.label}</p>
-                <p className="prose-body mt-1 text-[13px]">{block.body}</p>
+                <p className="prose-body mt-1">{block.body}</p>
               </div>
             ))}
           </div>
@@ -48,7 +52,11 @@ export function Whoami() {
           {/* Stacking these under the photo was tried and reverted: four rows of
               label-over-value ran 241px and made the photo column the tallest
               thing on the view. Four across the text column costs 75px. */}
-          <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-line pt-4 sm:grid-cols-4">
+          {/* One column on a phone. Two columns at 375px wrapped the longer
+              labels onto a second line while their neighbours stayed on one, so
+              the values below them never lined up — the ragged edge read as a
+              typography problem when it was a wrapping one. */}
+          <dl className="mt-5 grid grid-cols-1 gap-x-4 gap-y-3 border-t border-line pt-4 sm:grid-cols-4">
             {stats.map((stat) => (
               <div key={stat.label}>
                 <dt className="label">{stat.label}</dt>
@@ -58,18 +66,30 @@ export function Whoami() {
           </dl>
         </Reveal>
 
-        <Reveal delay={0.04} className="rounded-panel border border-line bg-panel p-1" dissolve>
+        {/* Capped and centred below lg. The frame is a square, so in the stacked
+            single-column layout it took the full 375px of a phone and pushed the
+            education block a screen down; 240px is the desktop column width, so
+            nothing new is introduced. */}
+        <Reveal
+          delay={0.04}
+          className="mx-auto w-full max-w-60 rounded-panel border border-line bg-panel p-1 lg:mx-0 lg:max-w-none"
+          dissolve
+        >
           <div className="photo-frame relative aspect-square w-full overflow-hidden rounded-[3px]">
             <div className="photo-stack absolute inset-0">
-              <img
-                src={profilePhoto}
+              <Picture
+                source={profilePhoto}
                 alt={`${site.name}, full-stack developer`}
+                sizes="240px"
+                loading="eager"
+                fetchPriority="high"
                 className="photo-key absolute inset-0 h-full w-full object-cover object-center"
               />
-              <img
-                src={profilePhotoBlink}
+              <Picture
+                source={profilePhotoBlink}
                 alt=""
-                aria-hidden="true"
+                hidden
+                sizes="240px"
                 className="photo-key photo-blink absolute inset-0 h-full w-full object-cover object-center"
               />
             </div>
