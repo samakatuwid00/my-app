@@ -47,6 +47,10 @@ export type Testimonial = {
   name: string
   position: string
   quote: string
+  // Where the words come from, when they are not something the person said to
+  // camera — a citation on a signed document, for instance. Rendered under the
+  // attribution so a quotation from a certificate is never passed off as speech.
+  source?: string
 }
 
 export type Stat = {

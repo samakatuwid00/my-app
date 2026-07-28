@@ -38,9 +38,16 @@ export function Feedback() {
                 >
                   {initialsOf(testimonial.name)}
                 </span>
-                <span>
+                <span className="min-w-0">
                   <span className="block text-[13px] text-text">{testimonial.name}</span>
-                  <span className="label">{testimonial.position}</span>
+                  <span className="label block">{testimonial.position}</span>
+                  {/* Provenance, only when the words are a citation rather than
+                      speech. Without it the quotation marks above would imply he
+                      said this to someone; with it, the card says which signed
+                      document it is quoting. */}
+                  {testimonial.source && (
+                    <cite className="label mt-0.5 block not-italic text-text-3">{testimonial.source}</cite>
+                  )}
                 </span>
               </figcaption>
             </figure>

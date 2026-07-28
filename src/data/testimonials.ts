@@ -17,12 +17,17 @@ export const testimonials: Testimonial[] = [
     quote:
       'Our leave approval process became faster, auditable, and easier for employees and administrators to manage.',
   },
-  // Wording drafted here, not transcribed from him — confirm it with the office
-  // before this ships, since it is attributed to a named public official.
+  // Verbatim from the Certificate of Recognition he signed — the same document
+  // photographed in the award card on this view. An earlier version of this entry
+  // was wording drafted in this repo and attributed to him, which put invented
+  // words in a serving official's mouth; a citation he actually signed says more
+  // and needs nobody's permission. `source` is what keeps it honest: it is a
+  // quotation from a document, not something he said.
   {
-    name: 'Gilbert Sadsad',
-    position: 'DEPED Region V Regional Director',
+    name: 'Gilbert T. Sadsad',
+    position: 'Regional Director, DepEd Region V',
     quote:
-      'IRIMS-V put the region on one system — division and school inventories now report in a single view.',
+      'For his invaluable contributions, dedication, and exemplary service as Full Stack Systems Programmer of the Integrated Resource Inventory and Mapping System for Region V (IRIMS-V).',
+    source: 'Certificate of Recognition · 23 June 2026',
   },
 ]
