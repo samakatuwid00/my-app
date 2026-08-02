@@ -1,7 +1,7 @@
 // Confirmed from the résumé (2026-07): the handle is mr-nikoo. The old build's
 // footer link to github.com/samakatuwid00 was wrong.
 export const GITHUB_URL = 'https://github.com/samakatuwid00'
-export const GITHUB_HANDLE = 'mr-nikoo'
+export const GITHUB_HANDLE = 'samakatuwid00'
 
 // The About copy. Each block is a one-line lead plus scannable points, because
 // a prospective client skims this section rather than reading it: five dense
