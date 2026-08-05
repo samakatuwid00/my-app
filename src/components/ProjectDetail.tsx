@@ -36,7 +36,7 @@ export function ProjectDetail({ project, onClose }: ProjectDetailProps) {
             <ExternalLink size={13} />
           </a>
         ) : (
-          <p className="label">Internal system – no public demo</p>
+          <p className="label">Internal system — no public demo</p>
         )
       }
     >

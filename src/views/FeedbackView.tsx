@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ViewShell } from '../components/ViewShell'
 import { ActionLink } from '../components/ui/ActionLink'
-import { BackButton } from '../components/ui/BackButton'
 import { Prompt } from '../components/ui/Prompt'
 import { Awards } from '../sections/Awards'
 import { Feedback } from '../sections/Feedback'
@@ -17,7 +16,6 @@ import { Feedback } from '../sections/Feedback'
 export function FeedbackView() {
   return (
     <ViewShell>
-      <BackButton to="/projects" label="back to projects" className="mb-2" />
       <Prompt command="cat feedback/*" className="mb-2" />
 
       <Feedback />

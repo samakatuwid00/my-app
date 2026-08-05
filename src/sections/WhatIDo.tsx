@@ -31,7 +31,7 @@ export function WhatIDo() {
                 </span>
                 <span>
                   <span className="text-text-2">{point.term}</span>
-                  <span className="prose-body"> – {point.detail}</span>
+                  <span className="prose-body"> — {point.detail}</span>
                 </span>
               </li>
             ))}

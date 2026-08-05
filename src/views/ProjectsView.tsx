@@ -1,7 +1,6 @@
 import { useSearchParams } from 'react-router-dom'
 import type { ReactElement } from 'react'
 import { ViewShell } from '../components/ViewShell'
-import { BackButton } from '../components/ui/BackButton'
 import { Prompt } from '../components/ui/Prompt'
 import { SectionPager } from '../components/ui/SectionPager'
 import { ViewTabs } from '../components/ui/ViewTabs'
@@ -49,7 +48,6 @@ export function ProjectsView() {
 
   return (
     <ViewShell>
-      <BackButton to="/about" label="back to about" className="mb-2" />
       {/* One prompt for the view, not one per panel. The old `ls projects` and
           `cat skills.txt` lines each named their own section, which is what the
           tab bar does now — keeping both would be the same label twice and cost

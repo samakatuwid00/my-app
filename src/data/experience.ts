@@ -27,14 +27,14 @@ export const experience: TimelineEntry[] = [
     organization: 'DepEd Region V',
     period: 'Current',
     points: [
-      'Designs, ships, and maintains the regional production systems end to end, learning-resource inventory and monitoring, and a library circulation platform.',
+      'Designs, ships, and maintains the regional production systems end to end — learning-resource inventory and monitoring, and a library circulation platform.',
       'Owns deployment, releases, and the VPS infrastructure those systems run on.',
       'Received the "Full Stack Developer Award" for contributions to a regional government system launch.',
     ],
   },
   {
     role: 'Web Systems Developer',
-    organization: 'DepEd Central Office – National Learning Resource Platform',
+    organization: 'DepEd Central Office — National Learning Resource Platform',
     period: 'Previous',
     points: [
       'Owned features within the platform team on a national learning-resource system serving educational institutions across the Philippines.',
@@ -46,9 +46,9 @@ export const experience: TimelineEntry[] = [
     organization: 'Independent Engagements',
     period: 'Ongoing',
     points: [
-      'Engaged directly by client offices to build systems end to end, requirements, build, deployment, and support.',
-      'EDULEAVE – leave-credit management for the HR unit of DepEd Naga, replacing manual leave cards for teaching and non-teaching personnel with an auditable digital workflow. Live.',
-      'Eurasian – resort operations platform: reservations, booking workflows, guest records, and management dashboards.',
+      'Engaged directly by client offices to build systems end to end — requirements, build, deployment, and support.',
+      'EDULEAVE — leave-credit management for the HR unit of DepEd Naga, replacing manual leave cards for teaching and non-teaching personnel with an auditable digital workflow. Live.',
+      'Eurasian — resort operations platform: reservations, booking workflows, guest records, and management dashboards.',
     ],
   },
   {
