@@ -1,96 +1,121 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { CornerDownLeft, X } from 'lucide-react'
+import { CornerDownLeft } from 'lucide-react'
 import { useAsk } from '../hooks/useAsk'
-import { useTypewriter } from '../hooks/useTypewriter'
-
-const PLACEHOLDER = 'ask me anything'
+import { useLocation } from 'react-router-dom'
+import { BackButton } from './ui/BackButton'
 
 export function CommandBar() {
-  const { ask, state, isOpen, close, inputRef, messages } = useAsk()
-  const [draft, setDraft] = useState('')
+  const { ask, state } = useAsk()
+  const [history, setHistory] = useState<string[]>([])
   const [isFocused, setIsFocused] = useState(false)
-  const [touched, setTouched] = useState(false)
-  const { typed } = useTypewriter(PLACEHOLDER)
+  const [historyIndex, setHistoryIndex] = useState(-1)
+  const [query, setQuery] = useState('')
 
-  // The caret belongs to the ghost placeholder, so it yields to the real one.
-  const showGhost = !draft && !isFocused
-  const showHint = !touched && messages.length === 0
+  const location = useLocation()
+  const isTyping = state === 'thinking'
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const question = draft
-    setDraft('')
-    setTouched(true)
-    void ask(question)
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!query.trim() || isTyping) return
+
+    setHistory((prev) => [...prev, query])
+    setHistoryIndex(history.length)
+    await ask(query)
+    setQuery('')
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      if (historyIndex > 0) {
+        setHistoryIndex((i) => i - 1)
+        setQuery(history[historyIndex - 1])
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      if (historyIndex < history.length - 1) {
+        setHistoryIndex((i) => i + 1)
+        setQuery(history[historyIndex + 1])
+      } else {
+        setHistoryIndex(history.length)
+        setQuery('')
+      }
+    } else if (e.key === 'Escape') {
+      setQuery('')
+    }
+  }
+
+  const handleHistoryClick = (cmd: string) => {
+    setQuery(cmd)
+    setHistoryIndex(history.indexOf(cmd))
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className={`flex h-11 shrink-0 items-center gap-2 border-t border-line bg-panel px-4 ${
-        showHint ? 'command-hint' : ''
-      }`}
-    >
-      <span aria-hidden="true" className="shrink-0 text-sm text-accent">
-        $
-      </span>
+    <header className="fixed top-0 left-0 right-0 z-40 bg-base-100/90 backdrop-blur-sm border-b border-base-300">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="flex items-center justify-between h-12">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-base-content/60 font-mono text-sm">$</span>
+              <span className="text-base-content font-mono text-sm">cd</span>
+              <span className="text-accent-2 font-mono text-sm">{location.pathname || '/'}</span>
+            </div>
+            {location.pathname !== '/' && (
+              <BackButton to="/" label="back" />
+            )}
+          </div>
 
-      <label htmlFor="ask-input" className="sr-only">
-        Ask about Roger's work
-      </label>
-      <div className="relative min-w-0 flex-1">
-        <input
-          id="ask-input"
-          ref={inputRef}
-          value={draft}
-          onChange={(event) => setDraft(event.target.value)}
-          onFocus={() => {
-            setIsFocused(true)
-            setTouched(true)
-          }}
-          onBlur={() => setIsFocused(false)}
-          autoComplete="off"
-          className="w-full bg-transparent text-[13px] tracking-[0.02em] text-text focus:outline-none"
-        />
+          <form onSubmit={handleSubmit} className="flex-1 max-w-2xl mx-8">
+            <div className="relative">
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                placeholder="ask..."
+                className="w-full h-8 bg-base-200 border border-base-300 rounded-lg px-3 py-1 text-sm font-mono text-base-content placeholder-base-content/40 focus:outline-none focus:ring-2 focus:ring-accent-2 focus:border-transparent"
+                disabled={isTyping}
+                autoComplete="off"
+                spellCheck={false}
+              />
+              {isTyping && (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-accent-2 font-mono text-xs animate-pulse">▌</span>
+              )}
+            </div>
+            {isFocused && history.length > 0 && (
+              <div className="absolute bottom-full left-0 right-0 mb-2 bg-base-100 border border-base-300 rounded-lg shadow-lg overflow-hidden z-30">
+                {history
+                  .slice()
+                  .reverse()
+                  .map((cmd, i) => (
+                    <button
+                      key={cmd}
+                      type="button"
+                      onClick={() => handleHistoryClick(cmd)}
+                      className={`w-full px-3 py-2 text-left text-sm font-mono transition-colors ${
+                        i === history.length - 1 - historyIndex
+                          ? 'bg-accent-2 text-base-100'
+                          : 'text-base-content/80 hover:bg-base-200'
+                      }`}
+                    >
+                      {cmd}
+                    </button>
+                  ))}
+              </div>
+            )}
+          </form>
 
-        {showGhost && (
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 left-0 flex items-center text-[13px] tracking-[0.02em] text-text-3"
-          >
-            {typed}
-            <span className="cursor-blink text-accent">▌</span>
-          </span>
-        )}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 hidden sm:flex">
+              <span className="text-base-content/40 font-mono text-xs">w</span>
+              <CornerDownLeft className="w-3.5 h-3.5 text-base-content/40" />
+            </div>
+          </div>
+        </div>
       </div>
-
-      <kbd
-        aria-hidden="true"
-        className="hidden shrink-0 rounded-[3px] border border-line px-1.5 py-0.5 text-[10px] text-text-3 sm:block"
-      >
-        /
-      </kbd>
-
-      {isOpen && (
-        <button
-          type="button"
-          onClick={close}
-          aria-label="Close assistant"
-          className="grid size-7 shrink-0 place-items-center rounded-panel border border-control text-text-2 transition-colors duration-200 hover:border-line-strong hover:text-text"
-        >
-          <X size={13} />
-        </button>
-      )}
-
-      <button
-        type="submit"
-        disabled={!draft.trim() || state === 'thinking'}
-        aria-label="Send question"
-        className="grid size-7 shrink-0 place-items-center rounded-panel border border-control text-text-2 transition-colors duration-200 hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:border-line disabled:text-text-3"
-      >
-        <CornerDownLeft size={13} />
-      </button>
-    </form>
+    </header>
   )
 }

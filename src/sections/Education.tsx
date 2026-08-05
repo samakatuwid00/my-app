@@ -8,7 +8,7 @@ export function Education() {
         <span className="label">Education</span>
         <h2 className="text-[14px] font-semibold text-text">{education.school}</h2>
         <p className="prose-body">
-          {education.degree} — <span className="text-accent-2">{education.honors}</span>
+          {education.degree} – <span className="text-accent-2">{education.honors}</span>
         </p>
         <p className="label ml-auto">{education.period}</p>
       </div>

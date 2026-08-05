@@ -13,7 +13,7 @@ export type Intent = {
 }
 
 const projectLines = () =>
-  projectFacts.map((p) => `${p.title} — ${p.problem ?? p.description} Stack: ${p.technologies.join(', ')}.`)
+  projectFacts.map((p) => `${p.title} – ${p.problem ?? p.description} Stack: ${p.technologies.join(', ')}.`)
 
 export const suggestions = ["what's your stack?", 'show me a government system', 'are you available?']
 
@@ -32,7 +32,7 @@ export const intents: Intent[] = [
       'Government systems built for DepEd:\n\n' +
       projectFacts
         .filter((p) => /IRIMS|LRMIS|EDULEAVE/i.test(p.title))
-        .map((p) => `${p.title} — ${p.description}${p.liveUrl ? `\n${p.liveUrl}` : ''}`)
+        .map((p) => `${p.title} – ${p.description}${p.liveUrl ? `\n${p.liveUrl}` : ''}`)
         .join('\n\n'),
   },
   {
@@ -75,29 +75,29 @@ export const intents: Intent[] = [
   {
     id: 'education',
     patterns: [/\beducat/, /\bdegree\b/, /\bschool\b/, /\bcollege\b/, /\bstudy\b/, /\bgraduat/],
-    answer: () => `${education.degree}, ${education.honors} — ${education.school}, ${education.period}.`,
+    answer: () => `${education.degree}, ${education.honors} – ${education.school}, ${education.period}.`,
   },
   {
     id: 'experience',
     patterns: [/\bexperience\b/, /\bhow long\b/, /\byears?\b/, /\bbackground\b/, /\bcareer\b/],
     answer: () =>
       `${YEARS_SHIPPING} building production systems.\n\n` +
-      experience.map((e) => `${e.role} — ${e.organization} (${e.period})`).join('\n'),
+      experience.map((e) => `${e.role} – ${e.organization} (${e.period})`).join('\n'),
   },
   {
     id: 'award',
     patterns: [/\baward/, /\brecogni/, /\bhonou?r/],
-    answer: () => `${site.award.title} — ${site.award.caption}. Shown on /feedback.`,
+    answer: () => `${site.award.title} – ${site.award.caption}. Shown on /feedback.`,
   },
   {
     id: 'services',
     patterns: [/\bservices?\b/, /\bwhat can you (do|build)\b/, /\bhelp me with\b/, /\boffer\b/],
-    answer: () => `What I can build for you:\n\n${services.map((s) => `· ${s.name} — ${s.pitch}`).join('\n')}`,
+    answer: () => `What I can build for you:\n\n${services.map((s) => `· ${s.name} – ${s.pitch}`).join('\n')}`,
   },
   {
     id: 'who',
     patterns: [/\bwho are you\b/, /\byour name\b/, /\babout you\b/, /\btell me about\b/],
-    answer: () => `${site.name} — ${site.role}.\n\n${site.intro}`,
+    answer: () => `${site.name} – ${site.role}.\n\n${site.intro}`,
   },
   {
     id: 'greeting',
@@ -119,10 +119,10 @@ export function buildContext(): string {
     'About:',
     ...aboutBlocks.flatMap((block) => [
       `- ${block.label}: ${block.body}`,
-      ...(block.points ?? []).map((point) => `  · ${point.term} — ${point.detail}`),
+      ...(block.points ?? []).map((point) => `  · ${point.term} – ${point.detail}`),
     ]),
     '',
-    `Education: ${education.degree}, ${education.honors} — ${education.school}, ${education.location}, ${education.period}`,
+    `Education: ${education.degree}, ${education.honors} – ${education.school}, ${education.location}, ${education.period}`,
     '',
     'Stats:',
     ...stats.map((s) => `- ${s.label}: ${s.value}`),
@@ -152,7 +152,7 @@ export function buildContext(): string {
       `  Stack: ${p.technologies.join(', ')}`,
     ]),
     '',
-    `Award: ${site.award.title} — ${site.award.caption}`,
+    `Award: ${site.award.title} – ${site.award.caption}`,
     '',
     'Trust signals:',
     ...site.trustBadges.map((badge) => `- ${badge}`),
