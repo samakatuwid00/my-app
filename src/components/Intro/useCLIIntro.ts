@@ -108,14 +108,16 @@ export function useCLIIntro(steps: Step[] = DEFAULT_STEPS) {
             break
 
           case 'output': {
-            // All outputs reveal instantly (hacking animation). Only command
-            // lines get type treatment via the promptHtml + wait pacing.
+            // Colored outputs (accent/dim) reveal instantly; plain output
+            // reveals char-by-char via AnimatedLine for the typewriter effect.
+            const isColored = Boolean(step.cls)
             appendLine({
               html: step.content,
               cls: step.cls,
-              animated: false,
+              animated: !isColored,
             })
-            await wait(step.cls ? 200 : 120)
+            // Pace by char length so the AnimatedLine typing (15ms/char) stays synced
+            await wait(isColored ? 200 : 5 + step.content.length * 15)
             break
           }
 

@@ -157,8 +157,8 @@ test.describe('CLI intro gate', () => {
     const whoamiCmd = page.locator('text=$ whoami')
     await expect(whoamiCmd).toBeVisible({ timeout: 6000 })
 
-    // After the sequence + auto-proceed (~6s total), the app shell is revealed
-    await page.waitForSelector('main[data-scroll-pane]', { timeout: 12000 })
+    // Char-by-char typing at 18ms/char; full sequence ~8s + 1.8s auto-proceed
+    await page.waitForSelector('main[data-scroll-pane]', { timeout: 14000 })
 
     // Flag persisted so a reload skips the intro
     await page.reload()

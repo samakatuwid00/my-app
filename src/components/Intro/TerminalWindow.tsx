@@ -40,7 +40,7 @@ export function TerminalWindow({ children, reduced = false }: TerminalWindowProp
       </div>
       <div
         ref={bodyRef}
-        className="overflow-y-auto overscroll-contain rounded-b-window border-x border-b border-line bg-panel p-6 font-mono text-sm [line-height:1.7]"
+        className="overflow-y-hidden overscroll-contain rounded-b-window border-x border-b border-line bg-panel p-6 font-mono text-sm [line-height:1.7] no-scrollbar"
         style={{ maxHeight: 'min(60vh, 420px)' }}
       >
         {children}

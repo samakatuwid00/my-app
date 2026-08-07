@@ -83,7 +83,7 @@ export function CLIIntro({ onComplete }: CLIIntroProps) {
         </div>
 
         {lines.map((l) => (
-          <IntroLine key={l.id} line={l} />
+          <IntroLine key={l.id} line={l} reduced={reduced} />
         ))}
 
         {echo && (
@@ -111,6 +111,7 @@ export function CLIIntro({ onComplete }: CLIIntroProps) {
 // Renders a single sequence line with proper typing/color treatment.
 function IntroLine({
   line,
+  reduced,
 }: {
   line: {
     id: string
@@ -118,6 +119,7 @@ function IntroLine({
     cls?: string
     animated?: boolean
   }
+  reduced: boolean
 }) {
   if (line.cls === 'prompt') {
     // A command line — already carries <span> for coloring, shows instantly
@@ -128,9 +130,10 @@ function IntroLine({
     return null
   }
   if (line.animated && line.html && !line.cls) {
-    // Plain output — reveal char by char (falls back to full text in reduced mode
-    // via the parent's pacing, so no separate AnimatedLine needed).
-    return <div className="row">{line.html}</div>
+    // Plain output — char-by-char typewriter reveal via CSS animation.
+    // Each char <span> gets animation-delay: i*60ms. No React re-render per
+    // char = fast even for long lines (no 60+ setState calls).
+    return <AnimatedLine text={line.html} reduced={reduced} />
   }
   if (line.cls === 'accent') {
     return (
@@ -151,6 +154,47 @@ function IntroLine({
   }
   if (!line.html) return <div className="row h-3" />
   return <div className="row" dangerouslySetInnerHTML={{ __html: escapeHtml(line.html) }} />
+}
+
+// Char-by-char typewriter reveal. Each character gets its own <span> with an
+// incremental animation-delay, so the reveal is purely CSS — zero React
+// re-renders per character (fast, smooth, respects prefers-reduced-motion).
+function AnimatedLine({ text, reduced }: { text: string; reduced: boolean }) {
+  const [shown, setShown] = useState(false)
+  // Defer rendering the spans until the element is mounted so the cascade is
+  // reliable across browsers. Reduced-motion → reveal immediately.
+  useEffect(() => {
+    if (reduced) return
+    const t = setTimeout(() => setShown(true), 16)
+    return () => clearTimeout(t)
+  }, [reduced])
+
+  if (reduced || !shown) {
+    return <div className="row">{text}</div>
+  }
+
+  return (
+    <div className="row" style={{ whiteSpace: 'pre-wrap' }}>
+      {text.split('').map((ch, i) => (
+        <span
+          key={i}
+          className="inline-block"
+          style={{
+            animation: 'reveal-char .12s ease-out forwards',
+            animationDelay: computedelay(i, 15),
+            opacity: 0,
+          }}
+        >
+          {ch}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+// Small helper so TypeScript sees the unit (avoids 'as' assertions inline).
+function computedelay(i: number, ms: number): `${number}ms` {
+  return `${i * ms}ms` as `${number}ms`
 }
 
 function escapeHtml(s: string) {
