@@ -2,6 +2,7 @@ import { useSearchParams } from 'react-router-dom'
 import type { ReactElement } from 'react'
 import { ViewShell } from '../components/ViewShell'
 import { Prompt } from '../components/ui/Prompt'
+import { BackButton } from '../components/ui/BackButton'
 import { SectionPager } from '../components/ui/SectionPager'
 import { ViewTabs } from '../components/ui/ViewTabs'
 import { Projects } from '../sections/Projects'
@@ -52,7 +53,8 @@ export function ProjectsView() {
           `cat skills.txt` lines each named their own section, which is what the
           tab bar does now — keeping both would be the same label twice and cost
           a band of height on every tab. */}
-      <Prompt command="ls ~/work" className="mb-1" />
+      <BackButton to="/about" label="Back to About" className="mb-3" />
+      <Prompt command="ls ~/work" />
 
       <div className="mt-1.5">
         <ViewTabs tabs={TABS} active={current.id} onSelect={selectTab} label="Projects sections" />

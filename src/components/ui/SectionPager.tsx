@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ActionLink } from './ActionLink'
+import { BackButton } from './BackButton'
 
 export type PagerSection = {
   id: string
@@ -30,6 +31,7 @@ type SectionPagerProps = {
 // 1200×800, so a bordered button row would not fit; see the plan's trap section.
 export function SectionPager({ sections, active, hrefFor, endHref, endLabel, label }: SectionPagerProps) {
   const index = sections.findIndex((section) => section.id === active)
+  const prev = sections[index - 1]
   const next = sections[index + 1]
 
   return (
@@ -37,6 +39,12 @@ export function SectionPager({ sections, active, hrefFor, endHref, endLabel, lab
       aria-label={label}
       className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-line pt-1"
     >
+      {prev ? (
+        <BackButton to={hrefFor(prev.id)} label={prev.label} />
+      ) : (
+        <span aria-hidden="true" />
+      )}
+
       <span aria-hidden="true" className="flex items-center gap-1.5">
         {sections.map((section, position) => (
           <span
@@ -46,7 +54,10 @@ export function SectionPager({ sections, active, hrefFor, endHref, endLabel, lab
         ))}
       </span>
 
-      <span className="label">
+      {/* `hidden sm:inline` — the dots already convey position at a glance;
+          the "Section X of N" text is useful on desktop width but eats space on
+          the cramped mobile bar where the active tab is already underlined. */}
+      <span className="label hidden sm:inline">
         Section {index + 1} of {sections.length}
       </span>
 

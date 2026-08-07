@@ -52,7 +52,7 @@ export function AboutView() {
       {/* Static across the tabs: prompt, name, role. Only the panel below the bar
           swaps. The prompt no longer names the active section — the tab bar does
           that now, and in a shape a non-technical visitor already reads. */}
-      <Prompt command="whoami" className="mb-1" />
+      <Prompt command="whoami" />
       <AboutHeader />
 
       <div className="mt-1.5">
