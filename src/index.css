@@ -122,6 +122,11 @@
     animation: cursor-blink 1s step-end infinite;
   }
 
+  /* CLI intro — pixel-header reveal */
+  .pixel-fade-in {
+    animation: pixel-fade-in .5s ease-out forwards;
+  }
+
   .pixel-tile {
     animation: pixel-fade 90ms steps(3, end) forwards;
   }
@@ -183,6 +188,17 @@
   }
   to {
     opacity: 0;
+  }
+}
+
+@keyframes pixel-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
