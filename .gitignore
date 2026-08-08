@@ -28,6 +28,10 @@ SKILL.md
 # local simulation scratch
 .sim/
 
+# Playwright output
+test-results/
+playwright-report/
+
 # ship gate machine state — rewritten every run. .ship/acknowledged.json is
 # committed on purpose, so the whole directory is not ignored.
 .ship/findings.json

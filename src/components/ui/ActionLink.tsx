@@ -1,4 +1,5 @@
-import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react'
+import type { ComponentPropsWithoutRef, ElementType, MouseEvent, ReactNode } from 'react'
+import { useNiko } from '../../hooks/useNiko'
 
 type OwnProps<T extends ElementType> = {
   as?: T
@@ -24,11 +25,22 @@ export function ActionLink<T extends ElementType = 'a'>({
 }: ActionLinkProps<T>) {
   const Tag = as ?? 'a'
   const externalProps = external ? { target: '_blank', rel: 'noreferrer' } : {}
+  const nikoEvent = useNiko()?.event
+
+  // Niko waves at anything that takes the visitor off the page — an external
+  // link or a download. Internal links get the route walk instead, so waving at
+  // them too would be two reactions for one click.
+  const isLeaving = external || 'download' in rest
+  const onClick = (event: MouseEvent) => {
+    if (isLeaving) nikoEvent?.('farewell')
+    ;(rest as { onClick?: (event: MouseEvent) => void }).onClick?.(event)
+  }
 
   return (
     <Tag
       {...externalProps}
       {...rest}
+      onClick={onClick}
       className={`${LINK_CLASS} ${className}`}
     >
       <span aria-hidden="true">&gt;</span>

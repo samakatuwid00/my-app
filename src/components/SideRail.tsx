@@ -4,6 +4,7 @@ import { navItems } from '../data/navigation'
 import { site, systemFacts } from '../data/site'
 import { useFocusTrap } from '../hooks/useFocusTrap'
 import { useLockBodyScroll } from '../hooks/useLockBodyScroll'
+import { NikoSlot } from './NikoPet/NikoSlot'
 import { StatusDot } from './ui/StatusDot'
 
 type SideRailProps = {
@@ -121,8 +122,16 @@ export function SideRail({ isOpen, onClose, isCollapsed, onToggleCollapse }: Sid
           </dl>
         </div>
 
-        <div className={`mt-auto shrink-0 border-t border-line pt-5 ${COLLAPSED_HIDDEN}`}>
-          <StatusDot label="Open to work" />
+        {/* Niko's permanent home: the foot of the rail, directly above the
+            status block. The slot only reserves the 128px — the sprite itself
+            is fixed-position and owned by NikoStage, so it can walk in here
+            from the intro without ever unmounting. */}
+        <div className="mt-auto shrink-0">
+          <NikoSlot name="dock" className="h-32 w-full" />
+
+          <div className={`shrink-0 border-t border-line pt-5 ${COLLAPSED_HIDDEN}`}>
+            <StatusDot label="Open to work" />
+          </div>
         </div>
       </aside>
     </>

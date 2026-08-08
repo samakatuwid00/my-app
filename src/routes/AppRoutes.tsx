@@ -2,6 +2,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { AboutView } from '../views/AboutView'
 import { ContactView } from '../views/ContactView'
 import { FeedbackView } from '../views/FeedbackView'
+import { NotFoundView } from '../views/NotFoundView'
 import { ProjectsView } from '../views/ProjectsView'
 
 export function AppRoutes() {
@@ -20,7 +21,9 @@ export function AppRoutes() {
       <Route path="/stack" element={<Navigate to="/projects" replace />} />
       <Route path="/awards" element={<Navigate to="/feedback" replace />} />
 
-      <Route path="*" element={<Navigate to="/about" replace />} />
+      {/* Not a redirect. Sending an unknown path to /about hid the broken link
+          and rewrote the address bar, so nobody could see what they asked for. */}
+      <Route path="*" element={<NotFoundView />} />
     </Routes>
   )
 }

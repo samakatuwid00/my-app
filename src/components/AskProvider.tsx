@@ -5,6 +5,8 @@ import type { AskState } from './AskContext'
 import { site } from '../data/site'
 import { askRemote } from '../services/askApi'
 import { resolveLocally } from '../services/askRouter'
+import { resolveNikoCommand } from './NikoPet/nikoCommands'
+import { useNiko } from '../hooks/useNiko'
 import type { AskMessage, AskRole } from '../types/portfolio'
 
 const OFFLINE_REPLY =
@@ -21,6 +23,11 @@ export function AskProvider({ children }: PropsWithChildren) {
   const [state, setState] = useState<AskState>('idle')
   const [isOpen, setIsOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // `event` is a stable callback; the context value around it is not, so only
+  // the callback may be captured here.
+  const niko = useNiko()
+  const nikoEvent = niko?.event
 
   // Mirrors `messages` so ask() can read the transcript without re-creating
   // itself on every turn — the command bar would lose its stable handler.
@@ -42,9 +49,21 @@ export function AskProvider({ children }: PropsWithChildren) {
       setIsOpen(true)
       push('user', trimmed)
 
+      // The pet answers for himself before anything else runs, so `pet niko`
+      // never costs a model call.
+      const easterEgg = resolveNikoCommand(trimmed)
+      if (easterEgg) {
+        nikoEvent?.(easterEgg.event)
+        push('assistant', easterEgg.reply)
+        return
+      }
+
+      nikoEvent?.('think')
+
       const local = resolveLocally(trimmed)
       if (local) {
         push('assistant', local)
+        nikoEvent?.('answered')
         return
       }
 
@@ -53,14 +72,16 @@ export function AskProvider({ children }: PropsWithChildren) {
       try {
         const turns = historyRef.current.map(({ role, text }) => ({ role, text }))
         push('assistant', await askRemote(turns))
+        nikoEvent?.('answered')
       } catch {
         push('assistant', OFFLINE_REPLY)
+        nikoEvent?.('error')
       } finally {
         busy.current = false
         setState('idle')
       }
     },
-    [push],
+    [push, nikoEvent],
   )
 
   const close = useCallback(() => setIsOpen(false), [])

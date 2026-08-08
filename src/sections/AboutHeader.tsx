@@ -14,7 +14,7 @@ export function AboutHeader() {
       <h1 className="text-[clamp(1.125rem,2.2vw,1.5rem)] font-bold uppercase leading-[1.15] tracking-[0.08em] text-text">
         {site.name}
       </h1>
-      <p className="text-sm text-accent-2">{site.role}_</p>
+      <p className="text-sm text-accent-2">{site.role}</p>
     </div>
   )
 }

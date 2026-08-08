@@ -10,7 +10,7 @@ type PromptProps = {
 
 export function Prompt({ command, className = '', trailing }: PromptProps) {
   return (
-    <div className={`mb-3 flex items-center gap-3 ${className}`}>
+    <div className={`mb-2 flex items-center gap-3 ${className}`}>
       <p className="shrink-0 text-sm tracking-[0.02em]">
         <span className="text-accent">$</span> <span className="text-text">{command}</span>
       </p>

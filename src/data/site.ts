@@ -48,13 +48,13 @@ export const aboutBlocks: readonly AboutBlock[] = [
     points: [
       { term: 'DepEd Central Office', detail: 'a national learning-resource platform' },
       { term: 'DepEd Region V', detail: 'regional systems I design, deploy, and maintain' },
-      { term: 'DepEd Naga · project-based', detail: 'EDULEAVE — leave credits for teaching and non-teaching staff' },
+      { term: 'DepEd Naga · project-based', detail: 'EDULEAVE – leave credits for teaching and non-teaching staff' },
       { term: 'Private clients', detail: 'resort operations: reservations, guest records, dashboards' },
     ],
   },
   {
     label: 'how I work',
-    body: "Government office or resort, the problem is the same — scattered records, slow approvals, no visibility:",
+    body: "Government office or resort, the problem is the same – scattered records, slow approvals, no visibility:",
     points: [
       { term: 'Scope', detail: 'understand the process as it actually runs today' },
       { term: 'Build', detail: 'the system that fixes it, tested before it ships' },
@@ -69,12 +69,16 @@ export const aboutBlocks: readonly AboutBlock[] = [
 // the assistant's prompt.
 const flattenBlock = (block: AboutBlock) =>
   block.points?.length
-    ? `${block.body} ${block.points.map((point) => `${point.term} — ${point.detail}`).join('; ')}.`
+    ? `${block.body} ${block.points.map((point) => `${point.term} – ${point.detail}`).join('; ')}.`
     : block.body
 
 export const site = {
   name: 'Roger A. Abay Jr.',
   role: 'Full-Stack Developer',
+  // The employer the boot log and the whoami line name. It was only ever spelled
+  // out inside `aboutBlocks`, which meant the intro had nowhere to read it from
+  // and would have had to hard-code it.
+  org: 'DepEd Region V',
   shellTitle: 'roger@portfolio:~',
   email: 'abaygherjr07@gmail.com',
   phone: '+63 956-642-2783',
@@ -94,12 +98,12 @@ export const site = {
   // rather than filed under "government work".
   trustBadges: [
     'Trusted with a national-scale DepEd platform',
-    'Full Stack Developer Award — regional government system launch',
+    'Full Stack Developer Award – regional government system launch',
   ],
   contact: {
     heading: "Let's turn your ideas into scalable systems",
     paragraph:
-      'Send a message about your booking platform, business dashboard, HR workflow, inventory system, API integration, or government system requirement — or about modernizing a process that still runs on paper and spreadsheets.',
+      'Send a message about your booking platform, business dashboard, HR workflow, inventory system, API integration, or government system requirement – or about modernizing a process that still runs on paper and spreadsheets.',
   },
 } as const
 

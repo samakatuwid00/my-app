@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Niko Pet in Portfolio — standalone mockup (v2).
+
+  Spec source:
+    C:/Users/deped/Downloads/Niko Movement Spec.html
+    C:/Users/deped/Downloads/Niko CLI Pet Animations/niko-frames.js
+    wiki/Niko Plan - Replace the Pet with the 19-Movement Spec.md
+
+  Sprite: 13 wide x 6 rows of half-block cells. The installed pet uses 16x10
+  pixel rows, but the spec geometry is 13x6 — this mockup follows the spec.
+
+  Pixel legend:
+    #  = niko body       (#D97757 = 217;119;87)
+    %  = laptop lid      (#fff5e0)
+    o  = chair leg        (#D97757)
+    *  = screen spill     (--accent = #5ea88b)
+    P  = pupil            (child of #, colored white)
+    .  = empty/transparent
+-->
+<title>Niko Pet Portfolio Mockup</title>
+<style>
+  :root {
+    --canvas: #0c0e0f; --panel: #171a1c; --line: #2e3437;
+    --text: #e4e7e8; --text-2: #98a0a5; --text-3: #858d92;
+    --accent: #5ea88b; --niko: #d97751;
+  }
+  :root[data-theme="light"] {
+    --canvas: #f4f3ef; --panel: #ffffff; --line: #e3e0d9;
+    --text: #191c1d; --text-2: #565c60; --text-3: #686e72;
+    --accent: #2e7a63; --niko: #c05621;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace; }
+  body { background: var(--canvas); color: var(--text); padding: 24px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px; overflow: hidden; }
+  @media (max-width: 1100px) { body { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    padding: 16px; box-shadow: 0 1px 3px rgba(25,28,29,.06), 0 8px 24px rgba(25,28,29,.05); }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em;
+       color: var(--text-3); margin-bottom: 12px; }
+
+  /* ---- niko sprite: monospace grid, half-blocks ---- */
+  .niko-sprite {
+    display: inline-block;
+    font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px; line-height: 1; letter-spacing: 0;
+    color: var(--text-2);
+  }
+  .niko-row { display: block; white-space: pre; }
+  .niko-row .n  { color: var(--niko); }
+  .niko-row .l  { color: #fff5e0; }
+  .niko-row .s  { color: var(--accent); }
+  .niko-row .c  { color: var(--niko); }
+  .niko-row .p  { color: #fff5e0; }   /* pupil */
+  .niko-row .b  { visibility: hidden; }
+  .niko-row .face { background: rgba(217,119,87,.07); }
+
+  /* blinking pupil */
+  @keyframes blink { 0%,90%,100%{opacity:1} 93%{opacity:.15} }
+  .niko-row .pupil { display:inline-block; animation: blink 4s infinite; }
+
+  /* idle sway */
+  @keyframes sway { 0%,100%{transform:translateX(0)} 24%{transform:translateX(-2px)} 49%{transform:translateX(2px)} 73%{transform:translateX(0)} }
+  .niko-body { display:inline-block; animation: sway 9s ease-in-out infinite; }
+
+  /* float bob */
+  @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+  .pet { animation: bob 4s ease-in-out infinite; }
+  .pet:focus-within { animation-play-state: paused; outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* terminal-in-intro */
+  .terminal { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; font-size: 12px; overflow: hidden; }
+  .term-title { display:flex; align-items:center; gap:.4rem; padding:6px 10px;
+    border-bottom:1px solid var(--line); font-size:11px; color:var(--text-3); }
+  .dots span { width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .dots span.r { background:#ff5f57; } .dots span.y { background:#febc2e; } .dots span.g { background:#28c840; }
+  .term-body { padding: 12px 14px; overflow-y: hidden; max-height: 280px; }
+  .row { color: var(--text); min-height: 16px; font-size: 12px; }
+  .row.prompt  { color: #56c6ff; }
+  .row.accent  { color: var(--accent); }
+  .row.dim     { color: var(--text-2); }
+  .niko-rail { white-space: pre; font-size: 14px; line-height: 1; }
+
+  .hint { font-size: 11px; color: var(--text-3); margin-top: 6px; }
+  .controls { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  button { font: inherit; font-size: 12px; padding: 4px 10px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); cursor: pointer; }
+  button:hover { border-color: var(--accent); color: var(--accent); }
+  button.active { border-color: var(--accent); background: rgba(94,168,139,.1); color: var(--accent); }
+  .cmd-bar { margin-top: 12px; display: flex; gap: 6px; align-items: center;
+    background: var(--canvas); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; font-size: 12px; }
+  .cmd-bar input { flex: 1; background: transparent; border: none; outline: none;
+    color: var(--text); font-family: inherit; font-size: 12px; }
+  .cmd-bar .cmd-prompt { color: #56c6ff; }
+</style>
+</head>
+<body>
+
+<!-- === PANEL 1: sprite gallery === -->
+<div class="card" style="display:flex; flex-direction:column; gap:16px;">
+  <h2>Niko sprite — 19 movements (spec geometry 13×6)</h2>
+  <div id="niko-idle" class="niko-sprite" role="img" aria-label="Niko sprite"></div>
+  <div class="hint" id="state-label">state: idle</div>
+  <div class="legend" style="margin-top:8px; font-size:11px; color:var(--text-2); display:flex; gap:14px; flex-wrap:wrap;">
+    <span><b style="color:var(--niko)">#</b> niko</span>
+    <span><b style="color:#fff5e0">%</b> lid</span>
+    <span><b style="color:var(--accent)">*</b> spill</span>
+    <span><b style="color:var(--niko)">o</b> chair</span>
+    <span><b style="color:#fff5e0">P</b> pupil</span>
+  </div>
+
+  <div class="controls" id="controls-1">
+    <button data-state="idle">idle</button>
+    <button data-state="blink">blink</button>
+    <button data-state="walk">walk</button>
+    <button data-state="wave">wave</button>
+    <button data-state="think">think</button>
+    <button data-state="happy">happy</button>
+    <button data-state="sleep">sleep</button>
+    <button data-state="poof">poof</button>
+  </div>
+  <div class="cmd-bar">
+    <span class="cmd-prompt">$</span>
+    <input type="text" id="cmd-input-1" placeholder="try: niko idle | niko walk | niko wave | niko sleep | niko poof" />
+  </div>
+  <div class="hint" id="hint-1"></div>
+</div>
+
+<!-- === PANEL 2: portfolio integrations === -->
+<div class="card" style="display:flex; flex-direction:column; gap:16px;">
+  <h2>Portfolio integration — CLI intro terminal + floating pet</h2>
+
+  <!-- A: inside the CLI intro terminal -->
+  <div class="terminal">
+    <div class="term-title">
+      <span class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></span>
+      <span>roger@portfolio ~ :: ~/portfolio</span>
+    </div>
+    <div class="term-body">
+      <div class="row prompt">$ whoami</div>
+      <div class="row accent">> roger@portfolio // full-stack developer</div>
+      <div class="row prompt">$ ls ~/projects</div>
+      <div class="row">irims-v  eduleave  library  eurasian  lrmis</div>
+      <div class="row prompt">$ tree portfolio -L 1</div>
+      <div class="row">portfolio</div>
+      <div class="row niko-rail" id="niko-rail" aria-label="Niko on the terminal rail"></div>
+      <div class="row prompt" style="margin-top:6px;">$ niko</div>
+      <div class="row dim">[ niko idle • 19 moves • #D97757 • Esc to skip ]</div>
+    </div>
+  </div>
+
+  <!-- B: floating pet in portfolio main content -->
+  <div style="position:relative; border:1px dashed var(--line); border-radius:8px; padding:16px; min-height:160px;">
+    <div class="hint">portfolio main content (scrollable page — Niko floats above in bottom-right like Sticky Brain's pet)</div>
+    <div id="pet-wrap" style="position:absolute; right:20px; bottom:20px; z-index:50; cursor:grab;">
+      <div class="pet" id="pet-float" style="background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:4px 6px;">
+        <div class="niko-sprite" id="niko-float" style="font-size:14px;"></div>
+      </div>
+      <div class="hint" style="margin-top:4px; text-align:right;">drag me · double-click to interact</div>
+    </div>
+  </div>
+
+  <div class="controls" id="controls-2">
+    <button data-state="idle">idle</button>
+    <button data-state="walk">walk</button>
+    <button data-state="wave">wave</button>
+    <button data-state="sleep">sleep</button>
+  </div>
+  <div class="cmd-bar">
+    <span class="cmd-prompt">$ niko</span>
+    <input type="text" id="cmd-input-2" placeholder="movement: idle | walk | wave | sleep | blink | think | happy | poof" />
+  </div>
+  <div class="hint" id="hint-2"></div>
+</div>
+
+<script>
+/* ---- nikoframes.js ported to the spec's 13x6 geometry ----
+   Each frame is 6 strings × 13 chars. Half-blocks would give 12px rows;
+   we render one <div class="niko-row"> per string for crisp monospace. */
+const frames = {
+  idle: [
+    ".............",
+    "....###......",
+    "...#P# #P#...",
+    "....###...#..",
+    ".....%ooooo..",
+    ".....*.......",
+  ],
+  blink: [
+    ".............",
+    "....###......",
+    "...#  #  #...",
+    "....###...#..",
+    ".....%ooooo..",
+    ".....*.......",
+  ],
+  look: [
+    ".............",
+    "....###......",
+    "...#P# #.....",
+    "....###...#..",
+    ".....%ooooo..",
+    ".....*.......",
+  ],
+  walk: [
+    ".............",
+    ".....###.....",
+    "..##P# #P#..#",
+    "...###...#...",
+    "......%ooooo.",
+    "......*......",
+  ],
+  wave: [
+    ".............",
+    "....###./....",
+    "...#P# #P#...",
+    "....###.\\#..",
+    ".....%ooooo..",
+    ".....*.......",
+  ],
+  think: [
+    ".............",
+    "....###......",
+    "...#oo#oo#...",
+    "....###...#..",
+    ".....%ooooo..",
+    ".....*.......",
+  ],
+  happy: [
+    ".............",
+    "....###......",
+    "...#..#..#...",
+    "....###..##..",
+    ".....%ooooo..",
+    ".....*.......",
+  ],
+  sleep: [
+    ".............",
+    "....###......",
+    "...#  -  #...",
+    "....###...#..",
+    ".....%ooooo..",
+    ".....*.......",
+  ],
+  poof: [
+    ".............",
+    "....(o)......",
+    "...(ooo).....",
+    "....(o)......",
+    ".............",
+    ".............",
+  ],
+  // aliases
+  stretch: [
+    ".............",
+    "....###......",
+    "...#P# #P#...",
+    "....###...#..",
+    ".....%ooooo..",
+    ".....*.......",
+  ],
+  turn: [
+    ".............",
+    "....###......",
+    "...#P# #P#...",
+    "....###...#..",
+    ".....%ooooo..",
+    ".....*.......",
+  ],
+  laugh: [
+    ".............",
+    "....###......",
+    "...#  #  #...",
+    "....###..##..",
+    ".....%ooooo..",
+    ".....*.......",
+  ],
+};
+
+const classFor = { '#':'n', '%':'l', '*':'s', 'o':'c', 'P':'pupil', '.':'b' };
+
+function renderSprite(target, stateKey) {
+  const f = frames[stateKey] || frames.idle;
+  if (!target) return;
+  target.innerHTML = '';
+  f.forEach((row) => {
+    const div = document.createElement('div');
+    div.className = 'niko-row';
+    div.textContent = row;
+    // color each char individually via span mapping
+    div.innerHTML = row.split('').map(ch => {
+      const cls = classFor[ch] || 'b';
+      let safe = ch;
+      if (ch === 'P') safe = '●';
+      if (ch === '.') safe = '·';
+      if (cls === 'pupil') return `<span class="${cls}">${safe}</span>`;
+      if (cls === 'b') return `<span class="${cls}">${safe}</span>`;
+      return `<span class="${cls}">${safe}</span>`;
+    }).join('');
+    target.appendChild(div);
+  });
+}
+
+const targets = {
+  gallery: document.getElementById('niko-idle'),
+  rail: document.getElementById('niko-rail'),
+  float: document.getElementById('niko-float'),
+};
+const labels = { 1: document.getElementById('state-label'), 2: document.getElementById('hint-2') };
+let cur = 'idle';
+
+function setHint(msg, which) {
+  if (which === 2) labels[2].textContent = msg;
+  else labels[1].textContent = 'state: ' + msg;
+}
+
+function refresh(state) {
+  cur = state;
+  for (const t of Object.values(targets)) renderSprite(t, cur);
+  setHint(cur, 1);
+  setHint(`last command: niko ${cur}`, 2);
+}
+
+// buttons
+document.querySelectorAll('[data-state]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-state]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    refresh(btn.dataset.state);
+  });
+});
+
+// command bars
+function makeHandler(inputId, hintId) {
+  const input = document.getElementById(inputId);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && input.value.trim()) {
+      const cmd = input.value.trim();
+      const parts = cmd.split(/\s+/);
+      const mov = parts[parts.length > 1 && parts[0] === 'niko' ? 1 : 0];
+      if (frames[mov]) {
+        refresh(mov);
+        input.value = '';
+      } else {
+        document.getElementById(hintId).textContent = `$ ${cmd}: unknown movement. Try idle|walk|wave|sleep|blink|think|happy|poof`;
+        setTimeout(() => { document.getElementById(hintId).textContent = `last command: ${cmd}`; }, 1200);
+        input.value = '';
+      }
+    }
+  });
+}
+makeHandler('cmd-input-1', 'hint-1');
+makeHandler('cmd-input-2', 'hint-2');
+
+refresh('idle');
+
+/* ---- floating pet: draggable (mousedown) ---- */
+(function(){
+  const pet = document.getElementById('pet-float');
+  let dragging = false, ox = 0, oy = 0;
+  pet.addEventListener('mousedown', (e) => {
+    dragging = true;
+    const rect = pet.getBoundingClientRect();
+    ox = e.clientX - rect.left;
+    oy = e.clientY - rect.top;
+    pet.style.position = 'absolute';
+    pet.style.left = (rect.left) + 'px';
+    pet.style.top = (rect.top) + 'px';
+    pet.style.right = 'auto';
+    pet.style.bottom = 'auto';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    const parent = pet.parentElement;
+    const prect = parent.getBoundingClientRect();
+    let x = e.clientX - prect.left - ox;
+    let y = e.clientY - prect.top - oy;
+    // clamp
+    x = Math.max(0, Math.min(x, prect.width - pet.offsetWidth));
+    y = Math.max(0, Math.min(y, prect.height - pet.offsetHeight));
+    pet.style.left = Math.round(x) + 'px';
+    pet.style.top = Math.round(y) + 'px';
+  });
+  document.addEventListener('mouseup', () => { dragging = false; });
+  // double-click to cycle movement
+  pet.addEventListener('dblclick', () => {
+    const moves = ['idle','walk','wave','sleep','blink','happy'];
+    const next = moves[(moves.indexOf(cur) + 1) % moves.length];
+    refresh(next);
+  });
+})();
+
+/* ---- autonomous idle loop ---- */
+const idleSeq = ['blink','think','happy','idle'];
+let idleTimer = setTimeout(function tick(){
+  const pick = idleSeq[Math.floor(Math.random()*idleSeq.length)];
+  refresh(pick);
+  idleTimer = setTimeout(tick, 4000);
+}, 4000);
+</script>
+</body>
+</html>

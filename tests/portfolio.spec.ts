@@ -144,28 +144,175 @@ test.describe('Portfolio Professional Polish', () => {
   })
 })
 
-test.describe('CLI intro gate', () => {
-  test('shows intro on first visit, then reveals app after auto-proceed', async ({ page }) => {
-    // No beforeEach seeds the skip-flag here, so the intro mounts on first load.
-    // Wait long enough for the typed sequence + auto-proceed to finish, then
-    // assert the app shell is revealed and the skip-flag persisted.
+// The intro is a one-time gate, so every test in here starts from a clean
+// storage state and drives the sequence deliberately rather than waiting it out.
+test.describe('CLI intro and the morph', () => {
+  /** The live prompt is the intro's last beat; it is the signal to act. */
+  const promptReady = (page: Page) =>
+    page.waitForSelector('.prompt-row input', { timeout: 20000 })
+
+  test('boots, wakes Niko, and hands over to the app', async ({ page }) => {
     await page.goto(BASE_URL)
-    await page.waitForLoadState('networkidle')
+    await promptReady(page)
 
-    // The intro overlay's typed $ whoami command line — only present in the intro.
-    // This is sufficient to prove the terminal sequence mounted.
-    const whoamiCmd = page.locator('text=$ whoami')
-    await expect(whoamiCmd).toBeVisible({ timeout: 6000 })
+    // The approved script, in order. `[ ok ]` markers carry the accent.
+    await expect(page.getByText('$ ./boot portfolio-os')).toBeVisible()
+    await expect(page.getByText('mounting ~/projects (5 systems)')).toBeVisible()
+    await expect(page.getByText('boot complete', { exact: false })).toBeVisible()
 
-    // Char-by-char typing at 18ms/char; full sequence ~8s + 1.8s auto-proceed
-    await page.waitForSelector('main[data-scroll-pane]', { timeout: 14000 })
+    // Whoami reads from site.ts, so the name and role must match the app's.
+    await expect(page.getByText('Roger A. Abay Jr.', { exact: false }).first()).toBeVisible()
 
-    // Flag persisted so a reload skips the intro
+    // Niko is awake in the intro rail, untagged.
+    const niko = page.locator('[data-niko-slot] .niko-sprite')
+    await expect(niko).toBeVisible()
+    expect(await page.locator('[data-niko-slot="intro"]').count()).toBe(1)
+
+    // Enter hands over to /about; the window morphs rather than unmounting.
+    await page.locator('.prompt-row input').press('Enter')
+    await page.waitForSelector('main[data-scroll-pane]', { timeout: 5000 })
+    await page.waitForTimeout(2400) // the FLIP is 600ms, Niko's walk is 1800ms
+
+    expect(new URL(page.url()).pathname).toBe('/about')
+    // Docked: the NIKO tag only renders at the dock.
+    await expect(page.locator('[data-niko-slot="dock"]')).toHaveCount(1)
+    await expect(page.locator('.niko-sprite')).toContainText('NIKO')
+
+    // The flag persisted, so a reload lands straight in the app.
     await page.reload()
     await page.waitForLoadState('networkidle')
-    await page.waitForTimeout(300)
-    // The terminal title-bar ("roger@portfolio ~") is unique to the intro and
-    // only appears before the skip-flag gates it. After reload it must be gone.
-    expect(await page.locator('text=roger@portfolio ~').count()).toBe(0)
+    expect(await page.locator('.prompt-row').count()).toBe(0)
+  })
+
+  test('Esc skips the sequence', async ({ page }) => {
+    await page.goto(BASE_URL)
+    await page.waitForSelector('text=$ ./boot portfolio-os', { timeout: 10000 })
+    await page.keyboard.press('Escape')
+    await page.waitForSelector('main[data-scroll-pane]', { timeout: 5000 })
+    expect(new URL(page.url()).pathname).toBe('/about')
+  })
+
+  test('the skip hint is visible from the first frame', async ({ page }) => {
+    await page.goto(BASE_URL)
+    await expect(page.getByText('[esc] skip')).toBeVisible({ timeout: 3000 })
+  })
+
+  test('a typed route morphs straight into it', async ({ page }) => {
+    await page.goto(BASE_URL)
+    await promptReady(page)
+    await page.locator('.prompt-row input').fill('projects')
+    await page.locator('.prompt-row input').press('Enter')
+
+    await page.waitForSelector('main[data-scroll-pane]', { timeout: 5000 })
+    expect(new URL(page.url()).pathname).toBe('/projects')
+  })
+
+  test('an unknown command is echoed and the prompt stays live', async ({ page }) => {
+    await page.goto(BASE_URL)
+    await promptReady(page)
+    await page.locator('.prompt-row input').fill('sudo rm -rf /')
+    await page.locator('.prompt-row input').press('Enter')
+
+    await expect(page.getByText('command not found: sudo rm -rf /')).toBeVisible()
+    expect(await page.locator('main[data-scroll-pane]').count()).toBe(0)
+  })
+
+  test('the seen flag short-circuits the intro', async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem('portfolio-intro-seen', 'true')
+    })
+    await page.goto(BASE_URL)
+    await page.waitForSelector('main[data-scroll-pane]')
+    expect(await page.locator('.prompt-row').count()).toBe(0)
+    // He is home already, no walk required.
+    await expect(page.locator('[data-niko-slot="dock"]')).toHaveCount(1)
+  })
+})
+
+test.describe('Niko', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem('portfolio-intro-seen', 'true')
+      window.sessionStorage.setItem('niko-tip-seen', 'true')
+    })
+  })
+
+  test('docks in the side rail above the status block', async ({ page }) => {
+    await navigateAndWaitFor(page, '/about')
+    const dock = page.locator('[data-niko-slot-name="dock"]')
+    const status = page.getByText('Open to work')
+    const dockBox = await dock.boundingBox()
+    const statusBox = await status.boundingBox()
+    expect(dockBox).not.toBeNull()
+    expect(statusBox).not.toBeNull()
+    expect(dockBox!.y + dockBox!.height).toBeLessThanOrEqual(statusBox!.y + 1)
+  })
+
+  test('moves into the window chrome below lg', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await navigateAndWaitFor(page, '/about')
+
+    const stage = page.locator('[data-niko-slot]')
+    await expect(stage).toHaveAttribute('data-niko-slot', 'navbar')
+
+    // He has to fit the 44px chrome bar, not overhang it onto the content.
+    const sprite = await page.locator('.niko-sprite').boundingBox()
+    const bar = await page.locator('.h-11').first().boundingBox()
+    expect(sprite).not.toBeNull()
+    expect(bar).not.toBeNull()
+    expect(sprite!.y).toBeGreaterThanOrEqual(bar!.y)
+    expect(sprite!.y + sprite!.height).toBeLessThanOrEqual(bar!.y + bar!.height)
+
+    // He walks the strip, so he must never leave it.
+    const band = await page.locator('[data-niko-slot-name="navbar"]').boundingBox()
+    expect(band).not.toBeNull()
+    expect(sprite!.x).toBeGreaterThanOrEqual(band!.x - 1)
+    expect(sprite!.x + sprite!.width).toBeLessThanOrEqual(band!.x + band!.width + 1)
+
+    // No dismiss control: he is the brand mark, not an overlay to close.
+    expect(await page.locator('button[aria-label="Hide Niko"]').count()).toBe(0)
+
+    // And back to the rail dock when there is a rail again.
+    await page.setViewportSize({ width: 1280, height: 860 })
+    await expect(stage).toHaveAttribute('data-niko-slot', 'dock')
+  })
+
+  test('click to pet fires love', async ({ page }) => {
+    await navigateAndWaitFor(page, '/about')
+    const sprite = page.locator('.niko-sprite')
+    await sprite.click({ force: true })
+    // `pet` maps to the `love` movement; the queue is at most two deep, so it
+    // lands within a movement or two.
+    await expect(sprite).toHaveAttribute('data-niko-move', 'love', { timeout: 8000 })
+  })
+
+  test('a dead end renders a real 404 rather than redirecting', async ({ page }) => {
+    await navigateAndWaitFor(page, '/does-not-exist')
+    expect(new URL(page.url()).pathname).toBe('/does-not-exist')
+    await expect(page.getByText('404')).toBeVisible()
+    await expect(page.getByText('no such route', { exact: false })).toBeVisible()
+    await expect(page.locator('.niko-sprite')).toHaveAttribute('data-niko-move', 'sad', {
+      timeout: 8000,
+    })
+  })
+
+  test('renders a single static frame under reduced motion', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await navigateAndWaitFor(page, '/about')
+    const sprite = page.locator('.niko-sprite')
+    const first = await sprite.innerText()
+    await page.waitForTimeout(2000)
+    expect(await sprite.innerText()).toBe(first)
+  })
+
+  test('reduced motion skips the morph entirely', async ({ page }) => {
+    await page.addInitScript(() => window.localStorage.removeItem('portfolio-intro-seen'))
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto(BASE_URL)
+    // The whole log lands at once, so the prompt is there almost immediately.
+    await page.waitForSelector('.prompt-row input', { timeout: 5000 })
+    await page.locator('.prompt-row input').press('Enter')
+    await page.waitForSelector('main[data-scroll-pane]', { timeout: 2000 })
+    expect(await page.locator('.prompt-row').count()).toBe(0)
   })
 })

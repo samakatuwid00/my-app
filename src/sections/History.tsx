@@ -6,11 +6,11 @@ export function History() {
     // Two columns, and the points inside each entry go back to one — the entries
     // stack about half as tall this way, and a point list two columns deep
     // inside a half-width card wraps every line.
-    <ol className="grid gap-0.5 lg:grid-cols-2">
+    <ol className="grid gap-4 lg:grid-cols-2">
       {experience.map((entry, index) => (
         <li key={entry.role}>
           <Reveal delay={index * 0.04} className="h-full" dissolve>
-            <article className="h-full rounded-panel border border-line bg-panel px-2.5 py-0.5">
+            <article className="h-full rounded-panel border border-line bg-panel px-4 py-3">
               {/* Role and period on one line, organisation on the next. The
                   three used to share one wrapping flex row, where `ml-auto` on
                   the period forced a break as soon as a long organisation name
@@ -22,14 +22,14 @@ export function History() {
                 <h2 className="min-w-0 text-[13px] font-semibold leading-snug text-text">{entry.role}</h2>
                 <p className="label ml-auto shrink-0">{entry.location ?? entry.period}</p>
               </div>
-              <p className="text-[11px] leading-snug text-accent">{entry.organization}</p>
+              <p className="mt-1 text-[11px] leading-snug text-accent">{entry.organization}</p>
 
               {/* `leading-snug!` on the points, with the important flag:
                   `.prose-body` sets line-height 1.65 in the same layer and was
                   winning on source order, so the plain `leading-snug` that used
                   to be here had no effect at all. Measured at 1024×800: 21.4px
                   per line before, 17.9 after, across 29 wrapped lines. */}
-              <ul className="mt-0.5 flex flex-col">
+              <ul className="mt-2 flex flex-col gap-1.5">
                 {entry.points.map((point) => (
                   <li key={point} className="prose-body flex gap-1.5 leading-snug!">
                     <span aria-hidden="true" className="shrink-0 text-accent">

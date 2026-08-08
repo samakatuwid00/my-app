@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Portfolio — CLI Intro v3</title>
+  <!-- JetBrains Mono is loaded in the app; this static mock matches that palette -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      /* Dark theme — mirrors my-app/src/index.css */
+      --canvas:   #0c0e0f;
+      --surface:  #121516;
+      --panel:    #171a1c;
+      --line:     #23282b;
+      --text:     #e4e7e8;
+      --text-2:   #98a0a5;
+      --text-3:   #858d92;
+      --accent:   #5ea88b;
+      --accent-s: #5ea88b1f;
+      --radius:   8px;
+    }
+    :root[data-theme="light"] {
+      --canvas:   #f4f3ef;
+      --surface:  #fbfaf7;
+      --panel:    #ffffff;
+      --line:     #e3e0d9;
+      --text:     #191c1d;
+      --text-2:   #565c60;
+      --text-3:   #686e72;
+      --accent:   #2e7a63;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+    html,body { height:100%; overflow:hidden; }
+    body {
+      font-family: var(--mono); font-size:14px; line-height:1.6;
+      background: var(--canvas); color: var(--text);
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Viewport curtain transition */
+    #app { opacity:0; pointer-events:none; transition:opacity .45s .15s; }
+    #app.enter { opacity:1; pointer-events:auto; }
+
+    #cli {
+      position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+      background: var(--canvas); padding:12px;
+    }
+    #cli.exit {
+      animation: cli-zoom-out .7s cubic-bezier(.16,.16,.05,1) forwards;
+    }
+    @keyframes cli-zoom-out {
+      0%   { transform:scale(1); opacity:1; }
+      100% { transform:scale(.93); opacity:0; filter:blur(4px); }
+    }
+
+    .term {
+      width:100%; max-width:840px;
+      border:1px solid var(--line); border-radius: var(--radius);
+      box-shadow:0 1px 3px rgba(25,28,29,.06), 0 8px 24px rgba(25,28,29,.12);
+      background: var(--panel); overflow:hidden;
+    }
+    .bar {
+      display:flex; align-items:center; gap:8px;
+      padding:8px 12px; font-size:12px; color: var(--text-3); user-select:none;
+    }
+    .dots { display:flex; gap:6px; }
+    .dot { width:12px; height:12px; border-radius:50%; }
+    .dot.c { background:#ff5f57; } .dot.m { background:#febc2e; } .dot.z { background:#28c840; }
+    .bar .name { margin-left:auto; font-weight:600; }
+
+    .body { padding:22px 20px; font-size:14px; line-height:1.7; overflow-y:auto; }
+    .row { margin:2px 0; white-space:pre; }
+    .muted  { color: var(--text-2); }
+    .accent { color: var(--accent); }
+    .dim    { color: var(--text-3); }
+
+    /* Prompt input styling */
+    .prompt-row {
+      display:flex; align-items:center; gap:8px;
+      margin-top:18px; padding-top:16px; border-top:1px solid var(--line);
+    }
+    .prompt-row .at  { color: var(--text-2); }
+    .prompt-row .ps { color: var(--accent); }
+    #cmd {
+      flex:1; background:transparent; border:none; outline:none;
+      font:inherit; font-size:14px; color: var(--text);
+      caret-color: var(--accent);
+    }
+    #cmd:focus ~ .cursor { animation-play-state: running; }
+    .cursor {
+      display:inline-block; width:10px; height:1em; background:var(--accent);
+      animation: cursor-blink .9s step-end infinite paused;
+      vertical-align:bottom; margin-left:4px;
+    }
+    @keyframes cursor-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hint {
+      font-size:12px; color:var(--text-3); margin-top:14px; letter-spacing:.02em;
+    }
+    .hint .k { color:var(--accent); }
+    .enter-port {
+      margin-top:20px; text-align:right;
+    }
+    .enter-port a {
+      color:var(--accent); font-size:13px; letter-spacing:.04em; text-decoration:none;
+      border:1px solid var(--accent); padding:6px 16px; border-radius:var(--radius);
+    }
+    .enter-port a:hover { background:var(--accent-s); }
+
+    @media (prefers-reduced-motion) {
+      .cursor { animation:none; }
+      #cli, #app { transition:none !important; animation:none !important; }
+      #cli { transform:none !important; opacity:1 !important; }
+      #app { opacity:1 !important; pointer-events:auto !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CLI intro -->
+  <div id="cli">
+    <div class="term">
+      <div class="bar">
+        <div class="dots"><div class="dot c"></div><div class="dot m"></div><div class="dot z"></div></div>
+        <span class="name">roger@portfolio <span class="dim">—</span> ~</span>
+      </div>
+      <div class="body" id="body"></div>
+    </div>
+  </div>
+
+  <!-- The real app mounts here on transition -->
+  <div id="app">
+    <div style="padding:22px;">
+      <h1>Welcome back — you’re in the portfolio.</h1>
+      <p class="muted" style="margin-top:8px;">CLI intro complete. This is the app shell that would render live.</p>
+    </div>
+  </div>
+
+  <script>
+    const body = document.getElementById('body');
+    const cli = document.getElementById('cli');
+    const app = document.getElementById('app');
+    const cmd = document.getElementById('cmd');
+    const cursor = document.querySelector('.cursor');
+
+    const DELAY = 16; // ms per char — comfortable typewriter pace
+
+    // ---- Helpers ----
+    function line(content, cls = '') {
+      const div = document.createElement('div');
+      div.className = 'row ' + cls;
+      div.textContent = content;
+      body.appendChild(div);
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+    function type(content, cls = '') {
+      return new Promise(resolve => {
+        const div = document.createElement('div'); div.className = 'row ' + cls; body.appendChild(div);
+        let n = 0;
+        const tick = () => {
+          if (n < content.length) { div.textContent += content[n++]; setTimeout(tick, DELAY); }
+          else resolve();
+        };
+        tick();
+      });
+    }
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+    function blank() { line(''); }
+
+    // ---- ANSI-style colored segment helpers ----
+    function ansiGreen(s)  { return `<span class="accent">${s}</span>`; }
+    function ansiYellow(s) { return `<span style="color:#febc2e">${s}</span>`; }
+    function ansiCyan(s)   { return `<span style="color:#5ea88b;font-weight:600">${s}</span>`; }
+
+    // ---- The CLI sequence ----
+    async function runCLI() {
+      // 1 — banner
+      await type('$ ' + ansiGreen('roger@portfolio:~/$ ') + ansiCyan('cat') + ' portfolio.json', '');
+      await wait(280);
+
+      // 2 — JSON config reveal (simulated cat)
+      const config = [
+        '{',
+        '  "name": "Roger Abay Jr.",',
+        '  "title": "Full-Stack Developer",',
+        '  "location": "Camarines Sur, PH",',
+        '  "sector": "Government / Private",',
+        '  "stack": ["Laravel", "React", "PostgreSQL"],',
+        '  "availability": "open to remote / Manila roles"',
+        '}'
+      ];
+      for (const l of config) await type('  ' + ansiYellow(l.startsWith('{') || l.startsWith('}') ? l : l), '');
+      await wait(400);
+
+      // 3 — ls ~/work
+      blank();
+      await type('$ ' + ansiGreen('roger@portfolio:~/$ ') + ansiCyan('ls') + ' ~/work', '');
+      await wait(200);
+      const projects = [
+        ['irims-v', 'blue'],    ['eduleave', 'green'],
+        ['library', 'yellow'],  ['eurasian', 'cyan'],
+        ['lrmis', 'magenta']
+      ];
+      const cols = projects.map(p => `<span class="accent">${p[0]}/</span>`).join('  ');
+      await type(cols);
+      await wait(400);
+
+      // 4 — tree of irims-v
+      blank();
+      await type('$ ' + ansiGreen('roger@portfolio:~/$ ') + ansiCyan('tree') + ' irims-v -L 2 --dirsfirst', '');
+      await wait(180);
+      const tree = [
+        'irims-v',
+        '├── app',
+        '│   ├── Http',
+        '│   └── Models',
+        '├── resources',
+        '│   └── js',
+        '│       ├── Pages',
+        '│       └── Components',
+        '└── routes',
+        '    ├── web.php',
+        '    └── api.php'
+      ];
+      for (const t of tree) await type('  ' + t);
+      await wait(380);
+
+      // 5 — whoami (the intro payoff)
+      blank();
+      await type('$ ' + ansiGreen('roger@portfolio:~/$ ') + ansiCyan('whoami'), '');
+      await wait(280);
+      await type(ansiGreen('Full-Stack Developer') + ' <span class="dim">|</span> ' +
+                 ansiYellow('DepEd Region V') + ' <span class="dim">|</span> ' +
+                 ansiCyan('Laravel, React, PostgreSQL'));
+      await wait(340);
+
+      // 6 — the interactive prompt
+      line('Ready to explore?', 'dim');
+      await wait(160);
+
+      const promptRow = document.createElement('div');
+      promptRow.className = 'prompt-row';
+      promptRow.innerHTML =
+        '<span class="at">roger@portfolio</span>' +
+        '<span class="ps">:</span>' +
+        '~<span class="ps">$</span>' +
+        '<input id="cmd" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Enter portfolio…" autofocus>' +
+        '<span class="cursor"></span>';
+      body.appendChild(promptRow);
+
+      // refocus cursor after DOM update
+      const input = document.getElementById('cmd');
+      const c = promptRow.querySelector('.cursor');
+      input.focus();
+
+      const handleKey = (e) => {
+        if (e.key === 'Enter') {
+          const val = input.value.trim().toLowerCase();
+          if (val === '' || val === 'enter portfolio' || val === 'enter' || val === 'yes' || val === 'y') {
+            transition();
+          } else {
+            line(`$ ${val}`, 'muted');
+            // keep typing — stay interactive
+          }
+        }
+      };
+      input.addEventListener('keydown', handleKey);
+
+      // Auto-proceed after 1.8s of inactivity or auto-focus
+      window._introAutoTimer = setTimeout(() => {
+        if (!window._introStarted) transition();
+      }, 1800);
+    }
+
+    function transition() {
+      window._introStarted = true;
+      clearTimeout(window._introAutoTimer);
+      // Disable further typing
+      const input = document.getElementById('cmd');
+      if (input) { input.disabled = true; input.removeEventListener('keydown', handleKey); }
+
+      // Zoom-out the terminal
+      cli.classList.add('exit');
+      // Fade in the app
+      setTimeout(() => { app.classList.add('enter'); }, 300);
+    }
+
+    // Start the sequence
+    runCLI();
+  </script>
+</body>
+</html>

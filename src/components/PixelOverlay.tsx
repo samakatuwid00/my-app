@@ -17,26 +17,50 @@ function jitterFor(index: number) {
   return (((index * 2654435761) % 101) / 101) * JITTER
 }
 
-export function PixelOverlay() {
+type PixelOverlayProps = {
+  /**
+   * Run from a caller-owned key instead of the route/theme tick. The intro
+   * morph needs a curtain that is not tied to a navigation, but must be the
+   * same tiles, colours and sweep as every route transition.
+   */
+  runKey?: string | null
+  /**
+   * Hold the tiles fully opaque this long before the sweep begins. The morph
+   * uses it so the window can travel for 600ms without the boot log — or the
+   * app arriving underneath it — ever showing through.
+   */
+  holdMs?: number
+}
+
+export function PixelOverlay({ runKey, holdMs = 0 }: PixelOverlayProps = {}) {
   const tick = useTransitionTick()
   const prefersReducedMotion = useReducedMotion()
   const [containerRef, { width, height }] = useElementSize<HTMLDivElement>()
   const [runId, setRunId] = useState<string | null>(null)
   const [previousTick, setPreviousTick] = useState(tick)
+  const [previousRunKey, setPreviousRunKey] = useState<string | null>(null)
+
+  const isDriven = runKey !== undefined
+  const driverKey = runKey ?? null
 
   // Adjusted during render so the tiles paint on the same frame as the new
-  // content — an effect would show one un-masked frame first.
-  if (previousTick !== tick) {
+  // content — an effect would show one un-masked frame first. Same reasoning
+  // for the caller-driven key, which covers the intro morph.
+  if (!isDriven && previousTick !== tick) {
     setPreviousTick(tick)
     if (!prefersReducedMotion) setRunId(tick)
+  }
+  if (isDriven && previousRunKey !== driverKey) {
+    setPreviousRunKey(driverKey)
+    setRunId(prefersReducedMotion ? null : driverKey)
   }
 
   useEffect(() => {
     if (runId === null) return
 
-    const timer = setTimeout(() => setRunId(null), CLEANUP_MS)
+    const timer = setTimeout(() => setRunId(null), CLEANUP_MS + holdMs)
     return () => clearTimeout(timer)
-  }, [runId])
+  }, [runId, holdMs])
 
   const tileSize = Math.max(MIN_TILE_PX, Math.sqrt((width * height) / TILE_BUDGET))
   const columns = Math.max(1, Math.ceil(width / tileSize))
@@ -65,7 +89,7 @@ export function PixelOverlay() {
               <span
                 key={index}
                 className={`pixel-tile ${isEvenTile ? 'bg-curtain' : 'bg-curtain-2'}`}
-                style={{ animationDelay: `${sweepDelay + jitterFor(index)}ms` }}
+                style={{ animationDelay: `${holdMs + sweepDelay + jitterFor(index)}ms` }}
               />
             )
           })}
