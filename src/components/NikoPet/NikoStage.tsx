@@ -26,6 +26,10 @@ import type { NikoSlotName } from './NikoContext'
 // on the content beneath it. At this size he reads as a pixel mark beside the
 // window controls, which is what a chrome-height pet can be.
 const SLOT_SIZE: Record<NikoSlotName, number> = { intro: 13, dock: 11.5, navbar: 4.5 }
+// The collapsed rail's content width is 44px (68px minus px-3 × 2). 21ch at this
+// size is 43.5px — smaller than the navbar mark, but that sits in a 44px bar
+// while this gets a 64px slot to breathe in.
+const DOCK_COLLAPSED = 3.45
 const SLOT_TAG: Record<NikoSlotName, boolean> = { intro: false, dock: true, navbar: false }
 const SLOT_VARIANT: Record<NikoSlotName, string> = {
   intro: 'rail',
@@ -86,6 +90,10 @@ export function NikoStage({
   onFeed,
 }: NikoStageProps) {
   const [rect, setRect] = useState<Rect | null>(null)
+  // The rail's own collapsed attribute is the source of truth — the slot is a
+  // descendant, so `closest` reads it for free, and ResizeObserver re-measures
+  // when the width change lands.
+  const [collapsed, setCollapsed] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const [tipSeen, setTipSeen] = useState(
     () => typeof window === 'undefined' || window.sessionStorage.getItem(TIP_KEY) === 'true',
@@ -108,6 +116,7 @@ export function NikoStage({
     const measure = () => {
       const box = anchor.getBoundingClientRect()
       setRect({ left: box.left, top: box.top, width: box.width, height: box.height })
+      setCollapsed(anchor.closest('[data-collapsed="true"]') !== null)
     }
     measure()
 
@@ -130,7 +139,9 @@ export function NikoStage({
 
   if (!anchor || !rect) return null
 
-  const scale = SLOT_SIZE[slot] / BASE_SIZE
+  const docked = slot === 'dock'
+  const size = docked && collapsed ? DOCK_COLLAPSED : SLOT_SIZE[slot]
+  const scale = size / BASE_SIZE
   const travelling = !reduced && travelMs > 0
   // Near-linear on purpose. The window's FLIP uses the spec's front-loaded
   // curve, which is right for a window snapping into place and wrong for a
@@ -142,7 +153,7 @@ export function NikoStage({
   // wherever the last walk took him, never past its ends. Every other slot is a
   // fixed home, and roaming is suppressed mid-morph so the walk in from the
   // intro is one clean line rather than a line plus a wobble.
-  const spriteWidth = CANVAS_W * SLOT_SIZE[slot] * CHAR_RATIO
+  const spriteWidth = CANVAS_W * size * CHAR_RATIO
   const roamRange = Math.max(0, (rect.width - spriteWidth) / 2)
   const roamX =
     slot === 'navbar' && !travelling && !reduced ? drift(walkCount) * roamRange : 0
@@ -192,9 +203,9 @@ export function NikoStage({
               him to land rather than trailing him across the window. */}
           <NikoSprite
             frame={frame}
-            showTag={SLOT_TAG[slot] && !travelling}
+            showTag={SLOT_TAG[slot] && !travelling && !(docked && collapsed)}
             fontSize={BASE_SIZE}
-            rows={slot === 'navbar' ? 8 : undefined}
+            rows={slot === 'navbar' || (docked && collapsed) ? 8 : undefined}
             label={`Niko, ${ANIMATIONS[move].desc.split('—')[0].trim()}`}
             move={move}
             className={`niko-pet--${SLOT_VARIANT[slot]} cursor-pointer`}
@@ -204,7 +215,7 @@ export function NikoStage({
         {/* Both of these ride inside the scaled box so they stay anchored to the
             sprite's corners, and both undo that scale so they render at their
             own size — at the navbar's 0.35 a 16px control would be 5px. */}
-        {visible && isHovered && !tipSeen && (
+        {visible && isHovered && !tipSeen && !collapsed && (
           <p
             className="absolute left-1/2 top-full whitespace-nowrap rounded-panel border border-line bg-panel px-2 py-1 text-[10px] text-text-2"
             style={{ transform: `translateX(-50%) scale(${1 / scale})`, transformOrigin: 'top center' }}

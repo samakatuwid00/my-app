@@ -123,11 +123,12 @@ export function SideRail({ isOpen, onClose, isCollapsed, onToggleCollapse }: Sid
         </div>
 
         {/* Niko's permanent home: the foot of the rail, directly above the
-            status block. The slot only reserves the 128px — the sprite itself
-            is fixed-position and owned by NikoStage, so it can walk in here
-            from the intro without ever unmounting. */}
+            status block. The slot only reserves space — the sprite itself is
+            fixed-position and owned by NikoStage, so it can walk in here from
+            the intro without ever unmounting. 128px expanded; 64px collapsed,
+            matching the shrunken sprite. */}
         <div className="mt-auto shrink-0">
-          <NikoSlot name="dock" className="h-32 w-full" />
+          <NikoSlot name="dock" className={`${isCollapsed ? 'h-16' : 'h-32'} w-full`} />
 
           <div className={`shrink-0 border-t border-line pt-5 ${COLLAPSED_HIDDEN}`}>
             <StatusDot label="Open to work" />

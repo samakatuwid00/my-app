@@ -277,6 +277,30 @@ test.describe('Niko', () => {
     await expect(stage).toHaveAttribute('data-niko-slot', 'dock')
   })
 
+  test('shrinks to fit the collapsed rail', async ({ page }) => {
+    await navigateAndWaitFor(page, '/about')
+    await page.getByRole('button', { name: 'Collapse navigation' }).click()
+
+    // The rail width animates over 200ms and the sprite glides after it for
+    // another 260ms, so poll until the two boxes actually agree rather than
+    // measuring a mid-flight frame.
+    const slot = page.locator('[data-niko-slot-name="dock"]')
+    await expect
+      .poll(async () => {
+        const sprite = await page.locator('.niko-sprite').boundingBox()
+        const box = await slot.boundingBox()
+        if (!sprite || !box) return false
+        return (
+          sprite.x >= box.x - 1 &&
+          sprite.x + sprite.width <= box.x + box.width + 1
+        )
+      })
+      .toBe(true)
+
+    // The name tag does not survive the shrink — it would be unreadable.
+    expect(await page.locator('.niko-sprite').innerText()).not.toContain('NIKO')
+  })
+
   test('click to pet fires love', async ({ page }) => {
     await navigateAndWaitFor(page, '/about')
     const sprite = page.locator('.niko-sprite')
