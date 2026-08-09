@@ -9,8 +9,9 @@ import { Projects } from '../sections/Projects'
 import { Skills } from '../sections/Skills'
 
 // Two sub-views, the same control /about uses. The services list that briefly
-// made this a three-tab view lives on /feedback now, where the offer sits after
-// the proof; what is left here is the work and what it is built with.
+// made this a three-tab view is off the pages entirely — the six offers live
+// only in the assistant (vault Open Backlogs.md, resolved 2026-08-09). What is
+// left here is the work and what it is built with.
 //
 // Not a capability filter. Five projects filtered four ways hides work behind a
 // guess and can render a near-empty panel; the split keeps every card one click

@@ -2,7 +2,9 @@ import { Reveal } from '../components/Reveal'
 import { skills } from '../data/skills'
 
 // The stack only. The services list that used to sit above it is gone from the
-// site's pages — `services.ts` still feeds the assistant's answers in ask.ts.
+// site's pages — deliberately. The six offers in `services.ts` live in the
+// assistant alone: `ask.ts`'s `services` intent and the `buildContext()`
+// Services block. Decided 2026-08-09, see vault Open Backlogs.md.
 //
 // The one group with the most chips is pulled out and given the full panel
 // width, and the rest balance across two CSS columns. Both halves of that are
