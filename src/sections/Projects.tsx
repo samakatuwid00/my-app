@@ -12,7 +12,7 @@ export function Projects() {
     <>
       {/* The section's own `$ ls projects` line moved up to ProjectsView as one
           prompt for the whole view — the tab bar names this panel now. */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((project, index) => (
           <Reveal key={project.title} delay={index * 0.04} className="h-full" dissolve>
             <ProjectCard project={project} index={index} onOpen={() => setSelected(project)} />

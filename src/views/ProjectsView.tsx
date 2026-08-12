@@ -54,16 +54,16 @@ export function ProjectsView() {
           `cat skills.txt` lines each named their own section, which is what the
           tab bar does now — keeping both would be the same label twice and cost
           a band of height on every tab. */}
-      <BackButton to="/about" label="Back to About" className="mb-3" />
+      <BackButton to="/about" label="Back to About" className="mb-2" />
       <Prompt command="ls ~/work" />
 
-      <div className="mt-1.5">
+      <div className="mt-1">
         <ViewTabs tabs={TABS} active={current.id} onSelect={selectTab} label="Projects sections" />
       </div>
 
       {/* Keyed on the tab so each panel remounts and its Reveal runs. */}
       <div
-        className="mt-2.5"
+        className="mt-1.5"
         key={current.id}
         id={`panel-${current.id}`}
         role="tabpanel"

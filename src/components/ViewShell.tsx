@@ -13,5 +13,5 @@ export function ViewShell({ children }: PropsWithChildren) {
   // narrowed to 208px, and every horizontal pixel returned comes back as fewer
   // wrapped lines. `xl:px-12` keeps the wide gutter above 1280, where height is
   // not scarce.
-  return <div className="px-6 py-6 xl:px-12">{children}</div>
+  return <div className="px-6 py-4 xl:px-12">{children}</div>
 }

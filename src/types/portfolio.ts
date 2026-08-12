@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react'
 import type { PictureSource } from '../components/ui/Picture'
 
-export type ProjectStatus = 'live' | 'internal'
+export type ProjectStatus = 'live' | 'internal' | 'demo'
 
 // What the system does for a business, which is what a prospect is shopping for.
 // Sector is the secondary fact — a resort and a division office buy the same
@@ -21,6 +21,9 @@ export type ProjectFacts = {
   technologies: string[]
   status: ProjectStatus
   liveUrl?: string
+  // Public source repo for unhosted / local projects. When present the detail
+  // modal footer links here instead of showing a demo or "no public URL".
+  githubUrl?: string
   // Case-study fields. All optional, so a project with no confirmed copy still
   // renders — the card falls back to `description` and the detail view omits
   // the block entirely rather than showing empty headings.
@@ -34,12 +37,24 @@ export type ProjectFacts = {
   // numbers the owner confirms — an approximate metric on a portfolio reads as
   // a claim, and one wrong number costs more than four missing ones.
   metrics?: string[]
+  // Demo media for unhosted projects. Plain public/ paths — no Vite imports —
+  // so the assistant-bundled facts stay asset-free. `poster` doubles as the
+  // detail-modal image; `video` plays inline with the poster as its cover.
+  media?: {
+    poster: string
+    video?: string
+    // A real page on this site (e.g. an interactive demo) — not an external host.
+    demoUrl?: string
+  }
 }
 
 export type Project = ProjectFacts & {
   // A vite-imagetools `as=picture` object, not a URL: the preview is rendered
   // through <Picture> so it can carry AVIF/WebP srcsets and its intrinsic size.
-  previewImage: PictureSource
+  // Optional because demo projects ship their poster via `media.poster` (public
+  // assets can't be processed by vite-imagetools), and the card warms whichever
+  // one exists.
+  previewImage?: PictureSource
   icon: LucideIcon
 }
 

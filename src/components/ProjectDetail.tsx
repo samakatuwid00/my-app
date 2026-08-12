@@ -11,6 +11,8 @@ type ProjectDetailProps = {
 
 export function ProjectDetail({ project, onClose }: ProjectDetailProps) {
   const isLive = project?.status === 'live' && Boolean(project.liveUrl)
+  const isDemo = project?.status === 'demo'
+  const githubUrl = isDemo && project?.githubUrl ? project.githubUrl : null
 
   const caseStudy = [
     { term: 'Problem', body: project?.problem },
@@ -35,6 +37,19 @@ export function ProjectDetail({ project, onClose }: ProjectDetailProps) {
             <span className="underline-offset-4 group-hover:underline">open {project?.title}</span>
             <ExternalLink size={13} />
           </a>
+        ) : githubUrl ? (
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="group inline-flex items-center gap-2 text-sm text-accent transition-colors duration-200 hover:text-text"
+          >
+            <span aria-hidden="true">&gt;</span>
+            <span className="underline-offset-4 group-hover:underline">view source on GitHub</span>
+            <ExternalLink size={13} />
+          </a>
+        ) : isDemo ? (
+          <p className="label">Local project — no public URL</p>
         ) : (
           <p className="label">Internal system – no public demo</p>
         )
@@ -42,12 +57,32 @@ export function ProjectDetail({ project, onClose }: ProjectDetailProps) {
     >
       {project && (
         <>
-          <Picture
-            source={project.previewImage}
-            alt={`${project.title} interface preview`}
-            sizes="(max-width: 640px) 100vw, 900px"
-            className="w-full border-b border-line bg-surface object-cover"
-          />
+          {project.media?.video ? (
+            <video
+              autoPlay
+              muted
+              playsInline
+              controls
+              preload="metadata"
+              poster={project.media.poster}
+              className="max-h-[70vh] w-full border-b border-line bg-black/40 object-contain"
+            >
+              <source src={project.media.video} type="video/webm" />
+            </video>
+          ) : project.media?.poster ? (
+            <img
+              src={project.media.poster}
+              alt={`${project.title} interface preview`}
+              className="max-h-[70vh] w-full border-b border-line bg-surface object-contain"
+            />
+          ) : project.previewImage ? (
+            <Picture
+              source={project.previewImage}
+              alt={`${project.title} interface preview`}
+              sizes="(max-width: 640px) 100vw, 900px"
+              className="w-full border-b border-line bg-surface object-cover"
+            />
+          ) : null}
 
           <div className="p-5">
             {(project.sector || !!project.capabilities?.length) && (

@@ -17,12 +17,21 @@ function prefetchPreview(project: Project) {
   if (connection?.saveData) return
 
   warmed.add(project.title)
+  // Demo projects have no processed srcset — their poster is a plain public/
+  // URL. Warm whichever preview exists.
+  const srcset = project.previewImage?.sources.avif ?? project.previewImage?.sources.webp
+  if (!srcset && !project.media?.poster) return
   const image = new Image()
-  // The mid candidate, not the largest: enough to paint the modal immediately at
-  // laptop width, and the browser upgrades from srcset if the screen wants more.
-  image.sizes = '(max-width: 640px) 100vw, 900px'
-  image.srcset = project.previewImage.sources.avif ?? project.previewImage.sources.webp ?? ''
-  image.src = project.previewImage.img.src
+  if (srcset) {
+    // The mid candidate, not the largest: enough to paint the modal immediately
+    // at laptop width, and the browser upgrades from srcset if the screen wants
+    // more.
+    image.sizes = '(max-width: 640px) 100vw, 900px'
+    image.srcset = srcset
+    image.src = project.previewImage!.img.src
+  } else {
+    image.src = project.media!.poster
+  }
 }
 
 type ProjectCardProps = {
@@ -41,42 +50,42 @@ export function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
       onMouseEnter={() => prefetchPreview(project)}
       onFocus={() => prefetchPreview(project)}
       aria-label={`View ${project.title} details`}
-      className="group flex h-full w-full flex-col rounded-panel border border-line bg-panel p-4 text-left transition-colors duration-200 hover:border-line-strong"
+      className="group flex h-full w-full flex-col rounded-panel border border-line bg-panel p-2.5 text-left transition-colors duration-200 hover:border-line-strong"
     >
       <div className="flex w-full items-center gap-3">
         <span className="text-xs text-text-3">{String(index + 1).padStart(2, '0')}</span>
-        <h3 className="text-lg font-semibold text-text">{project.title}</h3>
-        <span className="ml-auto grid size-7 shrink-0 place-items-center rounded-panel border border-line text-text-3">
-          <Icon size={14} />
-        </span>
-      </div>
-
-      {/* The problem, not the feature list: a prospect recognises their own
-          situation faster than they recognise a system category. Falls back to
-          the description for any project without case-study copy. */}
-      <p className="prose-body mt-3 line-clamp-3">{project.problem ?? project.description}</p>
-
-      {/* Spans, not a ul — a button accepts phrasing content only, and this whole
-          card is one. `!!…length` rather than a bare array: an empty array is
-          truthy and would render an empty row of margin, and a bare `.length`
-          would render the number 0. */}
-      {!!project.capabilities?.length && (
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {project.capabilities.map((capability) => (
-            <Tag key={capability} variant="meta">
-              {capability}
-            </Tag>
-          ))}
+        <h3 className="text-base font-semibold text-text">{project.title}</h3>
+          <span className="ml-auto grid size-6 shrink-0 place-items-center rounded-panel border border-line text-text-3">
+            <Icon size={13} />
+          </span>
         </div>
-      )}
 
-      <div className="mt-auto w-full pt-4">
-        <span className="mb-3 block h-px w-full bg-line" />
-        <span className="inline-flex items-center gap-2 text-sm text-accent">
-          <span aria-hidden="true">&gt;</span>
-          <span className="underline-offset-4 group-hover:underline">view</span>
-        </span>
-      </div>
+        {/* The problem, not the feature list: a prospect recognises their own
+            situation faster than they recognise a system category. Falls back to
+            the description for any project without case-study copy. */}
+        <p className="prose-body mt-2 line-clamp-2">{project.problem ?? project.description}</p>
+
+        {/* Spans, not a ul — a button accepts phrasing content only, and this whole
+            card is one. `!!…length` rather than a bare array: an empty array is
+            truthy and would render an empty row of margin, and a bare `.length`
+            would render the number 0. */}
+        {!!project.capabilities?.length && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {project.capabilities.map((capability) => (
+              <Tag key={capability} variant="meta">
+                {capability}
+              </Tag>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-auto w-full pt-2">
+          <span className="mb-1.5 block h-px w-full bg-line" />
+          <span className="inline-flex items-center gap-2 text-sm text-accent">
+            <span aria-hidden="true">&gt;</span>
+            <span className="underline-offset-4 group-hover:underline">view</span>
+          </span>
+        </div>
     </button>
   )
 }

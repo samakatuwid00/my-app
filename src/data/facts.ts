@@ -146,6 +146,84 @@ export const projectFacts: ProjectFacts[] = [
     status: 'live',
     liveUrl: 'https://lrmis.deped.gov.ph/',
   },
+  {
+    title: 'JARVIS HUD',
+    description:
+      'Voice-controlled AI assistant interface built around a holographic canvas orb. Wake-word voice in, spoken replies out, and scan / analyze / schematic visualization modes — all animated in pure canvas, with a local Whisper + Ollama brain behind it.',
+    features: [
+      'Holographic canvas orb (pure JS animation)',
+      'Voice input & speech output',
+      'Scan / Analyze / Schematic modes',
+      'Live telemetry over WebSocket',
+      'Local Whisper speech-to-text',
+    ],
+    technologies: [
+      'JavaScript',
+      'Canvas',
+      'Python',
+      'WebSockets',
+      'Whisper (STT)',
+      'Edge TTS',
+      'Ollama (local LLM)',
+      'uvicorn',
+    ],
+    status: 'demo',
+    githubUrl: 'https://github.com/samakatuwid00/JARVIS',
+    media: {
+      poster: '/projects/jarvis-hud/jarvis-speaking.png',
+      video: '/projects/jarvis-hud/jarvis-hud.webm',
+    },
+  },
+  {
+    title: 'Sticky Brain',
+    description:
+      'Electron desktop session board that captures AI-agent sessions, triages tasks, and ships a pixel-art pet. Everything persists to local JSON, tasks launch straight into a CLI chat, and the pet shrinks the whole app to a floating companion.',
+    features: [
+      'Session capture board',
+      'Task triage with backlog strikes',
+      'Niko pixel-art pet + floating mode',
+      'One-key task → CLI chat launch',
+      'Mark-done writes straight to the vault',
+      'Second Brain link — live sessions, pending, backlogs surfaced from the vault so all tasks live in one board',
+    ],
+    technologies: [
+      'Electron',
+      'Vanilla JavaScript',
+      'HTML / CSS',
+      'JSON persistence',
+      'Hermes CLI',
+    ],
+    status: 'demo',
+    githubUrl: 'https://github.com/samakatuwid00/sticky-brain',
+    media: {
+      poster: '/projects/sticky-brain/sb-board.png',
+      video: '/projects/sticky-brain/sticky-brain.webm',
+    },
+  },
+  {
+    title: 'Second Brain',
+    description:
+      'Personal knowledge vault with sub-50ms local semantic search. 400+ notes embedded and 2-bit quantized with TurboVec, all on-device — no cloud, no API key, no telemetry.',
+    features: [
+      'Local semantic search (no cloud)',
+      'TurboQuant 2-bit embeddings',
+      'Sub-50ms query time',
+      'Obsidian-based vault',
+      'Folder-mapped knowledge areas',
+    ],
+    technologies: [
+      'Python',
+      'TurboVec',
+      'sentence-transformers',
+      'Obsidian',
+      'Markdown',
+    ],
+    status: 'demo',
+    githubUrl: 'https://github.com/samakatuwid00/second-brain-vault',
+    media: {
+      poster: '/projects/second-brain/obs-graph.png',
+    },
+  },
 ]
 
 export type SkillGroup = {

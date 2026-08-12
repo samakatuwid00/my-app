@@ -35,3 +35,21 @@ playwright-report/
 # ship gate machine state — rewritten every run. .ship/acknowledged.json is
 # committed on purpose, so the whole directory is not ignored.
 .ship/findings.json
+
+# Hermes agent scratch
+.hermes/
+
+# one-off capture/scratch scripts (not part of the app)
+scripts/capture-jarvis.py
+scripts/capture-stickybrain.cjs
+scripts/capture-stickybrain.py
+scripts/capture-obsidian-graph.ps1
+scripts/obsidian-cdp.cjs
+scripts/obsidian-graph-fit.ps1
+scripts/obsidian-graph-max.ps1
+scripts/obsidian-graph-shot.ps1
+bring-fg.ps1
+fg.ps1
+ps-procs.ps1
+build-sb-demo-data.py
+render-sb-demo.py

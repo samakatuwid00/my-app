@@ -1,4 +1,4 @@
-import { Boxes, Building2, CalendarCheck, Library, Network } from 'lucide-react'
+import { Boxes, BrainCircuit, Building2, CalendarCheck, Library, Network, Orbit, StickyNote } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { PictureSource } from '../components/ui/Picture'
 import type { Project } from '../types/portfolio'
@@ -12,19 +12,28 @@ import irimsvPreview from '../assets/irims-v.png?w=768;1152;1536&format=avif;web
 import libraryPreview from '../assets/library.png?w=768;1152;1536&format=avif;webp&as=picture'
 import lrmisPreview from '../assets/lrmis.png?w=768;1152;1536&format=avif;webp&as=picture'
 
-type Visual = { previewImage: PictureSource; icon: LucideIcon }
+type Visual = { previewImage?: PictureSource; icon: LucideIcon }
 
 // Copy lives in facts.ts so the assistant can bundle it without Vite assets.
+// The five hosted systems get processed previews; the demo projects carry
+// their poster as a plain public/ path in `facts.media`, so only an icon is
+// registered here for them.
 const visuals: Record<string, Visual> = {
   'IRIMS-V': { previewImage: irimsvPreview, icon: Boxes },
   EDULEAVE: { previewImage: eduleavePreview, icon: CalendarCheck },
   Eurasian: { previewImage: eurasianPreview, icon: Building2 },
   'IRIMS-V Library': { previewImage: libraryPreview, icon: Library },
   LRMIS: { previewImage: lrmisPreview, icon: Network },
+  'JARVIS HUD': { icon: Orbit },
+  'Sticky Brain': { icon: StickyNote },
+  'Second Brain': { icon: BrainCircuit },
 }
 
 export const projects: Project[] = projectFacts.map((facts) => {
   const visual = visuals[facts.title]
-  if (!visual) throw new Error(`No preview image or icon registered for project "${facts.title}"`)
+  if (!visual) throw new Error(`No icon registered for project "${facts.title}"`)
+  if (!visual.previewImage && !facts.media?.poster) {
+    throw new Error(`No preview image for project "${facts.title}"`)
+  }
   return { ...facts, ...visual }
 })
