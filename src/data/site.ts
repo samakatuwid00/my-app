@@ -1,5 +1,6 @@
-// Confirmed from the résumé (2026-07): the handle is mr-nikoo. The old build's
-// footer link to github.com/samakatuwid00 was wrong.
+// The active handle is samakatuwid00 (used by the live footer, demo-repo links,
+// and the résumé contact line). An older build's footer pointed at mr-nikoo;
+// that was the wrong account. Keep GITHUB_URL/HANDLE on samakatuwid00.
 export const GITHUB_URL = 'https://github.com/samakatuwid00'
 export const GITHUB_HANDLE = 'samakatuwid00'
 
