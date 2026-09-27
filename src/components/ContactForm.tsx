@@ -11,20 +11,10 @@ type FieldName = keyof ContactPayload
 type FieldErrors = Partial<Record<FieldName, string>>
 type SubmitState = 'idle' | 'sending' | 'sent' | 'failed'
 
-const FIELD_CLASS =
-  'w-full rounded-panel border border-control bg-surface px-3 py-2 text-sm text-text transition-colors duration-200 placeholder:text-text-3 focus:border-accent focus:outline-none'
-
 const FIELDS = [
-  { name: 'fullName' as const, label: 'Name', type: 'text', autoComplete: 'name', placeholder: 'Juan Dela Cruz' },
-  { name: 'email' as const, label: 'Email', type: 'email', autoComplete: 'email', placeholder: 'you@example.com' },
-  {
-    name: 'subject' as const,
-    label: 'Subject',
-    type: 'text',
-    autoComplete: 'off',
-    placeholder: 'Records management system',
-    fullWidth: true,
-  },
+  { name: 'fullName' as const, label: 'Name', type: 'text', autoComplete: 'name' },
+  { name: 'email' as const, label: 'Email', type: 'email', autoComplete: 'email' },
+  { name: 'subject' as const, label: 'Subject', type: 'text', autoComplete: 'off' },
 ]
 
 function validate(values: ContactPayload): FieldErrors {
@@ -39,11 +29,13 @@ function validate(values: ContactPayload): FieldErrors {
   return errors
 }
 
+// role="alert" so a screen reader hears the problem the moment it appears,
+// not only when the field is next focused.
 function FieldError({ name, message }: { name: FieldName; message?: string }) {
   if (!message) return null
 
   return (
-    <p id={`${name}-error`} className="mt-1 text-[11px] text-accent-2">
+    <p id={`${name}-error`} className="field-error" role="alert">
       {message}
     </p>
   )
@@ -87,74 +79,64 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex h-full flex-col gap-3">
-      <div className="grid gap-3 sm:grid-cols-2">
-        {FIELDS.map((field) => (
-          <div key={field.name} className={`min-w-0 ${field.fullWidth ? 'sm:col-span-2' : ''}`}>
-            <label htmlFor={field.name} className="label mb-1 block">
-              {field.label}
-            </label>
-            <input
-              id={field.name}
-              name={field.name}
-              type={field.type}
-              autoComplete={field.autoComplete}
-              value={values[field.name]}
-              placeholder={field.placeholder}
-              onChange={(event) => setField(field.name, event.target.value)}
-              onBlur={() => handleBlur(field.name)}
-              aria-invalid={Boolean(errors[field.name])}
-              aria-describedby={errors[field.name] ? `${field.name}-error` : undefined}
-              className={FIELD_CLASS}
-            />
-            <FieldError name={field.name} message={errors[field.name]} />
-          </div>
-        ))}
-      </div>
+    <form onSubmit={handleSubmit} noValidate>
+      {FIELDS.map((field) => (
+        <div key={field.name} className="form-item">
+          <label>
+            <span className="ui">{field.label}</span>
+            <span className="field">
+              <input
+                id={field.name}
+                name={field.name}
+                type={field.type}
+                autoComplete={field.autoComplete}
+                value={values[field.name]}
+                onChange={(event) => setField(field.name, event.target.value)}
+                onBlur={() => handleBlur(field.name)}
+                aria-invalid={Boolean(errors[field.name])}
+                aria-describedby={errors[field.name] ? `${field.name}-error` : undefined}
+              />
+            </span>
+          </label>
+          <FieldError name={field.name} message={errors[field.name]} />
+        </div>
+      ))}
 
-      {/* The field that absorbs the panel's spare height: `flex-1` on the wrapper
-          and `h-full` on the control, with rows={4} kept as the floor for the
-          stacked layout where there is no spare height to absorb. */}
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <label htmlFor="message" className="label mb-1 block">
-          Message
+      <div className="form-item">
+        <label>
+          <span className="ui">What should the system do?</span>
+          <span className="field">
+            <textarea
+              id="message"
+              name="message"
+              rows={4}
+              value={values.message}
+              onChange={(event) => setField('message', event.target.value)}
+              onBlur={() => handleBlur('message')}
+              aria-invalid={Boolean(errors.message)}
+              aria-describedby={errors.message ? 'message-error' : undefined}
+            />
+          </span>
         </label>
-        <textarea
-          id="message"
-          name="message"
-          rows={4}
-          value={values.message}
-          placeholder="What are you building?"
-          onChange={(event) => setField('message', event.target.value)}
-          onBlur={() => handleBlur('message')}
-          aria-invalid={Boolean(errors.message)}
-          aria-describedby={errors.message ? 'message-error' : undefined}
-          className={`${FIELD_CLASS} h-full min-h-24 flex-1 resize-y`}
-        />
         <FieldError name="message" message={errors.message} />
       </div>
 
       {state === 'sent' && (
-        <p role="status" className="rounded-panel border border-line px-3 py-2 text-xs text-accent">
+        <p role="status" className="form-note">
           Message sent. A reply will arrive at the address you provided.
         </p>
       )}
       {state === 'failed' && (
-        <p role="status" className="rounded-panel border border-line px-3 py-2 text-xs text-accent-2">
+        <p role="alert" className="form-note">
           {failureMessage}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={state === 'sending'}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-panel border border-control px-4 py-2 text-sm text-text transition-colors duration-200 hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:text-text-3 sm:w-auto sm:self-start"
-      >
-        <span aria-hidden="true" className="text-accent">
-          $
-        </span>
-        {state === 'sending' ? 'sending…' : 'send message'}
-      </button>
+      <div>
+        <button type="submit" disabled={state === 'sending'} className="btn solid">
+          {state === 'sending' ? 'Sending…' : 'Send message'}
+        </button>
+      </div>
     </form>
   )
 }

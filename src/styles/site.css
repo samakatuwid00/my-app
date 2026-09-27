@@ -257,6 +257,47 @@ summary svg { width: 18px; height: 18px; flex: none; transition: transform .4s v
 details[open] summary svg { transform: rotate(45deg); }
 details .a { padding: 0 0 28px; max-width: 64ch; color: var(--soft); }
 
+/* Contact */
+.contact { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 72px; align-items: start; }
+.contact .display { font-size: clamp(64px, 8vw, 96px); }
+.contact .lede { color: var(--soft); max-width: 40ch; margin: 28px 0 40px; font-size: 17px; }
+.reach { max-width: 460px; border: 1px solid var(--rule); }
+.tabs { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--rule); position: relative; }
+.tabs button { position: relative; z-index: 1; font: 600 13px/1 var(--ui); text-transform: uppercase; letter-spacing: .08em; color: var(--soft); background: none; border: 0; padding: 13px 8px; cursor: pointer; transition: color .3s var(--ease); }
+.tabs button + button { border-left: 1px solid var(--rule); }
+.tabs button:hover { color: var(--fg); }
+.tabs button[aria-selected="true"] { color: var(--bg); }
+/* Production only: the ring sits inside the tab, so it shows on the filled one too. */
+.tabs button:focus-visible { outline-offset: -6px; }
+/* The selected fill travels between tabs, so the eye follows the switch */
+.tabs .pill { position: absolute; top: 0; bottom: 0; left: 0; width: calc(100% / 3); background: var(--fg); transform: translateX(calc(var(--i, 0) * 100%)); transition: transform .4s var(--ease); }
+.reach-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; font: 400 14px/1.4 var(--mono); }
+.reach-row a { min-width: 0; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reach-row a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.reach-row a.swap { animation: swap .35s var(--ease); }
+@keyframes swap { from { opacity: 0; filter: blur(3px); } }
+.copy-btn { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; color: var(--soft); cursor: pointer; padding: 4px; font: 600 12px/1 var(--ui); text-transform: uppercase; letter-spacing: .08em; transition: color .2s var(--ease); }
+.copy-btn:hover, .copy-btn.done { color: var(--fg); }
+.copy-btn svg { width: 15px; height: 15px; }
+form { display: grid; gap: 22px; }
+label { display: grid; gap: 8px; color: var(--soft); }
+.field { position: relative; }
+.field::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--fg); transform: scaleX(0); transform-origin: left; transition: transform .45s var(--ease); }
+.field:focus-within::after { transform: scaleX(1); }
+input, textarea { width: 100%; font: 400 16px/1.5 var(--body); color: var(--fg); background: transparent; border: 0; border-bottom: 1px solid var(--rule); padding: 8px 0; border-radius: 0; display: block; }
+input:focus, textarea:focus { outline: none; }
+textarea { min-height: 112px; resize: vertical; }
+/* Production only: form states in the two inks. A field that failed keeps a
+   full-ink underline; its message sits under it, marked by a small square. */
+input:-webkit-autofill { -webkit-text-fill-color: var(--fg); -webkit-box-shadow: 0 0 0 1000px var(--bg) inset; caret-color: var(--fg); }
+input[aria-invalid="true"], textarea[aria-invalid="true"] { border-bottom-color: var(--fg); }
+.form-item { display: grid; gap: 8px; }
+.field-error { display: flex; align-items: baseline; gap: 8px; margin: 0; font-size: 14px; line-height: 1.4; color: var(--fg); }
+.field-error::before { content: ''; width: 6px; height: 6px; flex: none; background: currentColor; transform: translateY(-2px); }
+.form-note { margin: 0; padding: 12px 14px; border: 1px solid var(--fg); font-size: 15px; line-height: 1.5; color: var(--fg); }
+.btn:disabled { cursor: progress; opacity: .64; }
+.btn.solid:disabled:hover { background: var(--fg); color: var(--bg); border-color: transparent; }
+
 /* Not found (production only: the mockup has no 404) */
 .not-found { display: grid; justify-items: start; gap: 24px; }
 .not-found h1 { font-size: clamp(64px, 9vw, 96px); }
@@ -438,7 +479,9 @@ footer.band { overflow: hidden; }
   .credits div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--rule); }
   .head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px; }
   section.band { padding: 88px 0; }
-  .case, .recog { grid-template-columns: 1fr; gap: 28px; }
+  .case, .recog, .contact { grid-template-columns: 1fr; gap: 28px; }
+  /* Production only: minmax(0, …) so the unbroken LinkedIn address ellipsizes instead of widening the page (the mockup scrolls sideways at 390px). */
+  .contact { grid-template-columns: minmax(0, 1fr); }
   .case:nth-of-type(even) > a { order: 0; }
   .recog figure { position: static; }
   .tr { grid-template-columns: 1fr; gap: 6px; }

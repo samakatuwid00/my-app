@@ -199,3 +199,57 @@ test.describe('proof and experiments', () => {
     await expect(page.getByText(/On a Linux VPS I set up and manage/)).toBeVisible()
   })
 })
+
+test.describe('contact', () => {
+  test('channel tabs switch the address', async ({ page }) => {
+    await page.goto('/#contact')
+    await page.getByRole('tab', { name: 'GitHub' }).click()
+    await expect(page.locator('#reach-v')).toHaveText('github.com/samakatuwid00')
+    await expect(page.locator('#reach-v')).toHaveAttribute('href', 'https://github.com/samakatuwid00')
+    await expect(page.getByRole('tab', { name: 'GitHub' })).toHaveAttribute('aria-selected', 'true')
+    await expect(page.getByRole('tab', { name: 'Email' })).toHaveAttribute('aria-selected', 'false')
+  })
+  test('arrow keys move between tabs', async ({ page }) => {
+    await page.goto('/#contact')
+    await page.getByRole('tab', { name: 'Email' }).focus()
+    await page.keyboard.press('ArrowRight')
+    await expect(page.getByRole('tab', { name: 'LinkedIn' })).toBeFocused()
+    await expect(page.locator('#reach-v')).toHaveText('linkedin.com/in/roger-abay-30394441b')
+    await page.keyboard.press('ArrowLeft')
+    await page.keyboard.press('ArrowLeft')
+    await expect(page.getByRole('tab', { name: 'GitHub' })).toBeFocused()
+    await expect(page.locator('#reach-v')).toHaveText('github.com/samakatuwid00')
+  })
+  test('the longest address never widens the page', async ({ page }) => {
+    await page.goto('/#contact')
+    await page.getByRole('tab', { name: 'LinkedIn' }).click()
+    const { sw, cw } = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }))
+    expect(sw).toBeLessThanOrEqual(cw)
+  })
+  test('empty form is blocked with a message', async ({ page }) => {
+    let posted = false
+    await page.route('https://formspree.io/**', (route) => { posted = true; return route.abort() })
+    await page.goto('/#contact')
+    await page.getByRole('button', { name: /send message/i }).click()
+    await expect(page.getByText(/required|enter/i).first()).toBeVisible()
+    await expect(page.locator('#contact [role="alert"]').first()).toBeVisible()
+    expect(posted).toBe(false)
+  })
+  test('a valid message is sent and confirmed', async ({ page }) => {
+    const bodies: unknown[] = []
+    await page.route('https://formspree.io/**', async (route) => {
+      bodies.push(route.request().postDataJSON())
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' })
+    })
+    await page.goto('/#contact')
+    const form = page.locator('#contact form')
+    await form.getByLabel('Name').fill('Test Visitor')
+    await form.getByLabel('Email').fill('visitor@example.com')
+    await form.getByLabel('Subject').fill('Records system')
+    await form.getByLabel(/message|system do/i).fill('We still file leave forms on paper.')
+    await page.getByRole('button', { name: /send message/i }).click()
+    await expect(page.getByRole('status').filter({ hasText: /message sent/i })).toBeVisible()
+    expect(bodies).toHaveLength(1)
+    expect(bodies[0]).toMatchObject({ name: 'Test Visitor', email: 'visitor@example.com', subject: 'Records system' })
+  })
+})
