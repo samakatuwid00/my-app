@@ -1,6 +1,6 @@
 """Portrait to a 1-bit dither with the white background cut out.
 
-    python docs/assets/make-portrait-dither.py SRC OUT --size 600 --algo atkinson --ink dark
+    python scripts/make-portrait-dither.py SRC OUT --size 600 --algo atkinson --ink dark
 
 --ink dark   black dots on transparent (for paper sections)
 --ink light  paper dots on transparent (for black sections)

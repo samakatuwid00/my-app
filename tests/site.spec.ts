@@ -57,3 +57,34 @@ test.describe('navigation', () => {
     await expect(page.getByRole('dialog', { name: 'Menu' })).toBeHidden()
   })
 })
+
+test.describe('hero', () => {
+  test('name, tagline, credits', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Roger A\.\s*Abay Jr\./)
+    await expect(page.locator('.credits dt')).toHaveText(['Now', 'Before', 'Recognized', 'Education'])
+  })
+  test('portrait thinks on hover, next line each visit', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'hover')
+    await page.goto('/')
+    await page.hover('#me')
+    await expect(page.locator('.thought')).toBeVisible()
+    await expect(page.locator('#thought-text')).toHaveText('Right now: building the iRIMS-V Library app in Flutter.')
+    await page.mouse.move(5, 5)
+    await page.hover('#me')
+    await expect(page.locator('#thought-text')).toHaveText('Still shipping updates to iRIMS-V.')
+  })
+  test('portrait thought toggles on tap', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'touch')
+    await page.goto('/')
+    await page.tap('#me')
+    await expect(page.locator('#me')).toHaveClass(/open/)
+    await expect(page.locator('#thought-text')).toHaveText('Right now: building the iRIMS-V Library app in Flutter.')
+  })
+  test('a hash jump leaves the header on the band it landed on', async ({ page }) => {
+    await page.goto('/#experience')
+    await expect(page.locator('header.site')).toHaveClass(/dark/)
+    await page.goto('/#work')
+    await expect(page.locator('header.site')).toHaveClass(/light/)
+  })
+})
