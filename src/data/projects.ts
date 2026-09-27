@@ -22,6 +22,15 @@ const previews: Partial<Record<string, PictureSource>> = {
   cygnus: cygnusPreview,
 }
 
+// Alt text from the approved mockup: it says what the screenshot shows, which
+// the project title alone does not.
+const previewAlts: Partial<Record<string, string>> = {
+  'irims-v': 'iRIMS-V regional dashboard',
+  'irims-v-library': 'iRIMS-V Library System catalog of print resources',
+  eduleave: 'EDULEAVE landing page: Time off hassle free',
+  lrmis: 'LRMIS national map dashboard',
+}
+
 export const visibleProjects = projectFacts.filter((p) => !p.hidden)
 export const featuredProjects = visibleProjects.filter((p) => p.featured)
 export const moreProjects = visibleProjects.filter(
@@ -29,6 +38,7 @@ export const moreProjects = visibleProjects.filter(
 )
 export const experiments = visibleProjects.filter((p) => ['demo', 'private'].includes(p.status))
 export const previewFor = (slug: string) => previews[slug]
+export const previewAltFor = (slug: string) => previewAlts[slug]
 
 // LEGACY: removed in Task 13. The old /projects section (ProjectCard,
 // ProjectDetail) still reads `projects`, `previewImage`, and `icon`. Built from

@@ -88,3 +88,45 @@ test.describe('hero', () => {
     await expect(page.locator('header.site')).toHaveClass(/light/)
   })
 })
+
+test.describe('work', () => {
+  test('four featured systems in order, Eurasian absent', async ({ page }) => {
+    await page.goto('/#work')
+    await expect(page.locator('#work article.case h3')).toHaveText(['iRIMS-V', 'EDULEAVE', 'LRMIS', 'iRIMS-V Library System'])
+    await expect(page.getByText('Eurasian')).toHaveCount(0)
+    await expect(page.locator('a[href="https://irimsv-library.net/"]').first()).toBeVisible()
+  })
+  test('no placeholder result rows', async ({ page }) => {
+    await page.goto('/#work')
+    await expect(page.locator('#work .facts dt', { hasText: 'Result' })).toHaveCount(0)
+  })
+  test('head counts the systems in words', async ({ page }) => {
+    await page.goto('/#work')
+    await expect(page.locator('#work .head p')).toHaveText(/^Four systems in production\./)
+  })
+  test('only iRIMS-V has a case study; the rest preview to their live site', async ({ page }) => {
+    await page.goto('/#work')
+    await expect(page.locator('#work .btn', { hasText: 'Case study' })).toHaveCount(1)
+    await expect(page.locator('#work article.case').first().locator('a[data-shot]')).toHaveAttribute('href', '/work/irims-v')
+    await expect(page.locator('#work article.case').nth(1).locator('a:has(.ht)')).toHaveAttribute('href', 'https://eduleave.com/welcome')
+  })
+  test('screenshots are halftoned grayscale', async ({ page }) => {
+    await page.goto('/#work')
+    const img = page.locator('#work article.case .ht img').first()
+    await expect(img).toHaveCSS('filter', /grayscale\(1\)/)
+    const dots = await page.locator('#work article.case .ht').first().evaluate((el) => getComputedStyle(el, '::after').backgroundImage)
+    expect(dots).toContain('radial-gradient')
+  })
+  test('hover clears the dot screen', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'hover')
+    await page.goto('/#work')
+    const ht = page.locator('#work article.case .ht').first()
+    await ht.hover()
+    await expect.poll(() => ht.evaluate((el) => getComputedStyle(el, '::after').opacity)).toBe('0')
+  })
+  test('more work table lists the non-featured systems', async ({ page }) => {
+    await page.goto('/#work')
+    await expect(page.locator('#work .tr .name')).toHaveText(['schema_mapper', 'iRIMS-V Library app'])
+    await expect(page.locator('#work .tr > .ui.soft')).toHaveText(['Internal', 'In progress'])
+  })
+})

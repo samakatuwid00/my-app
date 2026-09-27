@@ -131,9 +131,45 @@ header.site .wrap { display: grid; grid-template-columns: 1fr auto 1fr; align-it
 .credits dt { color: var(--soft); margin-bottom: 6px; }
 .credits dd { margin: 0; font-size: 14.5px; line-height: 1.45; }
 
+/* Halftone wrapper for every screenshot. Hover lifts the screen: the dots
+   clear and the capture sharpens, as if the print came into focus. */
+.ht::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(rgba(11,11,11,.5) .7px, transparent 1.1px);
+  background-size: 3px 3px; mix-blend-mode: multiply; opacity: .45; transition: opacity .4s var(--ease);
+}
+.ht { position: relative; overflow: hidden; background: var(--paper); }
+/* Production only: <Picture> wraps the <img>; the wrapper takes no box. */
+.ht picture { display: contents; }
+.ht img { width: 100%; height: 100%; object-fit: cover; object-position: top left; filter: grayscale(1) contrast(1.15); transition: transform .8s var(--ease), filter .45s var(--ease); }
+a:hover .ht::after, a:focus-visible .ht::after { opacity: 0; }
+a:hover .ht img, a:focus-visible .ht img { transform: scale(1.02); filter: grayscale(1) contrast(1.02); }
+
 /* ============ Sections ============ */
 section.band { padding: 120px 0; }
 section.band.flush { padding-top: 0; }
+.head { display: grid; grid-template-columns: 1fr minmax(0, 380px); gap: 32px; align-items: end; margin-bottom: 64px; }
+.head p { margin: 0; color: var(--soft); font-size: 15.5px; }
+
+/* Selected work */
+.case { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 56px; padding: 56px 0; border-top: 1px solid var(--rule); align-items: start; }
+.case:nth-of-type(even) > a { order: 2; }
+.case .ht { aspect-ratio: 16 / 10; box-shadow: 0 0 0 1px var(--rule); }
+.case p { margin: 16px 0 24px; color: var(--soft); max-width: 52ch; }
+.facts { display: grid; grid-template-columns: 72px 1fr; gap: 10px 16px; margin: 0 0 32px; font-size: 14.5px; }
+.facts dt { color: var(--soft); padding-top: 2px; }
+.facts dd { margin: 0; }
+.live::before { content: ''; display: inline-block; width: 7px; height: 7px; background: currentColor; margin-right: 9px; vertical-align: 1px; }
+
+/* Tables: more work, services, stack, experience */
+/* display: block undoes Tailwind's `table` utility, which the class name also matches. */
+.table { display: block; border-top: 1px solid var(--rule); }
+.tr { display: grid; grid-template-columns: 220px minmax(0, 1fr) auto; gap: 32px; padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.tr > .ui { color: var(--soft); }
+.tr p { margin: 6px 0 0; color: var(--soft); font-size: 15px; max-width: 62ch; }
+.name { font: 300 30px/1.05 var(--display); }
+.go { text-decoration: none; white-space: nowrap; }
+.go:hover { text-decoration: underline; text-underline-offset: 4px; }
 
 /* Not found (production only: the mockup has no 404) */
 .not-found { display: grid; justify-items: start; gap: 24px; }
@@ -212,7 +248,11 @@ footer.band { overflow: hidden; }
   .credits { grid-template-columns: 1fr 1fr; margin-top: 56px; border-bottom: 0; }
   .credits div, .credits div + div { padding: 16px 12px 16px 0; border-left: 0; border-bottom: 1px solid var(--rule); }
   .credits div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--rule); }
+  .head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px; }
   section.band { padding: 88px 0; }
+  .case { grid-template-columns: 1fr; gap: 28px; }
+  .case:nth-of-type(even) > a { order: 0; }
+  .tr { grid-template-columns: 1fr; gap: 6px; }
   .foot { grid-template-columns: 1fr; padding-top: 72px; padding-bottom: 72px; }
   .foot .r { text-align: left; }
 }
