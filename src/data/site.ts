@@ -1,8 +1,7 @@
 // The active handle is samakatuwid00 (used by the live footer, demo-repo links,
 // and the résumé contact line). An older build's footer pointed at mr-nikoo;
-// that was the wrong account. Keep GITHUB_URL/HANDLE on samakatuwid00.
+// that was the wrong account. Keep GITHUB_URL on samakatuwid00.
 export const GITHUB_URL = 'https://github.com/samakatuwid00'
-export const GITHUB_HANDLE = 'samakatuwid00'
 
 // The About copy. Each block is a one-line lead plus scannable points, because
 // a prospective client skims this section rather than reading it: five dense
@@ -107,13 +106,6 @@ export const site = {
       'Send a message about your booking platform, business dashboard, HR workflow, inventory system, API integration, or government system requirement – or about modernizing a process that still runs on paper and spreadsheets.',
   },
 } as const
-
-export const systemFacts = [
-  { label: 'Role', value: 'Full-Stack Developer' },
-  { label: 'Sector', value: 'Government / Private' },
-  { label: 'Stack', value: 'Laravel · React · PostgreSQL' },
-  { label: 'Base', value: 'Camarines Sur, PH' },
-] as const
 
 export const socialLinks = [
   { label: 'GitHub', href: GITHUB_URL, brand: 'github' },

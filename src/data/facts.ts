@@ -258,10 +258,6 @@ export const projectFacts: ProjectFacts[] = [
     ],
     status: 'demo',
     githubUrl: 'https://github.com/samakatuwid00/sticky-brain',
-    media: {
-      poster: '/projects/sticky-brain/sb-board.png',
-      video: '/projects/sticky-brain/sticky-brain.webm',
-    },
   },
   {
     // No githubUrl: second-brain-vault is private and 404s for visitors.
@@ -285,9 +281,6 @@ export const projectFacts: ProjectFacts[] = [
       'Markdown',
     ],
     status: 'private',
-    media: {
-      poster: '/projects/second-brain/obs-graph.png',
-    },
   },
 ]
 

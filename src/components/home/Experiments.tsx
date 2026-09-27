@@ -5,20 +5,12 @@ import { Halftone } from '../ui/Halftone'
 
 const THUMB_SIZES = '(max-width: 960px) 112px, 200px'
 
-// Cygnus has a bundled screenshot; Sticky Brain and Second Brain only carry a
-// poster under public/. The name beside the thumbnail says what it is, so the
-// image itself is decoration.
+// The name beside the thumbnail says what it is, so the image itself is
+// decoration.
 function Thumb({ p }: { p: ProjectFacts }) {
   const preview = previewFor(p.slug)
-  if (preview) return <Halftone source={preview} alt="" sizes={THUMB_SIZES} className={p.slug === 'cygnus' ? 'center' : ''} />
-  if (p.media?.poster) {
-    return (
-      <div className="ht">
-        <img src={p.media.poster} alt="" loading="lazy" decoding="async" />
-      </div>
-    )
-  }
-  return null
+  if (!preview) return null
+  return <Halftone source={preview} alt="" sizes={THUMB_SIZES} className={p.slug === 'cygnus' ? 'center' : ''} />
 }
 
 export function Experiments() {

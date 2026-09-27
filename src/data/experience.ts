@@ -59,9 +59,3 @@ export const education = {
   start: 2020,
   end: 2024,
 }
-
-// LEGACY: removed in Task 13. The old History section still reads `points` and
-// `location`; each entry's one-line summary stands in for its bullet list.
-export const legacyExperience: (TimelineEntry & { location?: string; points: string[] })[] = experience.map(
-  (entry) => ({ ...entry, points: [entry.summary] }),
-)

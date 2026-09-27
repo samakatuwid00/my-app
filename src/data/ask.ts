@@ -42,7 +42,7 @@ export const intents: Intent[] = [
   {
     id: 'projects',
     patterns: [/\bprojects?\b/, /\bbuilt\b/, /\bportfolio\b/, /\bsystems?\b/, /\bwork(ed)? on\b/],
-    answer: () => `${visibleFacts.length} featured systems:\n\n${projectLines().join('\n\n')}\n\nFull details at /projects.`,
+    answer: () => `${visibleFacts.length} featured systems:\n\n${projectLines().join('\n\n')}\n\nFull details in the Work section at /#work, and the iRIMS-V case study at /work/irims-v.`,
   },
   {
     id: 'availability',
@@ -59,17 +59,17 @@ export const intents: Intent[] = [
     ],
     answer: () =>
       `Open to project-based work. ${site.role} based in ${site.location}, available for government and private sector engagements.\n` +
-      `Reach me at ${site.email} or through /contact.`,
+      `Reach me at ${site.email} or through the form in the Contact section at /#contact.`,
   },
   {
     id: 'resume',
     patterns: [/\bresume\b/, /\bcv\b/, /\bcredentials?\b/],
-    answer: () => 'The résumé download sits at the top of /about, next to "view projects".',
+    answer: () => 'The résumé downloads from the Résumé button in the site header, or from the menu on a phone.',
   },
   {
     id: 'contact',
     patterns: [/\bcontact\b/, /\bemail\b/, /\breach\b/, /\bphone\b/, /\bmessage you\b/],
-    answer: () => `Email: ${site.email}\nPhone: ${site.phone}\nGitHub: ${GITHUB_URL}\n\nOr use the form at /contact.`,
+    answer: () => `Email: ${site.email}\nPhone: ${site.phone}\nGitHub: ${GITHUB_URL}\n\nOr use the form in the Contact section at /#contact.`,
   },
   {
     id: 'location',
@@ -91,7 +91,7 @@ export const intents: Intent[] = [
   {
     id: 'award',
     patterns: [/\baward/, /\brecogni/, /\bhonou?r/],
-    answer: () => `${site.award.title} – ${site.award.caption}. Shown on /feedback.`,
+    answer: () => `${site.award.title} – ${site.award.caption}. Shown in the Recognition section at /#recognition.`,
   },
   {
     id: 'services',

@@ -1,6 +1,3 @@
-import type { ComponentType } from 'react'
-import type { PictureSource } from '../components/ui/Picture'
-
 export type ProjectStatus = 'live' | 'internal' | 'demo' | 'in-progress' | 'private'
 
 // The approved case-study copy. Only iRIMS-V has one today; a project without
@@ -40,9 +37,6 @@ export type ProjectFacts = {
   // numbers the owner confirms. An approximate metric on a portfolio reads as
   // a claim, and one wrong number costs more than four missing ones.
   metrics?: string[]
-  // Plain public/ paths, no Vite imports, so the assistant-bundled facts stay
-  // asset-free. `video` plays inline with the poster as its cover.
-  media?: { poster: string; video?: string }
 }
 
 export type TimelineKey = 'r5' | 'co' | 'fl' | 'lg'
@@ -58,27 +52,6 @@ export type TimelineEntry = {
   award?: string
 }
 
-// LEGACY: removed in Task 13. The old ProjectCard / ProjectDetail / Projects
-// section still read these. The case-study fields are optional and no project
-// sets them; `icon` is a placeholder component, since the lucide icons were
-// dropped from projects.ts.
-export type Capability =
-  | 'Operations & inventory'
-  | 'HR & workflow automation'
-  | 'Bookings & hospitality'
-  | 'Analytics & reporting'
-
-// LEGACY: removed in Task 13.
-export type Project = ProjectFacts & {
-  previewImage?: PictureSource
-  icon: ComponentType<{ size?: number }>
-  sector?: string
-  capabilities?: Capability[]
-  problem?: string
-  approach?: string
-  outcome?: string
-}
-
 export type Testimonial = {
   name: string
   position: string
@@ -88,12 +61,6 @@ export type Testimonial = {
 export type Stat = {
   label: string
   value: string
-}
-
-export type NavItem = {
-  label: string
-  to: string
-  id: string
 }
 
 export type AskRole = 'user' | 'assistant'

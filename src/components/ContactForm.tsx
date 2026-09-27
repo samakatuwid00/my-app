@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { submitContactForm } from '../services/contactApi'
-import { useNiko } from '../hooks/useNiko'
 import type { ContactPayload } from '../types/portfolio'
 
 const EMPTY_FORM: ContactPayload = { fullName: '', email: '', subject: '', message: '' }
@@ -46,7 +45,6 @@ export function ContactForm() {
   const [errors, setErrors] = useState<FieldErrors>({})
   const [state, setState] = useState<SubmitState>('idle')
   const [failureMessage, setFailureMessage] = useState('')
-  const nikoEvent = useNiko()?.event
 
   function setField(name: FieldName, value: string) {
     setValues((current) => ({ ...current, [name]: value }))
@@ -65,16 +63,13 @@ export function ContactForm() {
     if (Object.keys(nextErrors).length > 0) return
 
     setState('sending')
-    nikoEvent?.('think')
     try {
       await submitContactForm(values)
       setValues(EMPTY_FORM)
       setState('sent')
-      nikoEvent?.('done')
     } catch (error) {
       setFailureMessage(error instanceof Error ? error.message : 'Something went wrong.')
       setState('failed')
-      nikoEvent?.('error')
     }
   }
 
