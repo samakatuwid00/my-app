@@ -171,6 +171,19 @@ section.band.flush { padding-top: 0; }
 .go { text-decoration: none; white-space: nowrap; }
 .go:hover { text-decoration: underline; text-underline-offset: 4px; }
 
+/* What I do: four figures read left to right as one process */
+.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 32px; }
+.flow li { border-top: 1px solid var(--rule); padding-top: 24px; }
+.flow svg { display: block; width: 100%; height: auto; max-width: 220px; margin-bottom: 20px; color: var(--fg); }
+.flow .step { font: 300 30px/1.05 var(--display); margin: 0 0 8px; }
+.flow p { margin: 0; color: var(--soft); font-size: 15px; max-width: 28ch; }
+.stack { margin-top: 88px; display: grid; gap: 18px; }
+.stack > div { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 24px; align-items: baseline; }
+.stack .ui { color: var(--soft); }
+.tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.tags li { font-size: 14px; line-height: 1; padding: 8px 12px; border: 1px solid var(--rule); transition: border-color .2s var(--ease), background-color .2s var(--ease); }
+.tags li:hover { border-color: var(--fg); }
+
 /* Not found (production only: the mockup has no 404) */
 .not-found { display: grid; justify-items: start; gap: 24px; }
 .not-found h1 { font-size: clamp(64px, 9vw, 96px); }
@@ -218,6 +231,83 @@ footer.band { overflow: hidden; }
   .sheet.open nav a:nth-child(4) { transition-delay: .15s; }
   .sheet.open nav a:nth-child(5) { transition-delay: .2s; }
 
+  /* Services figures. Each one acts out its own step once when it arrives
+     (.on), then keeps a quiet loop that runs only while it is on screen
+     (.in-view). Armed from script, so without it every figure stays complete. */
+  .flow.armed .draw { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .flow.armed .on .draw { animation: draw .9s var(--ease) var(--d, 0s) forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .flow.armed li:not(.in-view) * { animation-play-state: paused !important; }
+
+  /* Records: paper recedes as the table fills, the lens keeps scanning rows */
+  .fig-records .paper { opacity: .35; }
+  .flow.armed .fig-records .head-fill { opacity: 0; }
+  .flow.armed .fig-records.on .head-fill { animation: appear .5s .3s var(--ease) forwards; }
+  .flow.armed .fig-records.on .paper { animation: recede 1.4s var(--ease) forwards; }
+  .fig-records .lens { transform-box: view-box; }
+  .flow.armed .fig-records.on .lens { animation: scan 7s 1.3s ease-in-out infinite; }
+  @keyframes appear { to { opacity: 1; } }
+  @keyframes recede { from { opacity: .7; transform: translateX(-3px); } to { opacity: .22; } }
+  @keyframes scan {
+    0%, 100% { transform: translate(0, 0); }
+    22% { transform: translate(-58px, -40px); }
+    44% { transform: translate(-24px, -26px); }
+    66% { transform: translate(-50px, -12px); }
+    84% { transform: translate(-6px, -12px); }
+  }
+
+  /* Approvals: a token carries the request, waits at the clock, lands on the tick */
+  .flow.armed .fig-approvals.on .march { animation: march 1s linear infinite; }
+  @keyframes march { to { stroke-dashoffset: -10; } }
+  .fig-approvals .hand { transform-box: view-box; transform-origin: 72px 52px; }
+  .flow.armed .fig-approvals.on .hand { animation: tick-tock 4.2s linear infinite; }
+  @keyframes tick-tock { 0%, 30% { transform: rotate(0); } 60%, 100% { transform: rotate(360deg); } }
+  .flow.armed .fig-approvals .token { opacity: 0; }
+  .flow.armed .fig-approvals.on .token { animation: carry 4.2s cubic-bezier(.45, 0, .2, 1) infinite; }
+  @keyframes carry {
+    0% { transform: translateX(0); opacity: 0; }
+    6% { opacity: 1; }
+    28%, 58% { transform: translateX(30px); opacity: 1; }
+    84% { transform: translateX(76px); opacity: 1; }
+    92%, 100% { transform: translateX(76px); opacity: 0; }
+  }
+  .flow.armed .fig-approvals .tick { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .flow.armed .fig-approvals.on .tick { animation: approve 4.2s var(--ease) infinite; }
+  @keyframes approve { 0%, 80% { stroke-dashoffset: 1; } 90%, 100% { stroke-dashoffset: 0; } }
+  .fig-approvals .done { transform-box: fill-box; transform-origin: center; }
+  .flow.armed .fig-approvals.on .done { animation: settle-ok 4.2s var(--ease) infinite; }
+  @keyframes settle-ok { 0%, 80% { transform: scale(1); } 86% { transform: scale(1.14); } 94%, 100% { transform: scale(1); } }
+
+  /* Dashboards: bars grow in, then breathe like live data; the latest point pings */
+  .fig-dash .bar { transform-box: fill-box; transform-origin: bottom; }
+  .flow.armed .fig-dash .bar { transform: scaleY(0); }
+  .flow.armed .fig-dash.on .bar {
+    animation: grow .9s var(--ease) var(--d) forwards, breathe var(--t) ease-in-out calc(var(--d) + 1s) infinite alternate;
+  }
+  @keyframes grow { to { transform: scaleY(1); } }
+  @keyframes breathe { from { transform: scaleY(1); } to { transform: scaleY(.82); } }
+  .fig-dash .ping, .fig-dash .dot { transform-box: fill-box; transform-origin: center; }
+  .flow.armed .fig-dash .ping, .flow.armed .fig-dash .dot { opacity: 0; }
+  .flow.armed .fig-dash.on .dot { animation: appear .3s 1.4s forwards; }
+  .flow.armed .fig-dash.on .ping { animation: ping 2.2s 1.5s var(--ease) infinite; }
+  @keyframes ping { from { opacity: .8; transform: scale(1); } to { opacity: 0; transform: scale(3.4); } }
+
+  /* Deploy: servers stack in, lights blink in turn, a pulse runs the line */
+  .flow.armed .fig-deploy .srv { opacity: 0; }
+  .flow.armed .fig-deploy.on .srv { animation: rack .7s var(--ease) var(--d) forwards; }
+  @keyframes rack { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  .flow.armed .fig-deploy.on .led { animation: blink 2.4s var(--b) steps(1, end) infinite; }
+  @keyframes blink { 0%, 70% { opacity: 1; } 75% { opacity: .15; } 85% { opacity: 1; } 90% { opacity: .15; } 95%, 100% { opacity: 1; } }
+  .fig-deploy .beat { stroke-dasharray: .22 .78; stroke-dashoffset: 1; opacity: 0; }
+  .flow.armed .fig-deploy.on .beat { animation: beat 2s linear calc(.8s + var(--b, 0s)) infinite; }
+  @keyframes beat { 0% { stroke-dashoffset: 1; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 1; } }
+
+  /* The arrows between steps lean forward, one after another */
+  .flow.armed .on .nudge { animation: nudge 2.4s ease-in-out infinite; }
+  .flow.armed .fig-approvals.on .nudge { animation-delay: .3s; }
+  .flow.armed .fig-dash.on .nudge { animation-delay: .6s; }
+  @keyframes nudge { 0%, 60%, 100% { transform: none; } 30% { transform: translateX(3px); } }
+
   /* The bubble: three thinking dots, then the line inks in */
   .thought .dots { display: flex; gap: 5px; position: absolute; left: 18px; top: 50%; margin-top: -3px; }
   .thought .dots i { width: 6px; height: 6px; background: var(--black); }
@@ -253,6 +343,9 @@ footer.band { overflow: hidden; }
   .case { grid-template-columns: 1fr; gap: 28px; }
   .case:nth-of-type(even) > a { order: 0; }
   .tr { grid-template-columns: 1fr; gap: 6px; }
+  .flow { grid-template-columns: 1fr 1fr; gap: 40px 20px; }
+  .flow .step { font-size: 26px; }
+  .stack > div { grid-template-columns: 1fr; gap: 10px; }
   .foot { grid-template-columns: 1fr; padding-top: 72px; padding-bottom: 72px; }
   .foot .r { text-align: left; }
 }

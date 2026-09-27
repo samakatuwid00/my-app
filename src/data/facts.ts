@@ -300,13 +300,13 @@ export type SkillGroup = {
 //
 // Every name below is grounded in a system that actually shipped — the stacks
 // were reconciled against the project READMEs and deployment records on
-// 2026-07-26. Deployment & infrastructure is its own group on purpose: running
+// 2026-07-26. Deploy and infra is its own group on purpose: running
 // what you build is the offer most independent developers cannot make, and it
 // is what the maintenance retainer in `services.ts` is sold on.
 const CURATED: SkillGroup[] = [
   { label: 'Languages', items: ['PHP', 'JavaScript', 'TypeScript', 'Python', 'HTML5'] },
   {
-    label: 'Frameworks & libraries',
+    label: 'Frameworks',
     items: [
       'Laravel',
       'React',
@@ -322,11 +322,11 @@ const CURATED: SkillGroup[] = [
   },
   { label: 'Databases', items: ['PostgreSQL', 'MySQL', 'SQLite'] },
   {
-    label: 'Testing & code quality',
+    label: 'Testing',
     items: ['Pest (PHP testing)', 'PHPStan / Larastan', 'Laravel Pint', 'pytest', 'ESLint', 'Git'],
   },
   {
-    label: 'Deployment & infrastructure',
+    label: 'Deploy and infra',
     items: [
       'Docker',
       'Docker Compose',

@@ -130,3 +130,19 @@ test.describe('work', () => {
     await expect(page.locator('#work .tr > .ui.soft')).toHaveText(['Internal', 'In progress'])
   })
 })
+
+test.describe('services', () => {
+  test('figures play once in view', async ({ page }) => {
+    await page.goto('/#services')
+    await expect(page.locator('#flow')).toHaveClass(/armed/)
+    await expect(page.locator('#flow li.fig-records')).toHaveClass(/\bon\b/)
+  })
+  test.describe('reduced motion', () => {
+    test.use({ contextOptions: { reducedMotion: 'reduce' } })
+    test('figures are complete and never armed', async ({ page }) => {
+      await page.goto('/#services')
+      await expect(page.locator('#flow')).not.toHaveClass(/armed/)
+      await expect(page.locator('#flow li')).toHaveCount(4)
+    })
+  })
+})

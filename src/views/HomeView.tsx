@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react'
 import { Band } from '../components/layout/Band'
 import { Hero } from '../components/home/Hero'
 import { SelectedWork } from '../components/home/SelectedWork'
+import { Services } from '../components/home/Services'
 
 // Placeholder height so the header has real bands to scroll over until each
 // section is filled in.
@@ -12,10 +13,7 @@ export function HomeView() {
     <>
       <Hero />
       <SelectedWork />
-      {/* filled in Task 7 */}
-      <Band id="services" tone="light" flush style={PLACEHOLDER}>
-        <div className="wrap"><h2 className="h2">What I do</h2></div>
-      </Band>
+      <Services />
       {/* filled in Task 8 */}
       <Band id="experience" tone="dark" style={PLACEHOLDER}>
         <div className="wrap"><h2 className="h2">Experience</h2></div>
