@@ -247,7 +247,7 @@ export const projectFacts: ProjectFacts[] = [
       'Niko pixel-art pet + floating mode',
       'One-key task → CLI chat launch',
       'Mark-done writes straight to the vault',
-      'Second Brain link — live sessions, pending, backlogs surfaced from the vault so all tasks live in one board',
+      'Second Brain link: live sessions, pending, backlogs surfaced from the vault so all tasks live in one board',
     ],
     technologies: [
       'Electron',

@@ -48,7 +48,7 @@ export const aboutBlocks: readonly AboutBlock[] = [
     points: [
       { term: 'DepEd Central Office', detail: 'a national learning-resource platform' },
       { term: 'DepEd Region V', detail: 'regional systems I design, deploy, and maintain' },
-      { term: 'DepEd Naga · project-based', detail: 'EDULEAVE – leave credits for teaching and non-teaching staff' },
+      { term: 'A DepEd division HR office · project-based', detail: 'EDULEAVE – leave credits for teaching and non-teaching staff' },
       { term: 'Private clients', detail: 'resort operations: reservations, guest records, dashboards' },
     ],
   },
