@@ -184,6 +184,42 @@ section.band.flush { padding-top: 0; }
 .tags li { font-size: 14px; line-height: 1; padding: 8px 12px; border: 1px solid var(--rule); transition: border-color .2s var(--ease), background-color .2s var(--ease); }
 .tags li:hover { border-color: var(--fg); }
 
+/* Experience: the timeline carries the dates, the rows carry one line each */
+.tl { margin: 0 0 72px; display: grid; grid-template-columns: 170px repeat(9, minmax(0, 1fr)); row-gap: 12px; align-items: center; }
+.tl .lab { grid-column: 1; color: var(--soft); }
+.tl .bar { height: 22px; background: var(--fg); transform-origin: left; }
+.tl .bar.now { clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%); }
+.tl .bar.edu { background: transparent; box-shadow: inset 0 0 0 1px var(--fg); }
+.tl .bar.intern { background: repeating-linear-gradient(135deg, var(--fg) 0 1.5px, transparent 1.5px 6px); box-shadow: inset 0 0 0 1px var(--fg); }
+.tl .mark { display: inline-flex; align-items: center; gap: 8px; font: 600 12px/1 var(--ui); text-transform: uppercase; letter-spacing: .08em; color: var(--soft); }
+.tl .mark i { width: 12px; height: 12px; background: var(--fg); flex: none; position: relative; }
+.tl { padding-top: 30px; }
+.tl .lab, .tl .bar, .tl .mark { transition: opacity .3s var(--ease); }
+.tl.focus [data-k]:not(.hl) { opacity: .2; }
+/* --now is set on the figure from today's date: how far along the 2019-2027
+   axis it sits. 86% was the mockup's fixed late-2026 value. */
+.tl .elapsed { align-self: start; margin-top: 5px; height: 2px; width: var(--now, 86%); background: var(--fg); transform-origin: left; }
+.tl .now-line { position: relative; pointer-events: none; align-self: stretch; }
+.tl .now-line::before { content: ''; position: absolute; left: var(--now, 86%); top: -6px; bottom: -14px; border-left: 1px dashed var(--fg); }
+.tl .now-line b { position: absolute; left: var(--now, 86%); top: -30px; transform: translateX(-50%); color: var(--fg); }
+.role-row { transition: background-color .3s var(--ease); outline-offset: -2px; }
+.role-row.hl { background: var(--tint); }
+.tl .axis { grid-row: 6; border-top: 1px solid var(--rule); padding-top: 10px; margin-top: 6px; color: var(--soft); }
+.tl .key { grid-column: 2 / -1; grid-row: 7; display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--soft); margin-top: 8px; }
+.tl .key span { display: inline-flex; align-items: center; gap: 8px; }
+.tl .key i { width: 16px; height: 8px; }
+.k-work { background: var(--fg); }
+.k-edu { box-shadow: inset 0 0 0 1px var(--fg); }
+.k-intern { background: repeating-linear-gradient(135deg, var(--fg) 0 1.5px, transparent 1.5px 4px); box-shadow: inset 0 0 0 1px var(--fg); }
+.roles { border-top: 1px solid var(--rule); }
+.role-row { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 32px; padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.role-row > .ui { color: var(--soft); }
+.role-row p { margin: 8px 0 0; color: var(--soft); font-size: 15px; max-width: 64ch; }
+.role-row .org { font: 600 13px/1 var(--ui); text-transform: uppercase; letter-spacing: .09em; color: var(--soft); margin-left: 12px; vertical-align: middle; }
+.award { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 7px 12px 7px 10px; border: 1px solid var(--rule); }
+.award svg { width: 16px; height: 16px; }
+.role { font: 300 34px/1.05 var(--display); }
+
 /* Not found (production only: the mockup has no 404) */
 .not-found { display: grid; justify-items: start; gap: 24px; }
 .not-found h1 { font-size: clamp(64px, 9vw, 96px); }
@@ -308,6 +344,31 @@ footer.band { overflow: hidden; }
   .flow.armed .fig-dash.on .nudge { animation-delay: .6s; }
   @keyframes nudge { 0%, 60%, 100% { transform: none; } 30% { transform: translateX(3px); } }
 
+  .tl.armed .bar { transform: scaleX(0); }
+  .tl.armed.drawn .bar { transform: none; transition: transform .9s var(--ease), opacity .3s var(--ease); }
+  .tl.drawn .bar { transition-delay: var(--d, 0s), 0s; }
+
+  /* Elapsed time runs along the axis to today, then the Now line drops in */
+  .tl.armed .elapsed { transform: scaleX(0); }
+  .tl.armed.drawn .elapsed { transform: none; transition: transform 1.6s var(--ease) .1s; }
+  .tl.armed .now-line { opacity: 0; }
+  .tl.armed.drawn .now-line { opacity: 1; transition: opacity .5s 1.5s; }
+  .tl.drawn .now-line b { animation: now-blink 2.4s 2.2s steps(1, end) infinite; }
+  @keyframes now-blink { 0%, 80% { opacity: 1; } 85% { opacity: .2; } 92%, 100% { opacity: 1; } }
+
+  /* The current role reads as ongoing: a slow sheen travels the bar */
+  .tl .bar.now {
+    background: linear-gradient(90deg, var(--fg) 0 42%, color-mix(in srgb, var(--fg) 45%, var(--bg)) 50%, var(--fg) 58% 100%) no-repeat;
+    background-size: 300% 100%; background-position: 100% 0;
+  }
+  .tl.drawn .bar.now { animation: sheen 3.6s 1.8s ease-in-out infinite; }
+  @keyframes sheen { 0% { background-position: 100% 0; } 60%, 100% { background-position: 0 0; } }
+
+  /* Freelance is live: its marker pings */
+  .tl.drawn .mark i::after { content: ''; position: absolute; inset: 0; border: 1px solid var(--fg); animation: mark-ping 2.2s 1.8s var(--ease) infinite; }
+  @keyframes mark-ping { from { transform: scale(1); opacity: .9; } to { transform: scale(2.6); opacity: 0; } }
+  .tl:not(.in-view) *, .tl:not(.in-view) *::after { animation-play-state: paused !important; }
+
   /* The bubble: three thinking dots, then the line inks in */
   .thought .dots { display: flex; gap: 5px; position: absolute; left: 18px; top: 50%; margin-top: -3px; }
   .thought .dots i { width: 6px; height: 6px; background: var(--black); }
@@ -345,7 +406,12 @@ footer.band { overflow: hidden; }
   .tr { grid-template-columns: 1fr; gap: 6px; }
   .flow { grid-template-columns: 1fr 1fr; gap: 40px 20px; }
   .flow .step { font-size: 26px; }
-  .stack > div { grid-template-columns: 1fr; gap: 10px; }
+  .stack > div, .role-row { grid-template-columns: 1fr; gap: 10px; }
+  .tl { grid-template-columns: 92px repeat(9, minmax(0, 1fr)); row-gap: 10px; }
+  .tl .lab { font-size: 11px; letter-spacing: .04em; }
+  .tl .axis { font-size: 10px; letter-spacing: 0; }
+  .tl .mark { font-size: 0; }
+  .role-row .org { display: block; margin: 6px 0 0; }
   .foot { grid-template-columns: 1fr; padding-top: 72px; padding-bottom: 72px; }
   .foot .r { text-align: left; }
 }

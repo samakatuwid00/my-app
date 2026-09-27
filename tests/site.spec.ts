@@ -146,3 +146,27 @@ test.describe('services', () => {
     })
   })
 })
+
+test.describe('experience', () => {
+  test('timeline and rows', async ({ page }) => {
+    await page.goto('/#experience')
+    await expect(page.locator('#timeline .bar')).toHaveCount(4)
+    await expect(page.locator('.role-row')).toHaveCount(4)
+    await expect(page.locator('.role-row > .ui').first()).toHaveText('2025 – Present')
+  })
+  test('row hover highlights its bar', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'hover')
+    await page.goto('/#experience')
+    await page.hover('.role-row[data-k="co"]')
+    await expect(page.locator('#timeline')).toHaveClass(/focus/)
+    await expect(page.locator('#timeline .bar[data-k="co"]')).toHaveClass(/hl/)
+  })
+  test.describe('reduced motion', () => {
+    test.use({ contextOptions: { reducedMotion: 'reduce' } })
+    test('timeline is complete and never armed', async ({ page }) => {
+      await page.goto('/#experience')
+      await expect(page.locator('#timeline')).not.toHaveClass(/armed/)
+      await expect(page.locator('#timeline .bar')).toHaveCount(4)
+    })
+  })
+})

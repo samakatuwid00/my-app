@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Band } from '../components/layout/Band'
+import { Experience } from '../components/home/Experience'
 import { Hero } from '../components/home/Hero'
 import { SelectedWork } from '../components/home/SelectedWork'
 import { Services } from '../components/home/Services'
@@ -14,10 +15,7 @@ export function HomeView() {
       <Hero />
       <SelectedWork />
       <Services />
-      {/* filled in Task 8 */}
-      <Band id="experience" tone="dark" style={PLACEHOLDER}>
-        <div className="wrap"><h2 className="h2">Experience</h2></div>
-      </Band>
+      <Experience />
       {/* filled in Task 9 */}
       <Band id="recognition" tone="light" style={PLACEHOLDER}>
         <div className="wrap"><h2 className="h2">Recognition</h2></div>
