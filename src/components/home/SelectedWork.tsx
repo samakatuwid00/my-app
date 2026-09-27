@@ -1,11 +1,25 @@
-import { Link } from 'react-router-dom'
+import { Link, useViewTransitionState } from 'react-router-dom'
 import { featuredProjects, moreProjects, previewAltFor, previewFor } from '../../data/projects'
+import type { PictureSource } from '../ui/Picture'
 import { Band } from '../layout/Band'
 import { Halftone } from '../ui/Halftone'
 
 const WORDS = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
 const count = (n: number) => WORDS[n] || String(n)
 const host = (url: string) => new URL(url).host.replace(/^www\./, '')
+
+// The preview that opens a case study. It takes view-transition-name "shot" only
+// while a transition to or from its case study runs, so it and the case page's
+// .cs-shot are never named at the same time (a duplicate name aborts the transition).
+function CaseShot({ slug, title, source, alt }: { slug: string; title: string; source: PictureSource; alt: string }) {
+  const to = `/work/${slug}`
+  const carrying = useViewTransitionState(to)
+  return (
+    <Link to={to} aria-label={`${title} case study`} viewTransition data-shot={slug}>
+      <Halftone source={source} alt={alt} style={carrying ? { viewTransitionName: 'shot' } : undefined} />
+    </Link>
+  )
+}
 
 export function SelectedWork() {
   const n = featuredProjects.length
@@ -21,18 +35,16 @@ export function SelectedWork() {
         </div>
         {featuredProjects.map((p) => {
           const preview = previewFor(p.slug)
-          const shot = preview && <Halftone source={preview} alt={previewAltFor(p.slug) ?? `${p.title} screenshot`} />
+          const alt = previewAltFor(p.slug) ?? `${p.title} screenshot`
           return (
             <article className="case" key={p.slug}>
-              {shot &&
+              {preview &&
                 (p.caseStudy ? (
-                  <Link to={`/work/${p.slug}`} aria-label={`${p.title} case study`} viewTransition data-shot={p.slug}>
-                    {shot}
-                  </Link>
+                  <CaseShot slug={p.slug} title={p.title} source={preview} alt={alt} />
                 ) : (
                   p.liveUrl && (
                     <a href={p.liveUrl} aria-label={`${p.title} live site`}>
-                      {shot}
+                      <Halftone source={preview} alt={alt} />
                     </a>
                   )
                 ))}

@@ -6,8 +6,10 @@ import { Hero } from '../components/home/Hero'
 import { Recognition } from '../components/home/Recognition'
 import { SelectedWork } from '../components/home/SelectedWork'
 import { Services } from '../components/home/Services'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export function HomeView() {
+  useDocumentTitle()
   return (
     <>
       <Hero />

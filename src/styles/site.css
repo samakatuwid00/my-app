@@ -317,6 +317,30 @@ footer.band { overflow: hidden; }
 .glyphs a:hover { background: var(--black); color: var(--paper); text-decoration: none; }
 .glyphs svg { width: 20px; height: 20px; }
 
+/* Case study */
+.cs-hero { padding-top: 56px; }
+.back { text-decoration: none; color: var(--soft); }
+.back:hover { color: var(--fg); }
+.cs-hero h1 { font-size: clamp(80px, 12vw, 96px); margin: 32px 0 24px; }
+.cs-hero .lede { font-size: 19px; max-width: 52ch; color: var(--soft); margin: 0 0 56px; }
+.cs-meta { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0; border-top: 1px solid var(--rule); }
+.cs-meta div { padding: 18px 20px 18px 0; }
+.cs-meta div + div { padding-left: 20px; border-left: 1px solid var(--rule); }
+.cs-meta dt { color: var(--soft); }
+.cs-meta dd { margin: 8px 0 0; font-size: 15px; }
+/* Production only: Tailwind's reset takes the underline off links; the mockup's status link keeps the browser's. */
+.cs-meta dd a { text-decoration: underline; }
+.cs-shot { margin-top: 56px; margin-bottom: -96px; aspect-ratio: 16 / 9; box-shadow: 0 0 0 1px rgba(242,242,240,.3); z-index: 1; }
+.cs-body { padding-top: 216px; padding-bottom: 120px; }
+.cs-sec { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 40px; padding: 48px 0; border-top: 1px solid var(--rule); }
+.cs-sec .prose { max-width: 64ch; }
+.cs-sec .prose p { margin: 0 0 16px; }
+.cs-sec ul { margin: 0; padding-left: 18px; list-style: disc; } /* list-style: production only, Tailwind's reset removes the bullets */
+.cs-sec li + li { margin-top: 10px; }
+.next { display: flex; justify-content: space-between; padding-top: 40px; border-top: 1px solid var(--rule); }
+.next a { text-decoration: none; }
+.next a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
 /* ============ Motion ============
    One authored moment: on arrival the portrait prints in row by row and the
    name is inked in line by line. Everything else is feedback and continuity.
@@ -458,9 +482,16 @@ footer.band { overflow: hidden; }
   @keyframes dots-out { 0%, 99% { opacity: 1; } 100% { opacity: 0; } }
   @keyframes think { from { transform: translateY(0); opacity: .35; } to { transform: translateY(-3px); opacity: 1; } }
   @keyframes ink-line { from { opacity: 0; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+
+  /* Home to case study: the screenshot you clicked carries across */
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .35s; animation-timing-function: var(--ease); }
+  ::view-transition-group(shot) { animation-duration: .6s; animation-timing-function: var(--ease); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
+  /* Production only: the router still starts a view transition (the mockup skips
+     it); with no animation it completes at once, so the page simply swaps. */
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
 
 @media (max-width: 960px) {
@@ -479,7 +510,7 @@ footer.band { overflow: hidden; }
   .credits div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--rule); }
   .head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px; }
   section.band { padding: 88px 0; }
-  .case, .recog, .contact { grid-template-columns: 1fr; gap: 28px; }
+  .case, .recog, .contact, .cs-sec { grid-template-columns: 1fr; gap: 28px; }
   /* Production only: minmax(0, …) so the unbroken LinkedIn address ellipsizes instead of widening the page (the mockup scrolls sideways at 390px). */
   .contact { grid-template-columns: minmax(0, 1fr); }
   .case:nth-of-type(even) > a { order: 0; }
@@ -498,6 +529,9 @@ footer.band { overflow: hidden; }
   .index .go { display: none; }
   .foot { grid-template-columns: 1fr; padding-top: 72px; padding-bottom: 72px; }
   .foot .r { text-align: left; }
+  .cs-meta { grid-template-columns: 1fr 1fr; }
+  .cs-meta div, .cs-meta div + div { padding: 14px 12px 14px 0; border-left: 0; }
+  .cs-meta div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--rule); }
 }
 @media (max-width: 480px) {
   .hero h1 { font-size: 52px; }

@@ -253,3 +253,66 @@ test.describe('contact', () => {
     expect(bodies[0]).toMatchObject({ name: 'Test Visitor', email: 'visitor@example.com', subject: 'Records system' })
   })
 })
+
+test.describe('case study', () => {
+  test('iRIMS-V page renders from data', async ({ page }) => {
+    await page.goto('/work/irims-v')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('iRIMS-V')
+    await expect(page.getByText('Integrated Resource Inventory and Mapping System for Region V')).toBeVisible()
+    // The mockup has two "All work" links, top and bottom; both go back to the work section.
+    const back = page.getByRole('link', { name: /all work/i })
+    await expect(back).toHaveCount(2)
+    for (const link of await back.all()) await expect(link).toHaveAttribute('href', '/#work')
+  })
+  test('project without a case study is a 404', async ({ page }) => {
+    await page.goto('/work/lrmis')
+    await expect(page.getByRole('heading', { name: /not found/i })).toBeVisible()
+  })
+  test('no placeholder metric rows and no self-referencing next link', async ({ page }) => {
+    await page.goto('/work/irims-v')
+    await expect(page.locator('.cs-sec h2')).toHaveText(['Problem', 'Approach', 'Result'])
+    await expect(page.locator('.cs-sec li')).toHaveCount(5)
+    await expect(page.locator('.cs-body .tr, .todo')).toHaveCount(0)
+    await expect(page.getByRole('link', { name: /^next/i })).toHaveCount(0)
+    await expect(page.locator('.cs-meta a.live')).toHaveAttribute('href', 'https://irimsv.net/')
+  })
+  test('title names the project, home restores the default', async ({ page }) => {
+    await page.goto('/work/irims-v')
+    await expect(page).toHaveTitle('iRIMS-V · Roger A. Abay Jr.')
+    await page.getByRole('link', { name: /all work/i }).first().click()
+    await expect(page).toHaveURL('/#work')
+    await expect(page).toHaveTitle('Roger A. Abay Jr. | Full Stack Developer')
+  })
+  test('the clicked screenshot carries across and back without errors', async ({ page }) => {
+    const errors: string[] = []
+    page.on('pageerror', (e) => errors.push(e.message))
+    page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') errors.push(m.text()) })
+    await page.goto('/#work')
+    await page.locator('#work a[data-shot="irims-v"]').click()
+    await expect(page).toHaveURL('/work/irims-v')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('iRIMS-V')
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+    await expect(page.locator('.cs-shot')).toHaveCSS('view-transition-name', 'shot')
+    await page.getByRole('link', { name: /all work/i }).first().click()
+    await expect(page).toHaveURL('/#work')
+    await expect.poll(() => page.evaluate(() => document.getElementById('work')?.getBoundingClientRect().top ?? Infinity)).toBeLessThan(80)
+    // Between transitions no home preview holds the name, so it can never be duplicated.
+    await expect.poll(() => page.evaluate(() =>
+      [...document.querySelectorAll('.ht')].filter((el) => getComputedStyle(el).viewTransitionName === 'shot').length,
+    )).toBe(0)
+    expect(errors).toEqual([])
+  })
+  test.describe('reduced motion', () => {
+    test.use({ reducedMotion: 'reduce' })
+    test('the transition runs without animation and the page still swaps', async ({ page }) => {
+      const errors: string[] = []
+      page.on('pageerror', (e) => errors.push(e.message))
+      await page.goto('/#work')
+      await page.locator('#work a[data-shot="irims-v"]').click()
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText('iRIMS-V')
+      const running = await page.evaluate(() => document.getAnimations().filter((a) => String((a.effect as KeyframeEffect | null)?.pseudoElement ?? '').startsWith('::view-transition')).length)
+      expect(running).toBe(0)
+      expect(errors).toEqual([])
+    })
+  })
+})
