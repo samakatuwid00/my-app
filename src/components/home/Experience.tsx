@@ -53,7 +53,7 @@ export function Experience() {
           <span className={`lab ui${hl('co')}`} {...link('co')} style={{ gridRow: 2 }}>Central Office</span>
           {bar('co', 2, co.start!, co.end!, '', '.08s')}
           <span className={`lab ui${hl('fl')}`} {...link('fl')} style={{ gridRow: 3 }}>Freelance</span>
-          <span className={`mark${hl('fl')}`} {...link('fl')} style={{ gridRow: 3, gridColumn: `${col(now.getFullYear())} / span 1` }}><i />ongoing</span>
+          <span className={`mark${hl('fl')}`} {...link('fl')} style={{ gridRow: 3, gridColumn: `2 / ${YEARS + 2}` }}><i />ongoing</span>
           <span className={`lab ui${hl('ed')}`} {...link('ed')} style={{ gridRow: 4 }}>{education.degree.replace('BS Information Technology', 'BSIT')}, {education.honors}</span>
           {bar('ed', 4, education.start, education.end, 'edu', '.16s')}
           <span className={`lab ui${hl('lg')}`} {...link('lg')} style={{ gridRow: 5 }}>LGU internship</span>
