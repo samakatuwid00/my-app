@@ -1,8 +1,6 @@
 export type PictureSource = {
   // Partial, not Record<string, string>: a format is only present if the import
-  // query asked for it, and typing every key as `string` made the fallback in
-  // ProjectCard's prefetch look dead to the type checker while it was live at
-  // runtime.
+  // query asked for it, so a lookup of any one format may be undefined.
   sources: Partial<Record<string, string>>
   img: { src: string; w: number; h: number }
 }
@@ -43,7 +41,7 @@ type PictureProps = {
 //
 // `width`/`height` come from the imagetools metadata rather than being guessed:
 // they give the box an intrinsic ratio before the bytes arrive, which is what
-// stops the project modal from jumping when its preview finally paints.
+// stops the layout from jumping when the screenshot finally paints.
 export function Picture({
   source,
   alt,

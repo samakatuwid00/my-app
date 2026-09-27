@@ -44,17 +44,16 @@ export const aboutBlocks: readonly AboutBlock[] = [
   },
   {
     label: 'where I have built it',
-    body: 'Government and private, employed and project-based:',
+    body: 'Government offices, employed and project-based:',
     points: [
       { term: 'DepEd Central Office', detail: 'a national learning-resource platform' },
       { term: 'DepEd Region V', detail: 'regional systems I design, deploy, and maintain' },
       { term: 'A DepEd division HR office · project-based', detail: 'EDULEAVE – leave credits for teaching and non-teaching staff' },
-      { term: 'Private clients', detail: 'resort operations: reservations, guest records, dashboards' },
     ],
   },
   {
     label: 'how I work',
-    body: "Government office or resort, the problem is the same – scattered records, slow approvals, no visibility:",
+    body: 'Whatever the office, the problem is the same – scattered records, slow approvals, no visibility:',
     points: [
       { term: 'Scope', detail: 'understand the process as it actually runs today' },
       { term: 'Build', detail: 'the system that fixes it, tested before it ships' },
@@ -75,23 +74,16 @@ const flattenBlock = (block: AboutBlock) =>
 export const site = {
   name: 'Roger A. Abay Jr.',
   role: 'Full-Stack Developer',
-  // The employer the boot log and the whoami line name. It was only ever spelled
-  // out inside `aboutBlocks`, which meant the intro had nowhere to read it from
-  // and would have had to hard-code it.
+  // The current employer, named under the award in the Recognition section.
   org: 'DepEd Region V',
-  shellTitle: 'roger@portfolio:~',
   email: 'abaygherjr07@gmail.com',
   phone: '+63 956-642-2783',
   // Region only — the résumé's street address is deliberately not published.
   location: 'Pasacao, Camarines Sur, Philippines',
   intro: aboutBlocks.map(flattenBlock).join(' '),
   award: {
-    label: 'Awards & Recognition',
     title: 'Full Stack Developer Award',
     caption: 'Regional government system launch',
-  },
-  feedback: {
-    heading: 'Trusted for practical, maintainable systems',
   },
   // Shown beside the contact CTA. Government scale reads as a trust signal to a
   // private client — the same reason the projects are tagged by capability
@@ -100,11 +92,6 @@ export const site = {
     'Trusted with a national-scale DepEd platform',
     'Full Stack Developer Award – regional government system launch',
   ],
-  contact: {
-    heading: "Let's turn your ideas into scalable systems",
-    paragraph:
-      'Send a message about your booking platform, business dashboard, HR workflow, inventory system, API integration, or government system requirement – or about modernizing a process that still runs on paper and spreadsheets.',
-  },
 } as const
 
 export const socialLinks = [

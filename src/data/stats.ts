@@ -11,6 +11,6 @@ export const YEARS_SHIPPING = '2+ years'
 export const stats: Stat[] = [
   { label: 'Shipping production systems', value: YEARS_SHIPPING },
   { label: 'Largest deployment', value: 'National (DepEd)' },
-  { label: 'Sectors', value: 'Government · Hospitality · HR' },
+  { label: 'Sectors', value: 'Government · HR' },
   { label: 'Full Stack Developer Award', value: 'Regional launch' },
 ]

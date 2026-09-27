@@ -77,12 +77,6 @@ export function AskProvider({ children }: PropsWithChildren) {
 
   const close = useCallback(() => setIsOpen(false), [])
 
-  const reset = useCallback(() => {
-    historyRef.current = []
-    setMessages([])
-    setIsOpen(false)
-  }, [])
-
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
@@ -104,8 +98,8 @@ export function AskProvider({ children }: PropsWithChildren) {
   }, [open])
 
   const value = useMemo(
-    () => ({ messages, state, isOpen, inputRef, ask, open, close, reset }),
-    [messages, state, isOpen, ask, open, close, reset],
+    () => ({ messages, state, isOpen, inputRef, ask, open, close }),
+    [messages, state, isOpen, ask, open, close],
   )
 
   return <AskContext.Provider value={value}>{children}</AskContext.Provider>

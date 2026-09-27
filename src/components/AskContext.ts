@@ -12,7 +12,6 @@ export type AskContextValue = {
   ask: (question: string) => void
   open: () => void
   close: () => void
-  reset: () => void
 }
 
 export const AskContext = createContext<AskContextValue | null>(null)

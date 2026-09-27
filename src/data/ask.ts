@@ -12,12 +12,19 @@ export type Intent = {
   answer: () => string
 }
 
-// Hidden projects are never sent to the assistant, in the canned answers or in
-// the system prompt.
-const visibleFacts = projectFacts.filter((p) => !p.hidden)
+const featured = projectFacts.filter((p) => p.featured)
+// Everything that is not a featured system: internal tools, unfinished work and
+// experiments. Each is named with its status so none of it reads as production.
+const STATUS_NOTE: Record<string, string> = {
+  internal: 'internal tool',
+  'in-progress': 'in progress',
+  demo: 'experiment',
+  private: 'private experiment',
+}
+const otherWork = projectFacts.filter((p) => !p.featured)
 
 const projectLines = () =>
-  visibleFacts.map((p) => `${p.title} – ${p.caseStudy?.problem ?? p.description} Stack: ${p.technologies.join(', ')}.`)
+  featured.map((p) => `${p.title} – ${p.caseStudy?.problem ?? p.description} Stack: ${p.technologies.join(', ')}.`)
 
 export const suggestions = ["what's your stack?", 'show me a government system', 'are you available?']
 
@@ -34,15 +41,18 @@ export const intents: Intent[] = [
     patterns: [/\bgov(ernment)?\b/, /\bdeped\b/, /\bpublic sector\b/, /\blgu\b/],
     answer: () =>
       'Government systems built for DepEd:\n\n' +
-      visibleFacts
-        .filter((p) => /IRIMS|LRMIS|EDULEAVE/i.test(p.title))
+      projectFacts
+        .filter((p) => p.status === 'live' && /DepEd/.test(p.client ?? ''))
         .map((p) => `${p.title} – ${p.description}${p.liveUrl ? `\n${p.liveUrl}` : ''}`)
         .join('\n\n'),
   },
   {
     id: 'projects',
     patterns: [/\bprojects?\b/, /\bbuilt\b/, /\bportfolio\b/, /\bsystems?\b/, /\bwork(ed)? on\b/],
-    answer: () => `${visibleFacts.length} featured systems:\n\n${projectLines().join('\n\n')}\n\nFull details in the Work section at /#work, and the iRIMS-V case study at /work/irims-v.`,
+    answer: () =>
+      `${featured.length} featured systems:\n\n${projectLines().join('\n\n')}\n\n` +
+      `Other work, not featured: ${otherWork.map((p) => `${p.title} (${STATUS_NOTE[p.status] ?? p.status})`).join(', ')}.\n\n` +
+      'Full details in the Work and Experiments sections at /#work and /#experiments, and the iRIMS-V case study at /work/irims-v.',
   },
   {
     id: 'availability',
@@ -73,8 +83,8 @@ export const intents: Intent[] = [
   },
   {
     id: 'location',
-    patterns: [/\bwhere\b.*\b(based|located|live|from)\b/, /\blocation\b/, /\bremote\b/, /\btimezone\b/],
-    answer: () => `Based in ${site.location}. Works remotely with offices and teams outside the region.`,
+    patterns: [/\bwhere\b.*\b(based|located|live|from)\b/, /\blocation\b/, /\btimezone\b/],
+    answer: () => `Based in ${site.location}.`,
   },
   {
     id: 'education',
@@ -145,7 +155,7 @@ export function buildContext(): string {
     ...services.map((s) => `- ${s.name}: ${s.pitch}`),
     '',
     'Projects:',
-    ...visibleFacts.flatMap((p) => [
+    ...projectFacts.flatMap((p) => [
       `- ${p.title} (${p.category}; ${p.status}${p.liveUrl ? `, ${p.liveUrl}` : ''}${p.githubUrl ? `, ${p.githubUrl}` : ''})`,
       `  ${p.description}`,
       ...(p.client ? [`  Client: ${p.client}`] : []),
