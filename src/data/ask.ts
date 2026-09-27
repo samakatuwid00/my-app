@@ -163,6 +163,6 @@ export function buildContext(): string {
     'Trust signals:',
     ...site.trustBadges.map((badge) => `- ${badge}`),
     '',
-    'Site routes: /about, /projects, /feedback, /contact. The résumé downloads from /about.',
+    'Site: one page at / with sections Work, Services, Experience, Recognition, Experiments, FAQ and Contact; case study at /work/irims-v. The résumé downloads from the header.',
   ].join('\n')
 }

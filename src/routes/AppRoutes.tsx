@@ -1,28 +1,22 @@
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { AboutView } from '../views/AboutView'
-import { ContactView } from '../views/ContactView'
-import { FeedbackView } from '../views/FeedbackView'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { CaseStudyView } from '../views/CaseStudyView'
+import { HomeView } from '../views/HomeView'
 import { NotFoundView } from '../views/NotFoundView'
-import { ProjectsView } from '../views/ProjectsView'
 
 export function AppRoutes() {
-  const location = useLocation()
-
   return (
-    <Routes location={location}>
-      <Route path="/" element={<Navigate to="/about" replace />} />
-      <Route path="/about" element={<AboutView />} />
-      <Route path="/projects" element={<ProjectsView />} />
-      <Route path="/feedback" element={<FeedbackView />} />
-      <Route path="/contact" element={<ContactView />} />
-
-      {/* retired paths from the seven-view build — keep bookmarks working */}
-      <Route path="/history" element={<Navigate to="/about" replace />} />
-      <Route path="/stack" element={<Navigate to="/projects" replace />} />
-      <Route path="/awards" element={<Navigate to="/feedback" replace />} />
-
-      {/* Not a redirect. Sending an unknown path to /about hid the broken link
-          and rewrote the address bar, so nobody could see what they asked for. */}
+    <Routes>
+      <Route path="/" element={<HomeView />} />
+      <Route path="/work/:slug" element={<CaseStudyView />} />
+      {/* retired paths: keep bookmarks working */}
+      <Route path="/about" element={<Navigate to="/" replace />} />
+      <Route path="/projects" element={<Navigate to="/#work" replace />} />
+      <Route path="/feedback" element={<Navigate to="/#recognition" replace />} />
+      <Route path="/contact" element={<Navigate to="/#contact" replace />} />
+      <Route path="/history" element={<Navigate to="/#experience" replace />} />
+      <Route path="/stack" element={<Navigate to="/#services" replace />} />
+      <Route path="/awards" element={<Navigate to="/#recognition" replace />} />
+      {/* Not a redirect: an unknown path stays in the address bar so the visitor sees what they asked for. */}
       <Route path="*" element={<NotFoundView />} />
     </Routes>
   )
