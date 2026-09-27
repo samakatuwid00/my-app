@@ -223,6 +223,40 @@ section.band.flush { padding-top: 0; }
 .award svg { width: 16px; height: 16px; }
 .role { font: 300 34px/1.05 var(--display); }
 
+/* Recognition */
+.recog { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 72px; align-items: start; }
+.recog figure { margin: 0; position: sticky; top: 100px; }
+.recog .ht { aspect-ratio: 4 / 3; box-shadow: 0 0 0 1px var(--rule); }
+.recog figcaption { padding-top: 14px; display: flex; justify-content: space-between; gap: 12px; }
+blockquote { margin: 0; padding: 0 0 36px; }
+blockquote + blockquote { padding-top: 36px; border-top: 1px solid var(--rule); }
+blockquote p { margin: 0 0 16px; font: 300 clamp(26px, 2.6vw, 34px)/1.14 var(--display); }
+
+/* Experiments: an index, not a card grid */
+.index { border-top: 1px solid var(--rule); }
+.index a, .index .item { display: grid; grid-template-columns: 200px minmax(0, 1fr) auto; gap: 32px; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--rule); text-decoration: none; transition: background-color .25s var(--ease); }
+.index a:hover { background: var(--tint); }
+.index .ht { aspect-ratio: 16 / 10; }
+/* Production only: Cygnus's screenshot is framed on its middle, not its top. */
+.ht.center img { object-position: center 40%; }
+.index p { margin: 6px 0 0; color: var(--soft); font-size: 15px; max-width: 58ch; }
+.index .go { padding-right: 16px; display: inline-flex; gap: 8px; align-items: center; }
+.index .go svg { width: 14px; height: 14px; transition: transform .35s var(--ease); }
+.index a:hover .go svg { transform: translate(3px, -3px); }
+
+/* FAQ: the answer opens to its height instead of snapping */
+.faq { border-top: 1px solid var(--rule); }
+details { border-bottom: 1px solid var(--rule); }
+details::details-content { block-size: 0; overflow: clip; transition: block-size .4s var(--ease), content-visibility .4s allow-discrete; }
+details[open]::details-content { block-size: auto; }
+summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 24px 0; }
+summary::-webkit-details-marker { display: none; }
+summary span { font: 300 clamp(26px, 2.6vw, 32px)/1.1 var(--display); text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: 6px; transition: text-decoration-color .25s var(--ease); }
+summary:hover span { text-decoration-color: currentColor; }
+summary svg { width: 18px; height: 18px; flex: none; transition: transform .4s var(--ease); }
+details[open] summary svg { transform: rotate(45deg); }
+details .a { padding: 0 0 28px; max-width: 64ch; color: var(--soft); }
+
 /* Not found (production only: the mockup has no 404) */
 .not-found { display: grid; justify-items: start; gap: 24px; }
 .not-found h1 { font-size: clamp(64px, 9vw, 96px); }
@@ -404,8 +438,9 @@ footer.band { overflow: hidden; }
   .credits div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--rule); }
   .head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px; }
   section.band { padding: 88px 0; }
-  .case { grid-template-columns: 1fr; gap: 28px; }
+  .case, .recog { grid-template-columns: 1fr; gap: 28px; }
   .case:nth-of-type(even) > a { order: 0; }
+  .recog figure { position: static; }
   .tr { grid-template-columns: 1fr; gap: 6px; }
   .flow { grid-template-columns: 1fr 1fr; gap: 40px 20px; }
   .flow .step { font-size: 26px; }
@@ -415,6 +450,9 @@ footer.band { overflow: hidden; }
   .tl .axis { font-size: 10px; letter-spacing: 0; }
   .tl .mark { font-size: 0; }
   .role-row .org { display: block; margin: 6px 0 0; }
+  .index a, .index .item { grid-template-columns: 112px minmax(0, 1fr); gap: 16px; }
+  .index .item > :last-child { grid-column: 2; justify-self: start; }
+  .index .go { display: none; }
   .foot { grid-template-columns: 1fr; padding-top: 72px; padding-bottom: 72px; }
   .foot .r { text-align: left; }
 }

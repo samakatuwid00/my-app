@@ -170,3 +170,32 @@ test.describe('experience', () => {
     })
   })
 })
+
+test.describe('proof and experiments', () => {
+  test('three quotes, no private repo links', async ({ page }) => {
+    await page.goto('/#recognition')
+    await expect(page.locator('#recognition blockquote')).toHaveCount(3)
+    await expect(page.locator('a[href*="samakatuwid00/JARVIS"]')).toHaveCount(0)
+    await expect(page.locator('a[href*="second-brain-vault"]')).toHaveCount(0)
+    await expect(page.locator('#experiments')).toContainText('Cygnus')
+  })
+  test('award is a halftoned picture with its caption', async ({ page }) => {
+    await page.goto('/#recognition')
+    await expect(page.locator('#recognition figure .ht picture img')).toHaveCount(1)
+    await expect(page.locator('#recognition figcaption')).toContainText('Full Stack Developer Award')
+  })
+  test('experiments link only where a public repo exists', async ({ page }) => {
+    await page.goto('/#experiments')
+    await expect(page.locator('#experiments .index > *')).toHaveCount(3)
+    await expect(page.locator('#experiments .index > a')).toHaveCount(1)
+    await expect(page.locator('#experiments .index > a')).toHaveAttribute('href', 'https://github.com/samakatuwid00/sticky-brain')
+    await expect(page.locator('#experiments .index > .item', { hasText: 'Second Brain' })).toContainText('Private')
+    await expect(page.locator('#experiments')).not.toContainText('Link after repo cleanup')
+    await expect(page.locator('#experiments .index .ht img')).toHaveCount(3)
+  })
+  test('faq opens', async ({ page }) => {
+    await page.goto('/#faq')
+    await page.getByText('Where does the system run?').click()
+    await expect(page.getByText(/On a Linux VPS I set up and manage/)).toBeVisible()
+  })
+})

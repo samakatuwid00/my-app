@@ -1,7 +1,10 @@
 import type { CSSProperties } from 'react'
 import { Band } from '../components/layout/Band'
 import { Experience } from '../components/home/Experience'
+import { Experiments } from '../components/home/Experiments'
+import { Faq } from '../components/home/Faq'
 import { Hero } from '../components/home/Hero'
+import { Recognition } from '../components/home/Recognition'
 import { SelectedWork } from '../components/home/SelectedWork'
 import { Services } from '../components/home/Services'
 
@@ -16,18 +19,9 @@ export function HomeView() {
       <SelectedWork />
       <Services />
       <Experience />
-      {/* filled in Task 9 */}
-      <Band id="recognition" tone="light" style={PLACEHOLDER}>
-        <div className="wrap"><h2 className="h2">Recognition</h2></div>
-      </Band>
-      {/* filled in Task 9 */}
-      <Band id="experiments" tone="light" flush style={PLACEHOLDER}>
-        <div className="wrap"><h2 className="h2">Experiments</h2></div>
-      </Band>
-      {/* filled in Task 9 */}
-      <Band id="faq" tone="light" flush style={PLACEHOLDER}>
-        <div className="wrap"><h2 className="h2">FAQ</h2></div>
-      </Band>
+      <Recognition />
+      <Experiments />
+      <Faq />
       {/* filled in Task 10 */}
       <Band id="contact" tone="dark" style={PLACEHOLDER}>
         <div className="wrap"><h2 className="display">Let's talk</h2></div>
