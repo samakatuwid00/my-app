@@ -1,7 +1,7 @@
 export type ProjectStatus = 'live' | 'internal' | 'demo' | 'in-progress' | 'private'
 
-// The approved case-study copy. Only iRIMS-V has one today; a project without
-// `caseStudy` links to its live site instead of a case-study route.
+// Case-study copy. Every featured project has one, built only from facts
+// already on the site; a project without `caseStudy` has no case-study route.
 export type CaseStudy = {
   expansion?: string // e.g. "Integrated Resource Inventory and Mapping System for Region V"
   lede: string

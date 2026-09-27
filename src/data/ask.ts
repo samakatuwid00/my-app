@@ -52,7 +52,7 @@ export const intents: Intent[] = [
     answer: () =>
       `${featured.length} featured systems:\n\n${projectLines().join('\n\n')}\n\n` +
       `Other work, not featured: ${otherWork.map((p) => `${p.title} (${STATUS_NOTE[p.status] ?? p.status})`).join(', ')}.\n\n` +
-      'Full details in the Work and Experiments sections at /#work and /#experiments, and the iRIMS-V case study at /work/irims-v.',
+      'Full details in the Work and Experiments sections at /#work and /#experiments, and case studies at /work/irims-v, /work/eduleave, /work/lrmis and /work/irims-v-library.',
   },
   {
     id: 'availability',
@@ -173,6 +173,6 @@ export function buildContext(): string {
     'Trust signals:',
     ...site.trustBadges.map((badge) => `- ${badge}`),
     '',
-    'Site: one page at / with sections Work, Services, Experience, Recognition, Experiments, FAQ and Contact; case study at /work/irims-v. The résumé downloads from the header.',
+    'Site: one page at / with sections Work, Services, Experience, Recognition, Experiments, FAQ and Contact; case studies at /work/irims-v, /work/eduleave, /work/lrmis and /work/irims-v-library. The résumé downloads from the header.',
   ].join('\n')
 }

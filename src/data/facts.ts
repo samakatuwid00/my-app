@@ -91,6 +91,19 @@ export const projectFacts: ProjectFacts[] = [
     status: 'live',
     featured: true,
     liveUrl: 'https://eduleave.com/welcome',
+    caseStudy: {
+      lede: 'Leave credits and approvals for a DepEd division HR office, moved off paper cards and into one record.',
+      problem:
+        'The HR office tracked leave credits for teaching and non-teaching staff on paper cards, so every balance check and every approval depended on finding and updating the right card by hand.',
+      approach: [
+        'Leave credit monitoring for both teaching and non-teaching staff, in one place.',
+        'Requests route through an approval workflow, and every decision stays on record.',
+        'Excel import, so the office brought its existing records in instead of retyping them.',
+        'Email goes out through Laravel queues over SMTP, and Cloudflare Turnstile keeps bots off the forms.',
+        'HR reports built from the same records the workflow writes.',
+      ],
+      result: 'Live for the division HR office. I built it alone, from requirements to support.',
+    },
   },
   {
     slug: 'lrmis',
@@ -123,6 +136,18 @@ export const projectFacts: ProjectFacts[] = [
     status: 'live',
     featured: true,
     liveUrl: 'https://lrmis.deped.gov.ph/',
+    caseStudy: {
+      lede: 'The national learning-resource platform for Philippine schools, where I owned features inside the platform team.',
+      problem:
+        'A national system has to answer the same questions at every level at once: what each station holds, where resources go, and who may change a record.',
+      approach: [
+        'Owned the multi-level station hierarchy, so every record belongs to one place and rolls up to the level above.',
+        'Owned resource allocation and distribution between those levels.',
+        'Owned role-based access control, so each role sees and changes only what it should.',
+      ],
+      result:
+        'Live nationally for DepEd, with the station hierarchy, allocation and distribution, and role-based access among its core features.',
+    },
   },
   {
     slug: 'irims-v-library',
@@ -160,6 +185,19 @@ export const projectFacts: ProjectFacts[] = [
     // irimsv-library.net, no hyphen after "irims". The résumé PDF's
     // irims-v-library.net is a typo.
     liveUrl: 'https://irimsv-library.net/',
+    caseStudy: {
+      lede: 'Catalog, QR labels, and borrowing for school and office libraries in DepEd Region V.',
+      problem:
+        'School and office libraries tracked borrowing in logbooks. Finding what was available, or who had a resource, meant reading back through the pages.',
+      approach: [
+        'Every resource gets a catalog entry and a QR label.',
+        'Teachers and students reserve with a cart, then borrow by scanning the label.',
+        'Every loan produces a receipt, generated in the browser.',
+        'Member records and inventory tracking, with Chart.js dashboards.',
+        'Vue on Inertia, so the interface runs as one app on top of Laravel.',
+      ],
+      result: 'Live for libraries in DepEd Region V. I designed and built it, and I maintain it.',
+    },
   },
   {
     slug: 'schema-mapper',
