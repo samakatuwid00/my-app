@@ -25,7 +25,7 @@ export function SiteHeader() {
     <>
       <header ref={ref} className={`site ${tone}`}>
         <div className="wrap">
-          <Link className="brand" to="/" aria-label="Roger A. Abay Jr., home">
+          <Link className="brand" to="/" aria-label="Roger Abay, full-stack developer, home">
             <Niko />
             <b>Roger Abay</b>
             <small>Full-stack developer</small>

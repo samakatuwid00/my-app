@@ -22,7 +22,15 @@ body { margin: 0; background: var(--black); font: 400 16px/1.6 var(--body); -web
 body.locked { overflow: hidden; }
 a { color: inherit; }
 img { display: block; max-width: 100%; }
-:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+/* The ring takes the band's ink, not the element's: a solid button's text is
+   the other ink, so currentColor would vanish into the band around it. */
+:focus-visible { outline: 2px solid var(--fg, currentColor); outline-offset: 3px; }
+
+/* Skip link: off screen until a keyboard user reaches it, then above the
+   header and the frame. The ring sits inside, so it shows on either ink. */
+.skip { position: fixed; left: 16px; top: 12px; z-index: 80; padding: 11px 16px; background: var(--paper); color: var(--black); font: 600 14px/1 var(--ui); text-transform: uppercase; letter-spacing: .08em; text-decoration: none; transform: translateY(-200%); }
+.skip:focus { transform: none; outline: 2px solid var(--black); outline-offset: -5px; }
+main:focus { outline: none; }
 
 /* The frame. It disappears into black bands and frames the paper ones. */
 body::after { content: ''; position: fixed; inset: 0; z-index: 70; pointer-events: none; border: 6px solid var(--black); }
@@ -103,7 +111,7 @@ header.site .wrap { display: grid; grid-template-columns: 1fr auto 1fr; align-it
 .thought {
   position: absolute; z-index: 5; left: 104px; bottom: calc(100% - 54px); width: 236px;
   padding: 14px 16px 15px; border-radius: 20px; background: var(--paper); color: var(--black);
-  font: 500 14.5px/1.4 var(--body); box-shadow: 0 12px 32px rgba(0, 0, 0, .45);
+  font: 500 14.5px/1.4 var(--body); box-shadow: 0 12px 32px rgba(11, 11, 11, .45);
   opacity: 0; visibility: hidden; transform: translateY(8px) scale(.94); transform-origin: 14% 100%; pointer-events: none;
   transition: opacity .2s var(--ease), transform .3s var(--ease), visibility 0s .3s;
 }
@@ -269,6 +277,7 @@ details .a { padding: 0 0 28px; max-width: 64ch; color: var(--soft); }
 .tabs button[aria-selected="true"] { color: var(--bg); }
 /* Production only: the ring sits inside the tab, so it shows on the filled one too. */
 .tabs button:focus-visible { outline-offset: -6px; }
+.tabs button[aria-selected="true"]:focus-visible { outline-color: var(--bg); }
 /* The selected fill travels between tabs, so the eye follows the switch */
 .tabs .pill { position: absolute; top: 0; bottom: 0; left: 0; width: calc(100% / 3); background: var(--fg); transform: translateX(calc(var(--i, 0) * 100%)); transition: transform .4s var(--ease); }
 .reach-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; font: 400 14px/1.4 var(--mono); }
@@ -324,6 +333,8 @@ footer.band { overflow: hidden; }
 /* Assistant */
 .ask { position: fixed; right: 22px; bottom: 22px; z-index: 60; background: var(--black); color: var(--paper); border-color: rgba(242,242,240,.35); }
 .ask:hover { background: var(--paper); color: var(--black); border-color: var(--black); }
+/* It floats over both inks, so its ring sits inside it, in the ink it is not. */
+.ask:focus-visible { outline: 2px solid currentColor; outline-offset: -6px; }
 .ask-panel { position: fixed; right: 22px; bottom: 74px; z-index: 60; width: min(380px, calc(100vw - 44px)); background: var(--black); color: var(--paper); border: 1px solid rgba(242,242,240,.3); padding: 20px; display: none; transform-origin: bottom right; }
 .ask-panel.open { display: block; opacity: 1; transform: none; transition: opacity .25s var(--ease), transform .3s var(--ease); }
 .ask-panel .h3 { font-size: 32px; }

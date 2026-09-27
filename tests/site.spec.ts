@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { readFileSync } from 'node:fs'
+import AxeBuilder from '@axe-core/playwright'
 
 test.describe('shell', () => {
   test('home renders the new header brand', async ({ page }) => {
@@ -422,5 +423,126 @@ test.describe('assistant', () => {
     const dialog = page.getByRole('dialog', { name: /ask about my work/i })
     await expect(dialog).toBeVisible()
     await expect(dialog.getByRole('textbox', { name: /your question/i })).toBeFocused()
+  })
+})
+
+test.describe('copy rules', () => {
+  test('no em dashes, no horizontal scroll', async ({ page }) => {
+    for (const path of ['/', '/work/irims-v', '/nope']) {
+      await page.goto(path)
+      await expect(page.locator('h1')).toBeVisible()
+      expect(await page.locator('body').innerText(), path).not.toContain('—')
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), path).toBe(true)
+    }
+  })
+})
+
+test.describe('accessibility', () => {
+  for (const path of ['/', '/work/irims-v', '/nope']) {
+    test(`one main landmark and one h1 on ${path}`, async ({ page }) => {
+      await page.goto(path)
+      await expect(page.locator('h1')).toHaveCount(1)
+      await expect(page.getByRole('main')).toHaveCount(1)
+      await expect(page.getByRole('main').locator('h1')).toHaveCount(1)
+    })
+  }
+
+  for (const path of ['/', '/work/irims-v']) {
+    test(`axe finds no serious or critical violations on ${path}`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.goto(path)
+      await expect(page.locator('h1')).toBeVisible()
+      const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']).analyze()
+      const bad = violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')
+      expect(bad.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([])
+    })
+  }
+
+  test('skip link is first, hidden until focused, and lands on the content', async ({ page }) => {
+    await page.goto('/')
+    const skip = page.getByRole('link', { name: 'Skip to content' })
+    const offscreen = async () => (await skip.boundingBox())!.y + (await skip.boundingBox())!.height <= 0
+    expect(await offscreen()).toBe(true)
+    await page.keyboard.press('Tab')
+    await expect(skip).toBeFocused()
+    expect(await offscreen()).toBe(false)
+    await page.keyboard.press('Enter')
+    await expect(page.getByRole('main')).toBeFocused()
+    await expect(page).toHaveURL('/')
+    await page.keyboard.press('Tab')
+    // the next stop is inside the content, not back in the header
+    expect(await page.evaluate(() => !!document.activeElement?.closest('main'))).toBe(true)
+  })
+
+  test('keyboard reaches every control in order, with the matching feedback', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'the phone header folds its links into the menu')
+    await page.goto('/')
+    const order: string[] = []
+    const checks: Record<string, boolean> = {}
+    for (let i = 0; i < 80; i++) {
+      await page.keyboard.press('Tab')
+      const stop = await page.evaluate(() => {
+        const e = document.activeElement as HTMLElement
+        const zone = e.closest('#me') ? 'portrait'
+          : e.closest('header.site') ? 'header'
+          : e.closest('.role-row') ? 'role'
+          : e.closest('#faq summary') ? 'faq'
+          : e.closest('.tabs') ? 'tab'
+          : e.closest('#contact form') ? 'form'
+          : e.closest('.ask') ? 'ask'
+          : e.closest('.skip') ? 'skip'
+          : e.closest('#work') ? 'work'
+          : e.closest('.hero') ? 'hero'
+          : 'other'
+        return {
+          zone,
+          highlight: zone === 'role' && e.classList.contains('hl') && !!document.querySelector(`.tl .bar.hl, .tl .mark.hl`),
+        }
+      })
+      if (order.at(-1) !== stop.zone) order.push(stop.zone)
+      if (stop.zone === 'portrait') {
+        // the bubble fades in, so wait for it rather than reading it mid-transition
+        await expect(page.locator('#me .thought')).toHaveCSS('opacity', '1')
+        checks.bubble = true
+      }
+      if (stop.zone === 'role') checks.highlight = (checks.highlight ?? true) && stop.highlight
+      if (stop.zone === 'tab') break
+    }
+    expect(order.filter((z) => z !== 'other')).toEqual(['skip', 'header', 'portrait', 'hero', 'work', 'role', 'faq', 'tab'])
+    expect(checks).toEqual({ bubble: true, highlight: true })
+
+    // arrow keys move between the channel tabs, then Tab continues into the form and on to the assistant
+    await page.keyboard.press('ArrowRight')
+    await expect(page.getByRole('tab', { name: 'LinkedIn' })).toBeFocused()
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Tab')
+    await expect(page.locator('#contact form input').first()).toBeFocused()
+    for (let i = 0; i < 12 && !(await page.evaluate(() => !!document.activeElement?.closest('.ask'))); i++) await page.keyboard.press('Tab')
+    await expect(page.getByRole('button', { name: /ask about my work/i })).toBeFocused()
+  })
+
+  test('focus ring shows on both inks', async ({ page }, testInfo) => {
+    await page.goto('/')
+    const ring = async (locator: ReturnType<typeof page.locator>, band: string) => {
+      await locator.focus()
+      await page.keyboard.press('Shift+Tab')
+      await page.keyboard.press('Tab')
+      await expect(locator).toBeFocused()
+      const s = await locator.evaluate((e) => {
+        const c = getComputedStyle(e)
+        return { style: c.outlineStyle, width: c.outlineWidth, color: c.outlineColor, band: getComputedStyle(e.closest('[data-band]')!).backgroundColor }
+      })
+      expect(s.style, band).toBe('solid')
+      expect(s.width, band).toBe('2px')
+      // the ring is the ink the band is not
+      expect(s.color, band).not.toBe(s.band)
+      await locator.scrollIntoViewIfNeeded()
+      await testInfo.attach(`focus-${band}`, { body: await page.screenshot(), contentType: 'image/png' })
+    }
+    await ring(page.getByRole('link', { name: 'View work' }), 'dark')
+    await ring(page.locator('#work').getByRole('link', { name: 'Case study', exact: true }), 'light')
+    await ring(page.locator('#faq summary').first(), 'light-summary')
+    await ring(page.getByRole('button', { name: 'Send message' }), 'dark-solid')
   })
 })
