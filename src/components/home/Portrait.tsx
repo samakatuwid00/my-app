@@ -37,7 +37,7 @@ export function Portrait() {
       }}
     >
       <img className="portrait" src={portrait} width={300} height={300} alt="Portrait of Roger A. Abay Jr." fetchPriority="high" />
-      <div className="thought" aria-live="polite">
+      <div className="thought">
         <span className="dots" aria-hidden="true"><i /><i /><i /></span>
         <p id="thought-text">{line}</p>
       </div>

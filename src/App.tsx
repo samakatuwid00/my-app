@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, ScrollRestoration, type Location } from 'react-router-dom'
 import { AskButton } from './components/ask/AskButton'
 import { SiteFooter } from './components/layout/SiteFooter'
 import { SiteHeader } from './components/layout/SiteHeader'
@@ -15,11 +15,18 @@ function skipToContent(e: MouseEvent<HTMLAnchorElement>) {
   main.scrollIntoView()
 }
 
+// Every page load starts on a history entry keyed "default", so keying saved
+// offsets on location.key alone would hand one page's offset to the next page
+// loaded in the tab. That first entry is keyed by its URL instead.
+const scrollKey = (location: Location) =>
+  location.key === 'default' ? location.pathname + location.hash : location.key
+
 export default function App() {
   return (
     <>
       <a className="skip" href="#main" onClick={skipToContent}>Skip to content</a>
       <SiteHeader />
+      <ScrollRestoration getKey={scrollKey} />
       <ScrollToHash />
       <main id="main" tabIndex={-1}>
         <Outlet />

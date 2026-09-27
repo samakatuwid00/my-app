@@ -1,6 +1,14 @@
 import { test, expect } from '@playwright/test'
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import AxeBuilder from '@axe-core/playwright'
+import { intents } from '../src/data/ask'
+import { skillGroups } from '../src/data/facts'
+import { resolveLocally } from '../src/services/askRouter'
+
+const filesUnder = (dir: string): string[] =>
+  readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? filesUnder(join(dir, e.name)) : [join(dir, e.name)]))
+const answer = (id: string) => intents.find((i) => i.id === id)!.answer()
 
 test.describe('shell', () => {
   test('home renders the new header brand', async ({ page }) => {
@@ -21,11 +29,47 @@ test.describe('type and ink', () => {
   })
 })
 
-test('assistant context excludes hidden projects', () => {
+test('assistant context excludes Eurasian and the resort claims only it backed', () => {
   const context = readFileSync('api/context.ts', 'utf8')
   expect(context).not.toContain('Eurasian')
+  expect(context).not.toMatch(/resort|hospitality/i)
   expect(context).toContain('iRIMS-V Library System')
   expect(context).toContain('Cygnus')
+})
+
+test('Eurasian is nowhere in the shipped source', () => {
+  // Hiding it at render time still shipped it in the client bundle.
+  const hits = [...filesUnder('src'), ...filesUnder('api')].filter((f) => /eurasian/i.test(readFileSync(f, 'latin1')))
+  expect(hits).toEqual([])
+})
+
+test.describe('assistant answers match what the site shows', () => {
+  test('location says where, and makes no remote-work claim', () => {
+    expect(answer('location')).not.toMatch(/remote/i)
+    expect(resolveLocally('do you work remote?') ?? '').not.toMatch(/remote/i)
+    expect(resolveLocally('where are you based?')).toMatch(/Pasacao/)
+  })
+  test('projects counts only the featured systems and keeps experiments apart', () => {
+    const text = answer('projects')
+    expect(text).toMatch(/^4 featured systems:/)
+    const [featured, rest] = text.split(/\n\n(?=Other work)/)
+    for (const title of ['iRIMS-V', 'EDULEAVE', 'LRMIS', 'iRIMS-V Library System']) expect(featured).toContain(`${title} –`)
+    for (const title of ['schema_mapper', 'iRIMS-V Library app', 'Cygnus', 'Sticky Brain', 'Second Brain']) {
+      expect(featured).not.toContain(title)
+      expect(rest).toContain(title)
+    }
+    expect(rest).not.toMatch(/production/i)
+  })
+  test('government lists only live systems as built', () => {
+    const text = answer('government')
+    for (const title of ['iRIMS-V', 'EDULEAVE', 'LRMIS', 'iRIMS-V Library System']) expect(text).toContain(`${title} –`)
+    expect(text).not.toContain('iRIMS-V Library app')
+  })
+  test('"also shipped in production" comes only from live and internal systems', () => {
+    const also = skillGroups.find((g) => g.label === 'Also shipped in production')!.items
+    expect(also).toContain('Apache ECharts')
+    for (const name of ['ClickHouse Three', 'Flutter', 'Electron', 'Kokoro (TTS)', 'TurboVec', 'Hermes CLI', 'Obsidian']) expect(also).not.toContain(name)
+  })
 })
 
 test.describe('navigation', () => {
@@ -57,6 +101,96 @@ test.describe('navigation', () => {
     await page.keyboard.press('Escape')
     await expect(page.getByRole('dialog', { name: 'Menu' })).toBeHidden()
   })
+  test('phone menu traps focus and hands it back to the Menu button', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'phone only')
+    await page.goto('/')
+    const button = page.getByRole('button', { name: 'Menu' })
+    const sheet = page.getByRole('dialog', { name: 'Menu' })
+    await button.click()
+    await expect(sheet).toBeVisible()
+    const inSheet = () => page.evaluate(() => !!document.activeElement?.closest('#sheet'))
+    expect(await inSheet()).toBe(true)
+    // more presses than the sheet has stops, both ways: focus never leaves
+    for (let i = 0; i < 10; i++) {
+      await page.keyboard.press('Tab')
+      expect(await inSheet(), `Tab ${i}`).toBe(true)
+    }
+    for (let i = 0; i < 10; i++) {
+      await page.keyboard.press('Shift+Tab')
+      expect(await inSheet(), `Shift+Tab ${i}`).toBe(true)
+    }
+    await sheet.getByRole('button', { name: 'Close' }).click()
+    await expect(sheet).toBeHidden()
+    await expect(button).toBeFocused()
+  })
+  test('Back returns to the work section where the visitor left it', async ({ page }) => {
+    await page.goto('/#work')
+    await expect.poll(() => page.evaluate(() => Math.abs(document.getElementById('work')!.getBoundingClientRect().top))).toBeLessThan(80)
+    // Read on past the section's top before leaving, so a re-run of the #work
+    // jump on Back (the bug) lands somewhere else than where the visitor was.
+    await page.evaluate(() => window.scrollBy(0, 240))
+    const left = await page.evaluate(() => window.scrollY)
+    await page.locator('#work a[data-shot="irims-v"]').click()
+    await expect(page).toHaveURL('/work/irims-v')
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+    await page.goBack()
+    await expect(page).toHaveURL('/#work')
+    await expect(page.locator('#work')).toBeInViewport()
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+    await expect.poll(() => page.evaluate((y) => Math.abs(window.scrollY - y), left)).toBeLessThan(8)
+  })
+  test('a fresh load of another page starts at its top, not where the last page was left', async ({ page }) => {
+    // Both page loads are the tab's first history entry (key "default"), so a
+    // restorer keyed on location.key alone hands the old page's offset to the new one.
+    await page.goto('/#experience')
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(500)
+    await page.goto('/work/irims-v')
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    await page.waitForTimeout(300)
+    expect(await page.evaluate(() => window.scrollY)).toBe(0)
+  })
+  test('the 404 is noindex, the home page is not', async ({ page }) => {
+    await page.goto('/nope')
+    await expect(page.getByRole('heading', { name: /not found/i })).toBeVisible()
+    await expect(page.locator('head meta[name="robots"][content="noindex"]')).toHaveCount(1)
+    await page.getByRole('link', { name: 'Back home' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Roger A\.\s*Abay Jr\./)
+    await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
+    await page.goto('/')
+    await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
+  })
+})
+
+test.describe('without JavaScript', () => {
+  test.use({ javaScriptEnabled: false })
+  test('noscript still says who, what, and how to reach him', async ({ page }) => {
+    await page.goto('/')
+    const ns = page.locator('.noscript')
+    await expect(ns).toBeVisible()
+    await expect(ns).toContainText('Roger A. Abay Jr.')
+    await expect(ns).toContainText('Full-Stack Developer')
+    await expect(ns.locator('a[href="mailto:abaygherjr07@gmail.com"]')).toHaveCount(1)
+    await expect(ns.locator('a[href="https://github.com/samakatuwid00"]')).toHaveCount(1)
+    await expect(ns.locator('a[href^="https://linkedin.com/in/"]')).toHaveCount(1)
+    await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary')
+  })
+})
+
+test.describe('selection', () => {
+  test('selected text takes the band ink, inverted, on both inks', async ({ page }) => {
+    await page.goto('/')
+    const sel = (selector: string) => page.locator(selector).first().evaluate((el) => {
+      const s = getComputedStyle(el, '::selection')
+      const b = getComputedStyle(el.closest('[data-band]')!)
+      return { bg: s.backgroundColor, color: s.color, fg: b.color, band: b.backgroundColor }
+    })
+    for (const selector of ['.hero p', '#work .head p']) {
+      const s = await sel(selector)
+      expect(s.bg, selector).toBe(s.fg)
+      expect(s.color, selector).toBe(s.band)
+    }
+    expect((await sel('.hero p')).bg).not.toBe((await sel('#work .head p')).bg)
+  })
 })
 
 test.describe('hero', () => {
@@ -74,6 +208,11 @@ test.describe('hero', () => {
     await page.mouse.move(5, 5)
     await page.hover('#me')
     await expect(page.locator('#thought-text')).toHaveText('Still shipping updates to iRIMS-V.')
+  })
+  test('the thought bubble is described, not announced', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.locator('#me')).toHaveAttribute('aria-describedby', 'thought-text')
+    await expect(page.locator('#me [aria-live]')).toHaveCount(0)
   })
   test('portrait thought toggles on tap', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'touch')
@@ -154,6 +293,24 @@ test.describe('experience', () => {
     await expect(page.locator('#timeline .bar')).toHaveCount(4)
     await expect(page.locator('.role-row')).toHaveCount(4)
     await expect(page.locator('.role-row > .ui').first()).toHaveText('2025 – Present')
+  })
+  test('axis labels every year through 2027 today', async ({ page }) => {
+    await page.clock.setFixedTime(new Date('2026-09-27T12:00:00'))
+    await page.goto('/#experience')
+    await expect(page.locator('#timeline .axis')).toHaveText(['2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027'])
+  })
+  test('axis grows past 2027 and Now stays on it', async ({ page }) => {
+    await page.clock.setFixedTime(new Date('2029-11-15T12:00:00'))
+    await page.goto('/#experience')
+    const axis = page.locator('#timeline .axis')
+    await expect(axis).toHaveCount(12)
+    await expect(axis.last()).toHaveText('2030')
+    const now = await page.locator('#timeline').evaluate((el) => parseFloat(getComputedStyle(el).getPropertyValue('--now')))
+    expect(now).toBeGreaterThan(0)
+    expect(now).toBeLessThanOrEqual(100)
+    // one grid column per axis year, plus the label column
+    const cols = await page.locator('#timeline').evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').length)
+    expect(cols).toBe(13)
   })
   test('row hover highlights its bar', async ({ page, isMobile }) => {
     test.skip(isMobile, 'hover')

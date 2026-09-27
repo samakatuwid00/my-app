@@ -25,6 +25,8 @@ img { display: block; max-width: 100%; }
 /* The ring takes the band's ink, not the element's: a solid button's text is
    the other ink, so currentColor would vanish into the band around it. */
 :focus-visible { outline: 2px solid var(--fg, currentColor); outline-offset: 3px; }
+/* Selected text inverts the band's ink, so it reads on either ground. */
+::selection { background: var(--fg, var(--paper)); color: var(--bg, var(--black)); }
 
 /* Skip link: off screen until a keyboard user reaches it, then above the
    header and the frame. The ring sits inside, so it shows on either ink. */
@@ -193,7 +195,7 @@ section.band.flush { padding-top: 0; }
 .tags li:hover { border-color: var(--fg); }
 
 /* Experience: the timeline carries the dates, the rows carry one line each */
-.tl { margin: 0 0 72px; display: grid; grid-template-columns: 170px repeat(9, minmax(0, 1fr)); row-gap: 12px; align-items: center; }
+.tl { margin: 0 0 72px; display: grid; grid-template-columns: 170px repeat(var(--years, 9), minmax(0, 1fr)); row-gap: 12px; align-items: center; }
 .tl .lab { grid-column: 1; color: var(--soft); }
 .tl .bar { height: 22px; background: var(--fg); transform-origin: left; }
 .tl .bar.now { clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%); }
@@ -207,8 +209,10 @@ section.band.flush { padding-top: 0; }
 .tl { padding-top: 30px; }
 .tl .lab, .tl .bar, .tl .mark { transition: opacity .3s var(--ease); }
 .tl.focus [data-k]:not(.hl) { opacity: .2; }
-/* --now is set on the figure from today's date: how far along the 2019-2027
-   axis it sits. 86% was the mockup's fixed late-2026 value. */
+/* --now is set on the figure from today's date: how far along the axis
+   (2019 through 2027, or next year once that passes) it sits, clamped to
+   0-100%. 86% was the mockup's fixed late-2026 value. --years is the axis
+   length in columns. */
 .tl .elapsed { align-self: start; margin-top: 5px; height: 2px; width: var(--now, 86%); background: var(--fg); transform-origin: left; }
 .tl .now-line { position: relative; pointer-events: none; align-self: stretch; }
 .tl .now-line::before { content: ''; position: absolute; left: var(--now, 86%); top: -6px; bottom: -14px; border-left: 1px dashed var(--fg); }
@@ -560,7 +564,7 @@ footer.band { overflow: hidden; }
   .flow { grid-template-columns: 1fr 1fr; gap: 40px 20px; }
   .flow .step { font-size: 26px; }
   .stack > div, .role-row { grid-template-columns: 1fr; gap: 10px; }
-  .tl { grid-template-columns: 92px repeat(9, minmax(0, 1fr)); row-gap: 10px; }
+  .tl { grid-template-columns: 92px repeat(var(--years, 9), minmax(0, 1fr)); row-gap: 10px; }
   .tl .lab { font-size: 11px; letter-spacing: .04em; }
   .tl .axis { font-size: 10px; letter-spacing: 0; }
   .tl .mark { font-size: 0; }

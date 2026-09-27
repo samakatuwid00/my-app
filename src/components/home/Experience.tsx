@@ -5,11 +5,15 @@ import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { Band } from '../layout/Band'
 
 const FIRST = 2019
-const YEARS = 9                                  // 2019 through 2027, one grid column each
-const col = (year: number) => year - FIRST + 2   // column 1 holds the labels
 const now = new Date()
+// The axis runs through 2027, or through next year once today passes it, so
+// Now always has a year ahead of it. One grid column per year.
+const LAST = Math.max(2027, now.getFullYear() + 1)
+const YEARS = LAST - FIRST + 1
+const col = (year: number) => year - FIRST + 2   // column 1 holds the labels
 // How far today sits along the axis; the elapsed rule and the Now line read it.
-const NOW_PCT = `${(((now.getFullYear() - FIRST) + now.getMonth() / 12) / YEARS) * 100}%`
+const nowPct = (((now.getFullYear() - FIRST) + now.getMonth() / 12) / YEARS) * 100
+const NOW_PCT = `${Math.min(100, Math.max(0, nowPct))}%`
 
 const entry = (key: string) => {
   const found = experience.find((e) => e.key === key)
@@ -47,7 +51,7 @@ export function Experience() {
           <h2 className="h2">Experience</h2>
           <p>Feature ownership inside a national team, then end-to-end ownership of production systems and the servers they run on.</p>
         </div>
-        <figure ref={ref} id="timeline" className={tlClass} aria-label="Timeline from 2019 to the present" style={{ '--now': NOW_PCT } as CSSProperties}>
+        <figure ref={ref} id="timeline" className={tlClass} aria-label="Timeline from 2019 to the present" style={{ '--now': NOW_PCT, '--years': YEARS } as CSSProperties}>
           <span className={`lab ui${hl('r5')}`} {...link('r5')} style={{ gridRow: 1 }}>Region V</span>
           {bar('r5', 1, r5.start!, FIRST + YEARS, 'now')}
           <span className={`lab ui${hl('co')}`} {...link('co')} style={{ gridRow: 2 }}>Central Office</span>
@@ -60,7 +64,7 @@ export function Experience() {
           {bar('lg', 5, lg.start!, lg.end!, 'intern', '.24s')}
           <span className="now-line" aria-hidden="true" style={{ gridRow: '1 / 6', gridColumn: `2 / ${YEARS + 2}` }}><b className="ui">Now</b></span>
           <span className="elapsed" aria-hidden="true" style={{ gridRow: 6, gridColumn: `2 / ${YEARS + 2}` }} />
-          {Array.from({ length: YEARS - 1 }, (_, i) => (
+          {Array.from({ length: YEARS }, (_, i) => (
             <span key={i} className="axis ui" style={{ gridColumn: i + 2 }}>{FIRST + i}</span>
           ))}
           <figcaption className="key ui"><span><i className="k-work" />Work</span><span><i className="k-edu" />Education</span><span><i className="k-intern" />Internship</span></figcaption>
