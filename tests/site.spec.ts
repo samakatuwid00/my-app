@@ -146,7 +146,9 @@ test.describe('navigation', () => {
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(500)
     await page.goto('/work/irims-v')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-    await page.waitForTimeout(300)
+    // Restoration runs in a layout effect on the first render; two frames later
+    // any offset it applied is already on the page.
+    await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))))
     expect(await page.evaluate(() => window.scrollY)).toBe(0)
   })
   test('the 404 is noindex, the home page is not', async ({ page }) => {
@@ -244,11 +246,20 @@ test.describe('work', () => {
     await page.goto('/#work')
     await expect(page.locator('#work .head p')).toHaveText(/^Four systems in production\./)
   })
-  test('only iRIMS-V has a case study; the rest preview to their live site', async ({ page }) => {
+  test('every featured project opens its case study, not its live site', async ({ page }) => {
     await page.goto('/#work')
-    await expect(page.locator('#work .btn', { hasText: 'Case study' })).toHaveCount(1)
-    await expect(page.locator('#work article.case').first().locator('a[data-shot]')).toHaveAttribute('href', '/work/irims-v')
-    await expect(page.locator('#work article.case').nth(1).locator('a:has(.ht)')).toHaveAttribute('href', 'https://eduleave.com/welcome')
+    const slugs = ['irims-v', 'eduleave', 'lrmis', 'irims-v-library']
+    await expect(page.locator('#work .btn', { hasText: 'Case study' })).toHaveCount(slugs.length)
+    const shots = page.locator('#work article.case a:has(.ht)')
+    await expect(shots).toHaveCount(slugs.length)
+    for (const [i, slug] of slugs.entries()) await expect(shots.nth(i)).toHaveAttribute('href', `/work/${slug}`)
+  })
+  test('each case study page renders its own copy', async ({ page }) => {
+    for (const [slug, title] of [['eduleave', 'EDULEAVE'], ['lrmis', 'LRMIS'], ['irims-v-library', 'iRIMS-V Library System']]) {
+      await page.goto(`/work/${slug}`)
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(title)
+      await expect(page.locator('.cs-sec h2')).toHaveText(['Problem', 'Approach', 'Result'])
+    }
   })
   test('screenshots are halftoned grayscale', async ({ page }) => {
     await page.goto('/#work')
@@ -423,15 +434,18 @@ test.describe('case study', () => {
     for (const link of await back.all()) await expect(link).toHaveAttribute('href', '/#work')
   })
   test('project without a case study is a 404', async ({ page }) => {
-    await page.goto('/work/lrmis')
+    await page.goto('/work/schema-mapper')
     await expect(page.getByRole('heading', { name: /not found/i })).toBeVisible()
   })
-  test('no placeholder metric rows and no self-referencing next link', async ({ page }) => {
+  test('no placeholder metric rows; next walks the case studies and wraps', async ({ page }) => {
     await page.goto('/work/irims-v')
     await expect(page.locator('.cs-sec h2')).toHaveText(['Problem', 'Approach', 'Result'])
     await expect(page.locator('.cs-sec li')).toHaveCount(5)
     await expect(page.locator('.cs-body .tr, .todo')).toHaveCount(0)
-    await expect(page.getByRole('link', { name: /^next/i })).toHaveCount(0)
+    await expect(page.getByRole('link', { name: /^next/i })).toHaveAttribute('href', '/work/eduleave')
+    await page.goto('/work/irims-v-library')
+    await expect(page.getByRole('link', { name: /^next/i })).toHaveAttribute('href', '/work/irims-v')
+    await page.goto('/work/irims-v')
     await expect(page.locator('.cs-meta a.live')).toHaveAttribute('href', 'https://irimsv.net/')
   })
   test('title names the project, home restores the default', async ({ page }) => {
@@ -698,8 +712,32 @@ test.describe('accessibility', () => {
       await testInfo.attach(`focus-${band}`, { body: await page.screenshot(), contentType: 'image/png' })
     }
     await ring(page.getByRole('link', { name: 'View work' }), 'dark')
-    await ring(page.locator('#work').getByRole('link', { name: 'Case study', exact: true }), 'light')
+    await ring(page.locator('#work').getByRole('link', { name: 'Case study', exact: true }).first(), 'light')
     await ring(page.locator('#faq summary').first(), 'light-summary')
     await ring(page.getByRole('button', { name: 'Send message' }), 'dark-solid')
   })
+})
+
+test.describe('back to top', () => {
+  test('appears after a screen of scrolling and returns to the top with focus in the content', async ({ page }) => {
+    await page.goto('/')
+    const button = page.getByRole('button', { name: 'Back to top' })
+    await expect(button).toBeHidden()
+    await page.evaluate(() => window.scrollTo(0, window.innerHeight * 2))
+    await expect(button).toBeVisible()
+    await button.click()
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+    await expect(page.getByRole('main')).toBeFocused()
+    await expect(button).toBeHidden()
+  })
+})
+
+test('experience role rows are named groups', async ({ page }) => {
+  await page.goto('/#experience')
+  const rows = page.locator('.role-row')
+  await expect(rows).toHaveCount(4)
+  for (const row of await rows.all()) {
+    await expect(row).toHaveAttribute('role', 'group')
+    await expect(row).toHaveAccessibleName(/\S/)
+  }
 })

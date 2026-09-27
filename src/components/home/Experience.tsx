@@ -71,10 +71,10 @@ export function Experience() {
         </figure>
         <div className="roles">
           {experience.map((e) => (
-            <div key={e.key} className={`role-row${hl(e.key)}`} tabIndex={0} {...link(e.key)}>
+            <div key={e.key} className={`role-row${hl(e.key)}`} role="group" aria-labelledby={`role-${e.key}`} tabIndex={0} {...link(e.key)}>
               <span className="ui">{e.period}</span>
               <div>
-                <div className="role">{e.role} <span className="org">{e.organization}</span></div>
+                <div className="role" id={`role-${e.key}`}>{e.role} <span className="org">{e.organization}</span></div>
                 <p>{e.summary}</p>
                 {e.award && <span className="award ui"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><circle cx="12" cy="9" r="6" /><path d="m8.5 14-1.5 7 5-3 5 3-1.5-7" /></svg>{e.award}</span>}
               </div>
