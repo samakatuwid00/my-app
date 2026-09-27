@@ -12,8 +12,12 @@ export type Intent = {
   answer: () => string
 }
 
+// Hidden projects are never sent to the assistant, in the canned answers or in
+// the system prompt.
+const visibleFacts = projectFacts.filter((p) => !p.hidden)
+
 const projectLines = () =>
-  projectFacts.map((p) => `${p.title} – ${p.problem ?? p.description} Stack: ${p.technologies.join(', ')}.`)
+  visibleFacts.map((p) => `${p.title} – ${p.caseStudy?.problem ?? p.description} Stack: ${p.technologies.join(', ')}.`)
 
 export const suggestions = ["what's your stack?", 'show me a government system', 'are you available?']
 
@@ -30,7 +34,7 @@ export const intents: Intent[] = [
     patterns: [/\bgov(ernment)?\b/, /\bdeped\b/, /\bpublic sector\b/, /\blgu\b/],
     answer: () =>
       'Government systems built for DepEd:\n\n' +
-      projectFacts
+      visibleFacts
         .filter((p) => /IRIMS|LRMIS|EDULEAVE/i.test(p.title))
         .map((p) => `${p.title} – ${p.description}${p.liveUrl ? `\n${p.liveUrl}` : ''}`)
         .join('\n\n'),
@@ -38,7 +42,7 @@ export const intents: Intent[] = [
   {
     id: 'projects',
     patterns: [/\bprojects?\b/, /\bbuilt\b/, /\bportfolio\b/, /\bsystems?\b/, /\bwork(ed)? on\b/],
-    answer: () => `${projectFacts.length} featured systems:\n\n${projectLines().join('\n\n')}\n\nFull details at /projects.`,
+    answer: () => `${visibleFacts.length} featured systems:\n\n${projectLines().join('\n\n')}\n\nFull details at /projects.`,
   },
   {
     id: 'availability',
@@ -122,7 +126,7 @@ export function buildContext(): string {
       ...(block.points ?? []).map((point) => `  · ${point.term} – ${point.detail}`),
     ]),
     '',
-    `Education: ${education.degree}, ${education.honors} – ${education.school}, ${education.location}, ${education.period}`,
+    `Education: ${education.degree}, ${education.honors} – ${education.school}, ${education.period}`,
     '',
     'Stats:',
     ...stats.map((s) => `- ${s.label}: ${s.value}`),
@@ -130,7 +134,8 @@ export function buildContext(): string {
     'Experience:',
     ...experience.flatMap((e) => [
       `- ${e.role}, ${e.organization} (${e.period})`,
-      ...e.points.map((p) => `  · ${p}`),
+      `  · ${e.summary}`,
+      ...(e.award ? [`  · Award: ${e.award}`] : []),
     ]),
     '',
     'Skills:',
@@ -140,15 +145,16 @@ export function buildContext(): string {
     ...services.map((s) => `- ${s.name}: ${s.pitch}`),
     '',
     'Projects:',
-    ...projectFacts.flatMap((p) => [
-      `- ${p.title} (${p.status}${p.liveUrl ? `, ${p.liveUrl}` : ''})`,
+    ...visibleFacts.flatMap((p) => [
+      `- ${p.title} (${p.category}; ${p.status}${p.liveUrl ? `, ${p.liveUrl}` : ''}${p.githubUrl ? `, ${p.githubUrl}` : ''})`,
       `  ${p.description}`,
-      ...(p.sector ? [`  Sector: ${p.sector}`] : []),
-      ...(p.capabilities ? [`  Capabilities: ${p.capabilities.join(', ')}`] : []),
-      ...(p.problem ? [`  Problem: ${p.problem}`] : []),
-      ...(p.approach ? [`  Approach: ${p.approach}`] : []),
-      ...(p.outcome ? [`  Result: ${p.outcome}`] : []),
-      `  Features: ${p.features.join(', ')}`,
+      ...(p.client ? [`  Client: ${p.client}`] : []),
+      ...(p.role ? [`  Role: ${p.role}`] : []),
+      ...(p.caseStudy?.expansion ? [`  Full name: ${p.caseStudy.expansion}`] : []),
+      ...(p.caseStudy ? [`  Problem: ${p.caseStudy.problem}`] : []),
+      ...(p.caseStudy ? [`  Approach: ${p.caseStudy.approach.join(' ')}`] : []),
+      ...(p.caseStudy ? [`  Result: ${p.caseStudy.result}`] : []),
+      ...(p.features.length ? [`  Features: ${p.features.join(', ')}`] : []),
       `  Stack: ${p.technologies.join(', ')}`,
     ]),
     '',

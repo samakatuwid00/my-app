@@ -1,10 +1,21 @@
 import type { ProjectFacts } from '../types/portfolio'
 
+// Row order is the render order: the featured rows appear on the home page in
+// this order, then the "more work" table, then the experiments index.
+//
+// `description`, `client`, and `role` are copied verbatim from the approved
+// mockup (docs/redesign-mockup-v2.html): the featured `article.case` blocks, the
+// "more work" table rows, and the experiments index. Do not paraphrase them.
 export const projectFacts: ProjectFacts[] = [
   {
-    title: 'IRIMS-V',
+    slug: 'irims-v',
+    title: 'iRIMS-V',
+    category: 'Regional inventory',
     description:
-      'Learning Resource Information Management System for inventory, monitoring, dashboards, and reporting across education offices.',
+      'Learning resources across a region lived in a spreadsheet per office, so no one could see totals or shortages. iRIMS-V tracks every print and non-print resource from region to division, district, and school, and reports coverage against enrolment.',
+    client: 'DepEd Region V',
+    role: 'Designed, built, deployed, maintain',
+    stack: 'Laravel 12, PostgreSQL, Blade, htmx, Docker',
     features: [
       'Inventory Tracking',
       'User Role Management',
@@ -29,12 +40,33 @@ export const projectFacts: ProjectFacts[] = [
       'REST API',
     ],
     status: 'live',
+    featured: true,
     liveUrl: 'https://irimsv.net/',
+    caseStudy: {
+      expansion: 'Integrated Resource Inventory and Mapping System for Region V',
+      lede: "One inventory for every learning resource in DepEd Region V, from the regional dashboard down to one school's shelf.",
+      problem:
+        'Each office kept its own spreadsheet of learning resources. The regional office could not see totals, shortages, or where resources had moved without asking every office for a fresh file, and the files never matched.',
+      approach: [
+        'Modeled the region as a four-level station hierarchy, so every record belongs to one place and rolls up to the level above.',
+        'PostgreSQL full-text search and triggers keep search fast and totals consistent as records change.',
+        'Role-based access, so each office edits only its own stations while the region sees everything.',
+        'Excel import, so offices moved their existing spreadsheets in instead of retyping them.',
+        'ECharts dashboards for the questions the regional office asks most.',
+      ],
+      result:
+        'Launched regionally and recognized with the Full Stack Developer Award from the Regional Director. I still own deployment and releases.',
+    },
   },
   {
+    slug: 'eduleave',
     title: 'EDULEAVE',
+    category: 'HR workflow',
     description:
-      'Division-level HR platform built to automate leave credit monitoring for teaching and non-teaching personnel, replacing manual records with a clearer digital workflow.',
+      'A DepEd division HR office tracked leave credits for teaching and non-teaching staff on paper cards. EDULEAVE replaced them with a workflow where requests route for approval and every decision stays on record.',
+    client: 'DepEd division HR office, on contract',
+    role: 'Sole developer, requirements to support',
+    stack: 'Laravel 12, MySQL, Tailwind, Queues',
     features: [
       'Leave Credit Monitoring',
       'Approval Workflow',
@@ -57,70 +89,18 @@ export const projectFacts: ProjectFacts[] = [
       'SMTP',
     ],
     status: 'live',
+    featured: true,
     liveUrl: 'https://eduleave.com/welcome',
   },
   {
-    title: 'Eurasian',
-    description:
-      'End-to-end resort operations platform built to streamline reservations, booking workflows, guest records, reporting, and management visibility.',
-    features: [
-      'Online Reservations',
-      'Booking Workflows',
-      'Business Automation',
-      'Management Dashboards',
-      'AI Chatbot',
-      'Dashboard Projection',
-    ],
-    technologies: [
-      'PHP',
-      'MySQL',
-      'JavaScript',
-      'Bootstrap',
-      'Apache',
-      'PHPMailer',
-      'SMTP',
-      'ApexCharts',
-      'FullCalendar',
-      'DataTables',
-      'WhatsApp Cloud API',
-      'REST API',
-    ],
-    status: 'live',
-    liveUrl: 'https://eurasian.freehosting.dev/',
-  },
-  {
-    title: 'IRIMS-V Library',
-    description:
-      'A smart library management platform designed to organize learning resources, monitor inventory, streamline borrowing records, and support efficient library operations for schools and offices.',
-    features: [
-      'Catalog Management',
-      'Resource Reservations',
-      'Member Records',
-      'QR Code Support',
-      'Inventory Tracking',
-    ],
-    technologies: [
-      'Laravel',
-      'PHP',
-      'Vue.js',
-      'Inertia.js',
-      'Ziggy',
-      'Tailwind CSS',
-      'Vite',
-      'SQLite',
-      'Chart.js',
-      'Bacon QR Code',
-      'html5-qrcode',
-      'html2pdf.js',
-      'Pest (PHP testing)',
-    ],
-    status: 'live',
-    liveUrl: 'https://irimsv-library.net/',
-  },
-  {
+    slug: 'lrmis',
     title: 'LRMIS',
+    category: 'National platform',
     description:
-      'Full-stack national web application for managing learning resources across educational institutions in the Philippines.',
+      'The national system for managing learning resources across Philippine schools. I owned features inside the platform team: the station hierarchy, allocation and distribution, and role-based access.',
+    client: 'DepEd Central Office',
+    role: 'Feature owner, platform team',
+    stack: 'Laravel, Blade, Tailwind, Sheets API',
     features: [
       'Dashboard Analytics',
       'Multi-Level Station Hierarchy',
@@ -144,40 +124,123 @@ export const projectFacts: ProjectFacts[] = [
       'Google Sheets API',
     ],
     status: 'live',
+    featured: true,
     liveUrl: 'https://lrmis.deped.gov.ph/',
   },
   {
-    title: 'JARVIS HUD',
+    slug: 'irims-v-library',
+    title: 'iRIMS-V Library System',
+    category: 'Library circulation',
     description:
-      'Voice-controlled AI assistant interface built around a holographic canvas orb. Wake-word voice in, spoken replies out, and scan / analyze / schematic visualization modes — all animated in pure canvas, with a local Whisper + Ollama brain behind it.',
+      'School and office libraries tracked borrowing on logbooks. The Library System gives every resource a catalog entry and a QR label, so teachers and students reserve with a cart, borrow by scan, and get a receipt.',
+    client: 'DepEd Region V',
+    role: 'Designed, built, maintain',
+    stack: 'Laravel 12, Vue, Vite',
     features: [
-      'Holographic canvas orb (pure JS animation)',
-      'Voice input & speech output',
-      'Scan / Analyze / Schematic modes',
-      'Live telemetry over WebSocket',
-      'Local Whisper speech-to-text',
+      'Catalog Management',
+      'Resource Reservations',
+      'Member Records',
+      'QR Code Support',
+      'Inventory Tracking',
     ],
     technologies: [
-      'JavaScript',
-      'Canvas',
-      'Python',
-      'WebSockets',
-      'Whisper (STT)',
-      'Edge TTS',
-      'Ollama (local LLM)',
-      'uvicorn',
+      'Laravel',
+      'PHP',
+      'Vue.js',
+      'Inertia.js',
+      'Ziggy',
+      'Tailwind CSS',
+      'Vite',
+      'SQLite',
+      'Chart.js',
+      'Bacon QR Code',
+      'html5-qrcode',
+      'html2pdf.js',
+      'Pest (PHP testing)',
     ],
-    status: 'demo',
-    githubUrl: 'https://github.com/samakatuwid00/JARVIS',
-    media: {
-      poster: '/projects/jarvis-hud/jarvis-speaking.png',
-      video: '/projects/jarvis-hud/jarvis-hud.webm',
-    },
+    status: 'live',
+    featured: true,
+    // irimsv-library.net, no hyphen after "irims". The résumé PDF's
+    // irims-v-library.net is a typo.
+    liveUrl: 'https://irimsv-library.net/',
   },
   {
-    title: 'Sticky Brain',
+    slug: 'schema-mapper',
+    title: 'schema_mapper',
+    category: 'Data integration',
     description:
-      'Electron desktop session board that captures AI-agent sessions, triages tasks, and ships a pixel-art pet. Everything persists to local JSON, tasks launch straight into a CLI chat, and the pet shrinks the whole app to a floating companion.',
+      'Integration service that publishes iRIMS-V records into LRMIS staging, so offices do not enter the same data twice. Python, FastAPI, PostgreSQL, MySQL, Docker Compose.',
+    stack: 'Python, FastAPI, PostgreSQL, MySQL, Docker Compose',
+    features: ['Publishes iRIMS-V records into LRMIS staging'],
+    technologies: ['Python', 'FastAPI', 'PostgreSQL', 'MySQL', 'Docker Compose'],
+    status: 'internal',
+  },
+  {
+    slug: 'irims-v-library-app',
+    title: 'iRIMS-V Library app',
+    category: 'Mobile',
+    description:
+      'Flutter app for teachers and students, backed by a new token API on the library system. Core phases done; APK and a school pilot next.',
+    stack: 'Flutter, token API',
+    features: ['Token API on the library system'],
+    technologies: ['Flutter'],
+    status: 'in-progress',
+  },
+  {
+    // Hidden: never rendered and never sent to the assistant while its
+    // credential is unrotated (vault: wiki/Eurasian Paradise Resort System.md).
+    slug: 'eurasian',
+    title: 'Eurasian',
+    category: 'Resort operations',
+    description:
+      'End-to-end resort operations platform built to streamline reservations, booking workflows, guest records, reporting, and management visibility.',
+    stack: 'PHP, MySQL',
+    features: [
+      'Online Reservations',
+      'Booking Workflows',
+      'Business Automation',
+      'Management Dashboards',
+      'AI Chatbot',
+      'Dashboard Projection',
+    ],
+    technologies: [
+      'PHP',
+      'MySQL',
+      'JavaScript',
+      'Bootstrap',
+      'Apache',
+      'PHPMailer',
+      'SMTP',
+      'ApexCharts',
+      'FullCalendar',
+      'DataTables',
+      'WhatsApp Cloud API',
+      'REST API',
+    ],
+    status: 'live',
+    hidden: true,
+    liveUrl: 'https://eurasian.freehosting.dev/',
+  },
+  {
+    // Formerly JARVIS HUD. No githubUrl: the JARVIS repo exposes private data
+    // and stays unlinked until it is cleaned up.
+    slug: 'cygnus',
+    title: 'Cygnus',
+    category: 'Voice assistant',
+    description:
+      'Voice assistant, formerly JARVIS HUD: Whisper speech-to-text, Kokoro text-to-speech, and multi-provider LLM routing, in a Python core with an Electron desktop app.',
+    stack: 'Python, Whisper, Kokoro, Electron',
+    features: ['Whisper speech-to-text', 'Kokoro text-to-speech', 'Multi-provider LLM routing', 'Electron desktop app'],
+    technologies: ['Python', 'Whisper (STT)', 'Kokoro (TTS)', 'Electron'],
+    status: 'demo',
+  },
+  {
+    slug: 'sticky-brain',
+    title: 'Sticky Brain',
+    category: 'Desktop app',
+    description:
+      'Electron desktop board that captures AI-agent sessions and triages the tasks they produce. Ships as a Windows installer with a tray icon.',
+    stack: 'Electron',
     features: [
       'Session capture board',
       'Task triage with backlog strikes',
@@ -201,9 +264,12 @@ export const projectFacts: ProjectFacts[] = [
     },
   },
   {
+    // No githubUrl: second-brain-vault is private and 404s for visitors.
+    slug: 'second-brain',
     title: 'Second Brain',
-    description:
-      'Personal knowledge vault with sub-50ms local semantic search. 400+ notes embedded and 2-bit quantized with TurboVec, all on-device — no cloud, no API key, no telemetry.',
+    category: 'Knowledge vault',
+    description: 'Knowledge vault with on-device semantic search under 50 ms across 400+ notes. Python, TurboVec.',
+    stack: 'Python, TurboVec',
     features: [
       'Local semantic search (no cloud)',
       'TurboQuant 2-bit embeddings',
@@ -218,8 +284,7 @@ export const projectFacts: ProjectFacts[] = [
       'Obsidian',
       'Markdown',
     ],
-    status: 'demo',
-    githubUrl: 'https://github.com/samakatuwid00/second-brain-vault',
+    status: 'private',
     media: {
       poster: '/projects/second-brain/obs-graph.png',
     },

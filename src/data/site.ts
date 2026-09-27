@@ -120,3 +120,46 @@ export const socialLinks = [
   { label: 'LinkedIn', href: 'https://linkedin.com/in/roger-abay-30394441b', brand: 'linkedin' },
   { label: 'Facebook', href: 'https://www.facebook.com/niko.0y', brand: 'facebook' },
 ] as const
+
+// Redesign copy, verbatim from the approved mockup (docs/redesign-mockup-v2.html).
+// The FAQ leaves out "Do you work remotely?" until the owner answers it.
+export const hero = {
+  name: ['Roger A.', 'Abay Jr.'],
+  tagline: 'Full-stack developer. Systems that replace paper.',
+  lede: 'I scope, build, deploy, and keep running the Laravel and PostgreSQL systems DepEd offices use every day, from a regional inventory to a national learning-resource platform. Based in Camarines Sur, Philippines.',
+} as const
+
+export const credits = [
+  { term: 'Now', detail: 'Full-Stack Developer, DepEd Region V' },
+  { term: 'Before', detail: 'Web Systems Developer, DepEd Central Office' },
+  { term: 'Recognized', detail: 'Full Stack Developer Award' },
+  { term: 'Education', detail: 'BSIT, Cum Laude, STI College Naga' },
+] as const
+
+// The portrait's thought bubble cycles through these, one per visit.
+export const thoughts = [
+  'Right now: building the iRIMS-V Library app in Flutter.',
+  'Still shipping updates to iRIMS-V.',
+  'Every paper form is a system waiting to happen.',
+  'Ask me about Laravel, PostgreSQL, or keeping a VPS alive.',
+  'Cygnus, my voice assistant, is listening. Mostly.',
+] as const
+
+export const faq = [
+  {
+    q: 'What kind of systems do you build?',
+    a: 'Systems that replace a manual process end to end: records and inventory, approval workflows, and dashboards and reports. iRIMS-V, EDULEAVE, and LRMIS are all live examples.',
+  },
+  {
+    q: 'Can you take over or maintain an existing system?',
+    a: 'Yes. Support is part of how I work: I stay available when a system needs to change, and I maintain the regional systems I built.',
+  },
+  {
+    q: 'Where does the system run?',
+    a: 'On a Linux VPS I set up and manage, with Docker, Coolify, and Nginx. Deployment and releases are part of the job, not a handoff.',
+  },
+  {
+    q: 'How do we start?',
+    a: 'Send a short description of the process as it runs today. I start by understanding how it actually works before proposing anything.',
+  },
+] as const

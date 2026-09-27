@@ -1,61 +1,82 @@
-import type { LucideIcon } from 'lucide-react'
+import type { ComponentType } from 'react'
 import type { PictureSource } from '../components/ui/Picture'
 
-export type ProjectStatus = 'live' | 'internal' | 'demo'
+export type ProjectStatus = 'live' | 'internal' | 'demo' | 'in-progress' | 'private'
 
-// What the system does for a business, which is what a prospect is shopping for.
-// Sector is the secondary fact — a resort and a division office buy the same
-// capability under different names.
+// The approved case-study copy. Only iRIMS-V has one today; a project without
+// `caseStudy` links to its live site instead of a case-study route.
+export type CaseStudy = {
+  expansion?: string // e.g. "Integrated Resource Inventory and Mapping System for Region V"
+  lede: string
+  problem: string
+  approach: string[]
+  result: string
+}
+
+// Text only, and deliberately free of asset imports: the serverless assistant
+// bundles this data for its system prompt and cannot resolve Vite asset URLs.
+// Screenshots are keyed by `slug` in projects.ts.
+export type ProjectFacts = {
+  slug: string
+  title: string
+  category: string // "Regional inventory", "Library circulation", ...
+  description: string // one paragraph shown on the home page
+  client?: string
+  role?: string
+  stack: string // short, comma-separated, shown in the facts list
+  technologies: string[] // full list, used by the assistant
+  features: string[]
+  status: ProjectStatus
+  featured?: boolean // appears as a large case row
+  hidden?: boolean // never rendered, never sent to the assistant
+  liveUrl?: string
+  // Public source repo. Leave it off any repo that is private or exposes
+  // private data: a visitor who follows it lands on a 404 or on data that was
+  // never meant to be published.
+  githubUrl?: string
+  caseStudy?: CaseStudy
+  // Empty on every project on purpose: no user count, office count, or
+  // migration figure has been cleared for publication. Fill this in only with
+  // numbers the owner confirms. An approximate metric on a portfolio reads as
+  // a claim, and one wrong number costs more than four missing ones.
+  metrics?: string[]
+  // Plain public/ paths, no Vite imports, so the assistant-bundled facts stay
+  // asset-free. `video` plays inline with the poster as its cover.
+  media?: { poster: string; video?: string }
+}
+
+export type TimelineKey = 'r5' | 'co' | 'fl' | 'lg'
+
+export type TimelineEntry = {
+  key: TimelineKey
+  role: string
+  organization: string
+  period: string // display, e.g. "2025 – Present"
+  summary: string // one line
+  start: number | null // year; null when not recorded (Freelance)
+  end: number | null // year; null = ongoing
+  award?: string
+}
+
+// LEGACY: removed in Task 13. The old ProjectCard / ProjectDetail / Projects
+// section still read these. The case-study fields are optional and no project
+// sets them; `icon` is a placeholder component, since the lucide icons were
+// dropped from projects.ts.
 export type Capability =
   | 'Operations & inventory'
   | 'HR & workflow automation'
   | 'Bookings & hospitality'
   | 'Analytics & reporting'
 
-// Text only, and deliberately free of asset imports: the serverless assistant
-// bundles this data for its system prompt and cannot resolve Vite asset URLs.
-export type ProjectFacts = {
-  title: string
-  description: string
-  features: string[]
-  technologies: string[]
-  status: ProjectStatus
-  liveUrl?: string
-  // Public source repo for unhosted / local projects. When present the detail
-  // modal footer links here instead of showing a demo or "no public URL".
-  githubUrl?: string
-  // Case-study fields. All optional, so a project with no confirmed copy still
-  // renders — the card falls back to `description` and the detail view omits
-  // the block entirely rather than showing empty headings.
+// LEGACY: removed in Task 13.
+export type Project = ProjectFacts & {
+  previewImage?: PictureSource
+  icon: ComponentType<{ size?: number }>
   sector?: string
   capabilities?: Capability[]
   problem?: string
   approach?: string
   outcome?: string
-  // Empty on every project on purpose: no user count, office count, or
-  // migration figure has been cleared for publication. Fill this in only with
-  // numbers the owner confirms — an approximate metric on a portfolio reads as
-  // a claim, and one wrong number costs more than four missing ones.
-  metrics?: string[]
-  // Demo media for unhosted projects. Plain public/ paths — no Vite imports —
-  // so the assistant-bundled facts stay asset-free. `poster` doubles as the
-  // detail-modal image; `video` plays inline with the poster as its cover.
-  media?: {
-    poster: string
-    video?: string
-    // A real page on this site (e.g. an interactive demo) — not an external host.
-    demoUrl?: string
-  }
-}
-
-export type Project = ProjectFacts & {
-  // A vite-imagetools `as=picture` object, not a URL: the preview is rendered
-  // through <Picture> so it can carry AVIF/WebP srcsets and its intrinsic size.
-  // Optional because demo projects ship their poster via `media.poster` (public
-  // assets can't be processed by vite-imagetools), and the card warms whichever
-  // one exists.
-  previewImage?: PictureSource
-  icon: LucideIcon
 }
 
 export type Testimonial = {

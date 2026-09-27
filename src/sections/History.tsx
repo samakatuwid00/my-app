@@ -1,5 +1,6 @@
 import { Reveal } from '../components/Reveal'
-import { experience } from '../data/experience'
+// LEGACY: removed in Task 13 (reads the legacy shape of the new experience data).
+import { legacyExperience as experience } from '../data/experience'
 
 export function History() {
   return (
