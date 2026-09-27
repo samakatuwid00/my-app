@@ -4,6 +4,7 @@ import { AskButton } from './components/ask/AskButton'
 import { SiteFooter } from './components/layout/SiteFooter'
 import { SiteHeader } from './components/layout/SiteHeader'
 import { ScrollToHash } from './components/layout/ScrollToHash'
+import { ToTopButton } from './components/layout/ToTopButton'
 
 // Moves focus to the page content without adding #main to the address bar,
 // which would otherwise send ScrollToHash after it on the next render.
@@ -32,6 +33,7 @@ export default function App() {
         <Outlet />
       </main>
       <SiteFooter />
+      <ToTopButton />
       <AskButton />
     </>
   )

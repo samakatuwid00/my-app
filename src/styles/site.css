@@ -339,6 +339,12 @@ footer.band { overflow: hidden; }
 .ask:hover { background: var(--paper); color: var(--black); border-color: var(--black); }
 /* It floats over both inks, so its ring sits inside it, in the ink it is not. */
 .ask:focus-visible { outline: 2px solid currentColor; outline-offset: -6px; }
+/* Back to top: bottom left, clear of the assistant on the right */
+.to-top { position: fixed; left: 22px; bottom: 22px; z-index: 60; width: 46px; height: 46px; padding: 0; justify-content: center; background: var(--black); color: var(--paper); border-color: rgba(242,242,240,.35); opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .25s var(--ease), transform .25s var(--ease), visibility 0s linear .25s, background-color .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease); }
+.to-top.shown { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.to-top:hover { background: var(--paper); color: var(--black); border-color: var(--black); }
+.to-top:focus-visible { outline: 2px solid currentColor; outline-offset: -6px; }
+.to-top svg { width: 18px; height: 18px; }
 .ask-panel { position: fixed; right: 22px; bottom: 74px; z-index: 60; width: min(380px, calc(100vw - 44px)); background: var(--black); color: var(--paper); border: 1px solid rgba(242,242,240,.3); padding: 20px; display: none; transform-origin: bottom right; }
 .ask-panel.open { display: block; opacity: 1; transform: none; transition: opacity .25s var(--ease), transform .3s var(--ease); }
 .ask-panel .h3 { font-size: 32px; }
