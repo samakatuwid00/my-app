@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio Redesign Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  try { if (localStorage.getItem('mockup-theme') === 'dark') document.documentElement.dataset.theme = 'dark' } catch (e) {}
+</script>
+<style>
+  /* Tokens. Same roles as src/index.css, trimmed: neutrals + one accent. */
+  :root {
+    --canvas: #fafaf8;
+    --panel: #ffffff;
+    --ink: #17191a;
+    --muted: #5d6366;
+    --faint: #8a8f91;
+    --line: #e6e4de;
+    --control: #8f948f;
+    --accent: #2e7a63;
+    --accent-soft: #e7f1ed;
+    --niko: #c05621;
+    --todo: #9a6a1f;
+    --todo-bg: #fbf4e6;
+    --maxw: 1080px;
+    --prose: 640px;
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    --canvas: #0e1011;
+    --panel: #15181a;
+    --ink: #e9e7e2;
+    --muted: #a3a7a6;
+    --faint: #7b807f;
+    --line: #25292b;
+    --control: #5b6061;
+    --accent: #5ea88b;
+    --accent-soft: #15241f;
+    --niko: #d97757;
+    --todo: #d6a75a;
+    --todo-bg: #221c10;
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+  body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--ink);
+    font: 400 16px/1.6 Inter, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .meta { font: 500 12px/1.4 'JetBrains Mono', ui-monospace, monospace; color: var(--faint); letter-spacing: .02em; }
+  .muted { color: var(--muted); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  /* Review banner (mockup only, not part of the design) */
+  .review {
+    border-bottom: 1px dashed var(--todo);
+    background: var(--todo-bg);
+    color: var(--todo);
+    font: 500 12px/1.5 'JetBrains Mono', monospace;
+  }
+  .review .wrap { display: flex; gap: 16px; align-items: center; justify-content: space-between; padding-top: 8px; padding-bottom: 8px; }
+  .review button { font: inherit; color: inherit; background: none; border: 1px solid currentColor; border-radius: 4px; padding: 2px 8px; cursor: pointer; }
+  .todo {
+    display: inline-flex; align-items: center; gap: 6px;
+    font: 500 11.5px/1.4 'JetBrains Mono', monospace;
+    color: var(--todo); background: var(--todo-bg);
+    border: 1px dashed var(--todo); border-radius: 4px; padding: 2px 8px;
+  }
+
+  /* Header */
+  header.site {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--canvas) 92%, transparent);
+    backdrop-filter: saturate(1.2) blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  header.site .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { text-decoration: none; font-weight: 600; letter-spacing: -.01em; }
+  .brand span { color: var(--faint); font-weight: 400; margin-left: 8px; }
+  nav.primary { display: flex; align-items: center; gap: 24px; font-size: 14.5px; }
+  nav.primary a { text-decoration: none; color: var(--muted); }
+  nav.primary a:hover { color: var(--ink); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: 500 14px/1 Inter, sans-serif; text-decoration: none;
+    padding: 10px 14px; border-radius: 6px; border: 1px solid var(--control);
+    background: transparent; color: var(--ink); cursor: pointer;
+  }
+  .btn:hover { border-color: var(--ink); }
+  .btn.solid { background: var(--ink); color: var(--canvas); border-color: var(--ink); }
+  .btn.solid:hover { opacity: .9; }
+  .btn.sm { padding: 7px 11px; font-size: 13.5px; }
+  .icon-btn { width: 34px; height: 34px; padding: 0; justify-content: center; border-color: var(--line); }
+
+  /* Sections */
+  section { padding: 88px 0; border-top: 1px solid var(--line); }
+  section:first-of-type { border-top: 0; }
+  .sec-head { display: grid; grid-template-columns: 200px 1fr; gap: 32px; margin-bottom: 40px; }
+  .sec-head h2 { margin: 0; font-size: 14px; font-weight: 500; color: var(--faint); }
+  .sec-head p { margin: 0; max-width: var(--prose); color: var(--muted); }
+  h1, h2, h3 { letter-spacing: -.015em; }
+
+  /* Hero */
+  .hero { padding-top: 96px; padding-bottom: 72px; }
+  .hero .who { display: flex; align-items: center; gap: 14px; margin-bottom: 32px; }
+  .hero .who img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line); }
+  .hero .who b { display: block; font-weight: 600; }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
+  .status i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  .hero h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.1; font-weight: 600; margin: 0 0 24px; max-width: 18ch; }
+  .hero .lede { font-size: 18px; color: var(--muted); max-width: 58ch; margin: 0 0 32px; }
+  .hero .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .proof {
+    margin-top: 64px; display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  }
+  .proof div { padding: 20px 20px 20px 0; }
+  .proof div + div { padding-left: 20px; border-left: 1px solid var(--line); }
+  .proof b { display: block; font-weight: 600; font-size: 15px; }
+  .proof span { font-size: 13.5px; color: var(--muted); }
+
+  /* Selected work */
+  .work { display: grid; gap: 72px; }
+  .case { display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: start; }
+  .case:nth-child(even) .shot { order: 2; }
+  .shot {
+    border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--panel);
+    aspect-ratio: 16 / 10;
+  }
+  .shot img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+  .case h3 { font-size: 24px; margin: 8px 0 12px; font-weight: 600; }
+  .case p { margin: 0 0 16px; color: var(--muted); }
+  .case dl { display: grid; grid-template-columns: 88px 1fr; gap: 6px 16px; margin: 20px 0; font-size: 14px; }
+  .case dt { color: var(--faint); }
+  .case dd { margin: 0; }
+  .case .links { display: flex; gap: 20px; font-size: 14.5px; margin-top: 20px; }
+  .case .links a { text-decoration: none; color: var(--accent); font-weight: 500; }
+  .case .links a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .live { display: inline-flex; align-items: center; gap: 6px; }
+  .live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  /* Lists: more work, experience */
+  .rows { border-top: 1px solid var(--line); }
+  .row { display: grid; grid-template-columns: 200px 1fr auto; gap: 32px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+  .row h4 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+  .row p { margin: 0; color: var(--muted); font-size: 15px; max-width: 62ch; }
+  .row ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 15px; max-width: 64ch; }
+  .row ul li + li { margin-top: 4px; }
+  .row a.go { font-size: 14px; color: var(--accent); text-decoration: none; white-space: nowrap; font-weight: 500; }
+
+  /* Capabilities */
+  .caps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+  .caps h4 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
+  .caps p { margin: 0; font-size: 14.5px; color: var(--muted); }
+  .stack { margin-top: 48px; display: grid; grid-template-columns: 200px 1fr; gap: 12px 32px; font-size: 14.5px; }
+  .stack dt { color: var(--faint); }
+  .stack dd { margin: 0; }
+
+  /* Experiments */
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .card { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--panel); display: flex; flex-direction: column; }
+  .card .thumb { aspect-ratio: 16 / 10; border-bottom: 1px solid var(--line); overflow: hidden; }
+  .card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .card .body { padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .card h4 { margin: 0; font-size: 15.5px; font-weight: 600; }
+  .card p { margin: 0; font-size: 14px; color: var(--muted); flex: 1; }
+  .card a { font-size: 13.5px; color: var(--accent); text-decoration: none; font-weight: 500; }
+
+  /* Recognition */
+  .recog { display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; align-items: start; }
+  .award { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--panel); }
+  .award img { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; }
+  .award .cap { padding: 16px 18px; border-top: 1px solid var(--line); }
+  .award .cap b { display: block; font-weight: 600; }
+  .award .cap span { font-size: 14px; color: var(--muted); }
+  blockquote { margin: 0; padding: 0 0 28px; }
+  blockquote + blockquote { padding-top: 28px; border-top: 1px solid var(--line); }
+  blockquote p { margin: 0 0 12px; font-size: 18px; line-height: 1.5; letter-spacing: -.005em; }
+  blockquote footer { font-size: 14px; color: var(--muted); }
+  blockquote footer b { color: var(--ink); font-weight: 500; }
+
+  /* Contact */
+  .contact { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+  .contact h2.big { font-size: clamp(28px, 4vw, 40px); line-height: 1.15; margin: 0 0 16px; font-weight: 600; max-width: 16ch; }
+  .contact .direct { margin-top: 32px; display: grid; gap: 10px; font-size: 15px; }
+  .contact .direct a { text-decoration: none; }
+  .contact .direct a:hover { color: var(--accent); }
+  form { display: grid; gap: 14px; }
+  label { display: grid; gap: 6px; font-size: 13.5px; color: var(--muted); }
+  input, textarea {
+    font: 400 15px/1.5 Inter, sans-serif; color: var(--ink);
+    background: var(--panel); border: 1px solid var(--control); border-radius: 6px; padding: 10px 12px;
+  }
+  textarea { min-height: 128px; resize: vertical; }
+
+  /* Footer */
+  footer.site { border-top: 1px solid var(--line); padding: 28px 0 40px; }
+  footer.site .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 13.5px; color: var(--faint); }
+  footer.site .mark { display: inline-flex; align-items: center; gap: 10px; }
+  footer.site nav { display: flex; gap: 18px; }
+  footer.site nav a { text-decoration: none; }
+  footer.site nav a:hover { color: var(--ink); }
+  .niko { width: 26px; height: 24px; color: var(--niko); }
+
+  /* Assistant: quiet button, not navigation */
+  .ask {
+    position: fixed; right: 20px; bottom: 20px; z-index: 20;
+    background: var(--panel); box-shadow: none;
+  }
+  .ask-panel {
+    position: fixed; right: 20px; bottom: 72px; z-index: 20; width: min(360px, calc(100vw - 40px));
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px;
+    display: none;
+  }
+  .ask-panel.open { display: block; }
+  .ask-panel h5 { margin: 0 0 4px; font-size: 14px; font-weight: 600; }
+  .ask-panel p { margin: 0 0 12px; font-size: 13.5px; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .chips span { font-size: 12.5px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; color: var(--muted); }
+
+  /* Case study page */
+  .cs-top { padding: 56px 0 40px; }
+  .back { font-size: 14px; color: var(--muted); text-decoration: none; }
+  .back:hover { color: var(--ink); }
+  .cs-top h1 { font-size: clamp(32px, 5vw, 48px); margin: 20px 0 12px; font-weight: 600; line-height: 1.1; }
+  .cs-top .lede { font-size: 19px; color: var(--muted); max-width: 56ch; margin: 0; }
+  .cs-meta { display: grid; grid-template-columns: repeat(4, 1fr); margin: 40px 0 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .cs-meta div { padding: 16px 16px 16px 0; font-size: 14.5px; }
+  .cs-meta div + div { padding-left: 16px; border-left: 1px solid var(--line); }
+  .cs-meta dt { color: var(--faint); font-size: 13px; margin-bottom: 4px; }
+  .cs-meta dd { margin: 0; }
+  .cs-hero { margin: 48px 0 16px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .cs-body { display: grid; grid-template-columns: 200px 1fr; gap: 32px; padding: 48px 0; border-top: 1px solid var(--line); }
+  .cs-body h2 { margin: 0; font-size: 14px; font-weight: 500; color: var(--faint); }
+  .cs-body .prose { max-width: var(--prose); }
+  .cs-body .prose p { margin: 0 0 16px; }
+  .cs-body .prose ul { margin: 0 0 16px; padding-left: 18px; }
+  .cs-body .prose li + li { margin-top: 6px; }
+  .results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
+  .results div { border: 1px dashed var(--todo); background: var(--todo-bg); border-radius: 6px; padding: 16px; }
+  .results b { display: block; font-size: 22px; color: var(--todo); font-weight: 600; }
+  .results span { font-size: 13px; color: var(--todo); }
+  .next { display: flex; justify-content: space-between; padding: 32px 0 80px; border-top: 1px solid var(--line); font-size: 15px; }
+  .next a { text-decoration: none; color: var(--accent); font-weight: 500; }
+
+  [hidden] { display: none !important; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .fade { animation: fade .2s ease-out both; }
+    @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  @media (max-width: 860px) {
+    .wrap { padding: 0 16px; }
+    nav.primary .hide-sm { display: none; }
+    section { padding: 64px 0; }
+    .hero { padding-top: 56px; padding-bottom: 48px; }
+    .proof { grid-template-columns: 1fr 1fr; }
+    .proof div, .proof div + div { padding: 16px 12px 16px 0; border-left: 0; }
+    .proof div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--line); }
+    .proof div:nth-child(n+3) { border-top: 1px solid var(--line); }
+    .sec-head, .row, .stack, .cs-body { grid-template-columns: 1fr; gap: 8px; }
+    .case { grid-template-columns: 1fr; gap: 24px; }
+    .case:nth-child(even) .shot { order: 0; }
+    .caps { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .grid3 { grid-template-columns: 1fr; }
+    .recog, .contact { grid-template-columns: 1fr; gap: 40px; }
+    .cs-meta { grid-template-columns: 1fr 1fr; }
+    .cs-meta div, .cs-meta div + div { padding: 12px 12px 12px 0; border-left: 0; }
+    .cs-meta div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--line); }
+    .cs-meta div:nth-child(n+3) { border-top: 1px solid var(--line); }
+    .results { grid-template-columns: 1fr; }
+    footer.site .wrap { flex-direction: column; align-items: flex-start; }
+    .review .wrap { flex-direction: column; align-items: flex-start; gap: 6px; }
+  }
+  @media (max-width: 480px) {
+    .caps { grid-template-columns: 1fr; }
+    .brand span { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MOCKUP ONLY: the review banner and dashed "todo" chips are not part of the design. -->
+<div class="review" id="review">
+  <div class="wrap">
+    <span>MOCKUP · Recommendations applied: employer and office-client audience · terminal theme dropped · Niko as footer mark · Eurasian hidden · EDULEAVE office anonymised · dashed chips = real numbers needed</span>
+    <button type="button" onclick="document.getElementById('review').hidden = true">Hide</button>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#/">Roger A. Abay Jr.<span>Full-Stack Developer</span></a>
+    <nav class="primary" aria-label="Primary">
+      <a href="#/work" class="hide-sm">Work</a>
+      <a href="#/experience" class="hide-sm">Experience</a>
+      <a href="#/contact" class="hide-sm">Contact</a>
+      <a class="btn sm" href="../src/assets/full.pdf">Résumé</a>
+      <button class="btn icon-btn" type="button" id="theme" aria-label="Toggle dark mode">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================ HOME ============================ -->
+<main id="home" class="fade">
+
+  <div class="wrap hero">
+    <div class="who">
+      <img src="../src/assets/pic.jpg" alt="Portrait of Roger A. Abay Jr.">
+      <div>
+        <b>Roger A. Abay Jr.</b>
+        <span class="status"><i></i>Camarines Sur, PH · open to remote roles and project work</span>
+      </div>
+    </div>
+    <h1>I build and run the web systems that replace paper and spreadsheets.</h1>
+    <p class="lede">Full-stack developer working in Laravel and PostgreSQL. I scope the process, build the system, deploy it on infrastructure I manage, and keep it running. My systems are live across DepEd offices, from a regional inventory to a national learning-resource platform.</p>
+    <div class="actions">
+      <a class="btn solid" href="#/work">See selected work</a>
+      <a class="btn" href="#/contact">Get in touch</a>
+    </div>
+
+    <div class="proof" aria-label="At a glance">
+      <div><b>4 live systems</b><span>In production today</span></div>
+      <div><b>National scale</b><span>DepEd learning-resource platform</span></div>
+      <div><b>Full Stack Developer Award</b><span>DepEd Region V</span></div>
+      <div><b>BSIT, Cum Laude</b><span>STI College Naga, 2024</span></div>
+    </div>
+  </div>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Selected work</h2>
+        <p>Three systems in production. Each one replaced a manual process that an office ran on paper, spreadsheets, or email.</p>
+      </div>
+
+      <div class="work">
+        <article class="case">
+          <a class="shot" href="#/work/irims-v"><img src="../src/assets/irims-v.png" alt="IRIMS-V dashboard"></a>
+          <div>
+            <span class="meta">Regional inventory · DepEd Region V</span>
+            <h3>IRIMS-V</h3>
+            <p>Learning resources across a region were tracked in separate spreadsheets per office, so nobody could see totals or shortages. IRIMS-V puts every resource in one searchable system, from the regional dashboard down to a single school's record.</p>
+            <dl>
+              <dt>Role</dt><dd>Designed, built, deployed, maintain</dd>
+              <dt>Stack</dt><dd>Laravel, PostgreSQL, Alpine.js, htmx, ECharts</dd>
+              <dt>Result</dt><dd><span class="todo">number needed · e.g. offices or records</span></dd>
+            </dl>
+            <div class="links">
+              <a href="#/work/irims-v">Read case study →</a>
+              <a class="live" href="https://irimsv.net/">irimsv.net</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="case">
+          <a class="shot" href="#/work/irims-v"><img src="../src/assets/eduleave.png" alt="EDULEAVE leave-credit dashboard"></a>
+          <div>
+            <span class="meta">HR workflow · Contract</span>
+            <h3>EDULEAVE</h3>
+            <p>A DepEd division HR office tracked leave credits for teaching and non-teaching staff on paper leave cards. EDULEAVE replaced the cards with a digital workflow where requests route for approval and every decision is on record.</p>
+            <dl>
+              <dt>Role</dt><dd>Sole developer, requirements to support</dd>
+              <dt>Stack</dt><dd>Laravel 12, MySQL, Tailwind, Laravel Queues</dd>
+              <dt>Result</dt><dd><span class="todo">number needed · e.g. staff covered</span></dd>
+            </dl>
+            <div class="links">
+              <a href="#/work/irims-v">Read case study →</a>
+              <a class="live" href="https://eduleave.com/welcome">eduleave.com</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="case">
+          <a class="shot" href="#/work/irims-v"><img src="../src/assets/lrmis.png" alt="LRMIS national platform"></a>
+          <div>
+            <span class="meta">National platform · DepEd Central Office</span>
+            <h3>LRMIS</h3>
+            <p>The national system for managing learning resources across schools in the Philippines. I owned features inside the platform team, including the station hierarchy, allocation and distribution, and role-based access.</p>
+            <dl>
+              <dt>Role</dt><dd>Feature owner, platform team</dd>
+              <dt>Stack</dt><dd>Laravel, Blade, Tailwind, Google Sheets API</dd>
+              <dt>Result</dt><dd><span class="todo">number needed · e.g. schools served</span></dd>
+            </dl>
+            <div class="links">
+              <a href="#/work/irims-v">Read case study →</a>
+              <a class="live" href="https://lrmis.deped.gov.ph/">lrmis.deped.gov.ph</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="more">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>More work</h2>
+        <p>Smaller systems and the integration work between them.</p>
+      </div>
+      <div class="rows">
+        <div class="row">
+          <span class="meta">Library circulation</span>
+          <div>
+            <h4>IRIMS-V Library</h4>
+            <p>Catalog, borrowing records, reservations, and QR-coded inventory for school and office libraries. Laravel 12, Vue, Inertia.</p>
+          </div>
+          <a class="go live" href="https://irimsv-library.net/">Live</a>
+        </div>
+        <div class="row">
+          <span class="meta">Data integration</span>
+          <div>
+            <h4>schema_mapper</h4>
+            <p>Python service that maps and syncs regional inventory records into the national platform's schema, so offices do not enter the same data twice.</p>
+          </div>
+          <span class="meta">Private</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="capabilities">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>What I do</h2>
+        <p>Every project so far has had the same problem underneath: scattered records, slow approvals, and no one able to see the whole picture.</p>
+      </div>
+      <div class="caps">
+        <div><h4>Records and inventory</h4><p>One searchable source instead of a spreadsheet per office.</p></div>
+        <div><h4>Approval workflows</h4><p>Requests route themselves and every decision is recorded.</p></div>
+        <div><h4>Dashboards and reports</h4><p>What came in, what is pending, what needs attention today.</p></div>
+        <div><h4>Deploy and support</h4><p>On a VPS I set up and manage, and I stay on after launch.</p></div>
+      </div>
+      <dl class="stack">
+        <dt>Backend</dt><dd>PHP, Laravel, Python, FastAPI, REST APIs</dd>
+        <dt>Frontend</dt><dd>Blade, Alpine.js, htmx, Vue, Inertia, React, TypeScript, Tailwind CSS</dd>
+        <dt>Data</dt><dd>PostgreSQL, MySQL, SQLite</dd>
+        <dt>Infrastructure</dt><dd>Linux VPS, Nginx, Docker, Coolify, Vercel</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Experience</h2>
+        <p>Feature ownership inside a national team, then end-to-end ownership of production systems and the servers they run on.</p>
+      </div>
+      <div class="rows">
+        <div class="row">
+          <span class="meta">Current</span>
+          <div>
+            <h4>Full-Stack Developer · DepEd Region V</h4>
+            <ul>
+              <li>Design, ship, and maintain the regional production systems: learning-resource inventory and a library circulation platform.</li>
+              <li>Own deployment, releases, and the VPS infrastructure those systems run on.</li>
+            </ul>
+          </div>
+          <span></span>
+        </div>
+        <div class="row">
+          <span class="meta">Previous</span>
+          <div>
+            <h4>Web Systems Developer · DepEd Central Office</h4>
+            <ul>
+              <li>Owned features within the team building the national learning-resource platform.</li>
+              <li>Authentication, role management, workflow automation, and reporting.</li>
+            </ul>
+          </div>
+          <span></span>
+        </div>
+        <div class="row">
+          <span class="meta">Ongoing</span>
+          <div>
+            <h4>Freelance Web Developer · Independent</h4>
+            <ul>
+              <li>Hired directly by client offices to build systems end to end: requirements, build, deployment, support.</li>
+              <li>EDULEAVE, leave-credit management for a DepEd division HR office. Live.</li>
+            </ul>
+          </div>
+          <span></span>
+        </div>
+        <div class="row">
+          <span class="meta">Internship</span>
+          <div>
+            <h4>IT Support Intern · LGU Pasacao</h4>
+            <ul><li>Hardware and software troubleshooting and network configuration support.</li></ul>
+          </div>
+          <span></span>
+        </div>
+        <div class="row">
+          <span class="meta">2020 – 2024</span>
+          <div>
+            <h4>BS Information Technology, Cum Laude · STI College Naga</h4>
+          </div>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="recognition">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Recognition</h2>
+        <p>From the people who use the systems every day.</p>
+      </div>
+      <div class="recog">
+        <figure class="award" style="margin:0">
+          <img src="../src/assets/award.png" alt="Certificate of Recognition, Full Stack Developer Award">
+          <figcaption class="cap"><b>Full Stack Developer Award</b><span>DepEd Region V · for the IRIMS-V regional launch</span></figcaption>
+        </figure>
+        <div>
+          <blockquote>
+            <p>“For his invaluable contributions, dedication, and exemplary service as Full Stack Systems Programmer.”</p>
+            <footer><b>Gilbert T. Sadsad</b> · Regional Director, DepEd Region V</footer>
+          </blockquote>
+          <blockquote>
+            <p>“The inventory system gave our team clear visibility from summary dashboards down to individual resource records.”</p>
+            <footer><b>Cesar Arriola</b> · LRMS Supervisor, DepEd</footer>
+          </blockquote>
+          <blockquote>
+            <p>“Our leave approval process became faster, auditable, and easier for employees and administrators to manage.”</p>
+            <footer><b>Rose Burce</b> · HR Coordinator, DepEd</footer>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experiments">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Experiments</h2>
+        <p>Personal projects in AI tooling. Built to learn, with the source on GitHub.</p>
+      </div>
+      <div class="grid3">
+        <article class="card">
+          <div class="thumb"><img src="../public/projects/jarvis-hud/jarvis-speaking.png" alt="JARVIS HUD voice assistant"></div>
+          <div class="body">
+            <span class="meta">Demo · Python, Canvas, WebSockets</span>
+            <h4>JARVIS HUD</h4>
+            <p>Voice assistant with local Whisper speech-to-text and a local LLM behind a canvas interface.</p>
+            <a href="https://github.com/samakatuwid00/JARVIS">Source →</a>
+          </div>
+        </article>
+        <article class="card">
+          <div class="thumb"><img src="../public/projects/sticky-brain/sb-board.png" alt="Sticky Brain session board"></div>
+          <div class="body">
+            <span class="meta">Demo · Electron</span>
+            <h4>Sticky Brain</h4>
+            <p>Desktop board that captures AI-agent sessions and triages the tasks they produce.</p>
+            <a href="https://github.com/samakatuwid00/sticky-brain">Source →</a>
+          </div>
+        </article>
+        <article class="card">
+          <div class="thumb"><img src="../public/projects/second-brain/obs-graph.png" alt="Second Brain vault graph"></div>
+          <div class="body">
+            <span class="meta">Demo · Python, embeddings</span>
+            <h4>Second Brain</h4>
+            <p>Knowledge vault with on-device semantic search under 50 ms across 400+ notes.</p>
+            <a href="https://github.com/samakatuwid00/second-brain-vault">Source →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap contact">
+      <div>
+        <h2 class="big">Have a process still running on paper?</h2>
+        <p class="muted">Tell me about the records, approvals, or reports your team handles by hand. I usually reply within a day.</p>
+        <div class="direct">
+          <a href="mailto:abaygherjr07@gmail.com">abaygherjr07@gmail.com</a>
+          <a href="https://linkedin.com/in/roger-abay-30394441b">LinkedIn</a>
+          <a href="https://github.com/samakatuwid00">GitHub</a>
+          <a href="../src/assets/full.pdf">Résumé (PDF)</a>
+        </div>
+      </div>
+      <form onsubmit="return false">
+        <label>Name<input type="text" autocomplete="name"></label>
+        <label>Email<input type="email" autocomplete="email"></label>
+        <label>What should the system do?<textarea></textarea></label>
+        <div><button class="btn solid" type="submit">Send message</button></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- ============================ CASE STUDY ============================ -->
+<main id="case" class="fade" hidden>
+  <div class="wrap">
+    <div class="cs-top">
+      <a class="back" href="#/work">← All work</a>
+      <h1>IRIMS-V</h1>
+      <p class="lede">A single inventory for every learning resource in DepEd Region V, from the regional dashboard down to one school's shelf.</p>
+      <dl class="cs-meta">
+        <div><dt>Role</dt><dd>Designed, built, deployed, maintain</dd></div>
+        <div><dt>Client</dt><dd>DepEd Region V</dd></div>
+        <div><dt>Stack</dt><dd>Laravel, PostgreSQL, htmx, ECharts</dd></div>
+        <div><dt>Status</dt><dd><a class="live" href="https://irimsv.net/">Live · irimsv.net</a></dd></div>
+      </dl>
+      <div class="cs-hero"><img src="../src/assets/irims-v.png" alt="IRIMS-V regional dashboard"></div>
+      <p class="meta">Regional dashboard with resource totals by station.</p>
+    </div>
+
+    <div class="cs-body">
+      <h2>Problem</h2>
+      <div class="prose">
+        <p>Each office kept its own spreadsheet of learning resources. The regional office could not see totals, shortages, or where resources had moved without asking every office for a fresh file, and the files never matched.</p>
+      </div>
+    </div>
+
+    <div class="cs-body">
+      <h2>Approach</h2>
+      <div class="prose">
+        <ul>
+          <li>Modeled the region as a four-level station hierarchy, so every record belongs to exactly one place and rolls up to the level above.</li>
+          <li>PostgreSQL full-text search and triggers keep search fast and totals consistent as records change.</li>
+          <li>Role-based access, so each office edits only its own stations while the region sees everything.</li>
+          <li>Excel import, so offices could move their existing spreadsheets in instead of retyping them.</li>
+          <li>Dashboards in ECharts for the questions the regional office asks most.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cs-body">
+      <h2>Result</h2>
+      <div class="prose">
+        <p>Launched regionally and recognised with the Full Stack Developer Award from the Regional Director. I still own deployment and releases.</p>
+        <div class="results">
+          <div><b>?</b><span>offices or stations using it</span></div>
+          <div><b>?</b><span>resource records managed</span></div>
+          <div><b>?</b><span>time saved per report</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="next">
+      <a href="#/work">← All work</a>
+      <a href="#/work/irims-v">Next: EDULEAVE →</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span class="mark">
+      <!-- Niko, idle frame from docs/niko-frames.js (13 x 12 grid), drawn static -->
+      <svg class="niko" viewBox="0 0 13 12" shape-rendering="crispEdges" aria-hidden="true">
+        <path fill="currentColor" d="M1 3h2v1H1zM10 3h2v1h-2zM0 4h13v2H0zM0 6h2v2H0zM4 6h5v2H4zM11 6h2v2h-2zM0 8h13v2H0z"/>
+      </svg>
+      © 2026 Roger A. Abay Jr.
+    </span>
+    <nav aria-label="Footer">
+      <a href="https://github.com/samakatuwid00">GitHub</a>
+      <a href="https://linkedin.com/in/roger-abay-30394441b">LinkedIn</a>
+      <a href="https://www.facebook.com/niko.0y">Facebook</a>
+    </nav>
+  </div>
+</footer>
+
+<button class="btn sm ask" type="button" id="ask" aria-expanded="false" aria-controls="ask-panel">Ask about my work</button>
+<div class="ask-panel" id="ask-panel" role="dialog" aria-label="Ask about my work">
+  <h5>Ask about my work</h5>
+  <p>An assistant that answers from this site's content: projects, stack, availability.</p>
+  <div class="chips"><span>What have you built?</span><span>Can you maintain my system?</span><span>What's your stack?</span></div>
+  <input type="text" placeholder="Type a question" style="width:100%">
+</div>
+
+<script>
+  const home = document.getElementById('home')
+  const cs = document.getElementById('case')
+  function route() {
+    const h = location.hash.replace(/^#\/?/, '')
+    const isCase = h.startsWith('work/')
+    home.hidden = isCase
+    cs.hidden = !isCase
+    if (isCase) { window.scrollTo(0, 0); return }
+    const el = h && document.getElementById(h)
+    if (el) el.scrollIntoView()
+    else if (!h) window.scrollTo(0, 0)
+  }
+  addEventListener('hashchange', route)
+  route()
+
+  document.getElementById('theme').onclick = () => {
+    const root = document.documentElement
+    const dark = root.dataset.theme !== 'dark'
+    if (dark) root.dataset.theme = 'dark'; else delete root.dataset.theme
+    try { localStorage.setItem('mockup-theme', dark ? 'dark' : 'light') } catch (e) {}
+  }
+
+  const ask = document.getElementById('ask')
+  const panel = document.getElementById('ask-panel')
+  ask.onclick = () => {
+    const open = panel.classList.toggle('open')
+    ask.setAttribute('aria-expanded', open)
+  }
+</script>
+</body>
+</html>
