@@ -10,6 +10,7 @@ export type AskContextValue = {
   isOpen: boolean
   inputRef: RefObject<HTMLInputElement | null>
   ask: (question: string) => void
+  open: () => void
   close: () => void
   reset: () => void
 }

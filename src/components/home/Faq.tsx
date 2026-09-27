@@ -1,14 +1,18 @@
 import { faq } from '../../data/site'
+import { useAsk } from '../../hooks/useAsk'
 import { Band } from '../layout/Band'
 
 export function Faq() {
+  const { open } = useAsk()
   return (
     <Band id="faq" tone="light" flush>
       <div className="wrap">
         <div className="head">
           <h2 className="h2">FAQ</h2>
-          {/* Task 12: open assistant */}
-          <p>Short answers to what clients ask first. Anything else, ask the assistant.</p>
+          <p>
+            Short answers to what clients ask first. Anything else,{' '}
+            <button type="button" className="inline-link" onClick={open}>ask the assistant</button>.
+          </p>
         </div>
         <div className="faq">
           {faq.map(({ q, a }) => (

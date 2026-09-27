@@ -18,6 +18,12 @@ function isTypingTarget(target: EventTarget | null) {
   return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
 }
 
+function hasOpenModal() {
+  return Array.from(document.querySelectorAll('[role="dialog"][aria-modal="true"]')).some(
+    (dialog) => dialog.getClientRects().length > 0,
+  )
+}
+
 export function AskProvider({ children }: PropsWithChildren) {
   const [messages, setMessages] = useState<AskMessage[]>([])
   const [state, setState] = useState<AskState>('idle')
@@ -84,6 +90,12 @@ export function AskProvider({ children }: PropsWithChildren) {
     [push, nikoEvent],
   )
 
+  const open = useCallback(() => {
+    setIsOpen(true)
+    // The panel is display: none until the render lands, so focus after it.
+    requestAnimationFrame(() => inputRef.current?.focus())
+  }, [])
+
   const close = useCallback(() => setIsOpen(false), [])
 
   const reset = useCallback(() => {
@@ -100,20 +112,21 @@ export function AskProvider({ children }: PropsWithChildren) {
       }
 
       const isShortcut = event.key === '/' && !event.metaKey && !event.ctrlKey && !event.altKey
-      // A project dialog owns the keyboard while it is open.
-      if (!isShortcut || isTypingTarget(event.target) || document.querySelector('[role="dialog"]')) return
+      // An open modal (the phone menu) owns the keyboard. The menu sheet stays
+      // in the DOM while shut, so match only a modal that is actually rendered.
+      if (!isShortcut || isTypingTarget(event.target) || hasOpenModal()) return
 
       event.preventDefault()
-      inputRef.current?.focus()
+      open()
     }
 
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [])
+  }, [open])
 
   const value = useMemo(
-    () => ({ messages, state, isOpen, inputRef, ask, close, reset }),
-    [messages, state, isOpen, ask, close, reset],
+    () => ({ messages, state, isOpen, inputRef, ask, open, close, reset }),
+    [messages, state, isOpen, ask, open, close, reset],
   )
 
   return <AskContext.Provider value={value}>{children}</AskContext.Provider>

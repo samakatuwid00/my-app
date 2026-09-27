@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom'
+import { AskButton } from './components/ask/AskButton'
 import { SiteFooter } from './components/layout/SiteFooter'
 import { SiteHeader } from './components/layout/SiteHeader'
 import { ScrollToHash } from './components/layout/ScrollToHash'
@@ -10,6 +11,7 @@ export default function App() {
       <ScrollToHash />
       <Outlet />
       <SiteFooter />
+      <AskButton />
     </>
   )
 }

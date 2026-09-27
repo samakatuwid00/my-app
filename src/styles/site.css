@@ -304,6 +304,10 @@ input[aria-invalid="true"], textarea[aria-invalid="true"] { border-bottom-color:
 .not-found p { margin: 0; }
 .not-found code { font-family: var(--mono); font-size: .92em; }
 
+/* Production only: the FAQ's "ask the assistant" is a button (it opens the
+   panel, it goes nowhere) dressed as the mockup's inline link. */
+.inline-link { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; }
+
 /* Footer */
 footer.band { overflow: hidden; }
 .ghost { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: 200 clamp(160px, 24vw, 340px)/.8 var(--display); letter-spacing: -.03em; text-transform: uppercase; color: rgba(11,11,11,.045); white-space: nowrap; pointer-events: none; user-select: none; }
@@ -316,6 +320,29 @@ footer.band { overflow: hidden; }
 .glyphs a { width: 42px; height: 50px; border: 1px solid var(--black); display: grid; place-items: center; transition: background-color .2s var(--ease), color .2s var(--ease); }
 .glyphs a:hover { background: var(--black); color: var(--paper); text-decoration: none; }
 .glyphs svg { width: 20px; height: 20px; }
+
+/* Assistant */
+.ask { position: fixed; right: 22px; bottom: 22px; z-index: 60; background: var(--black); color: var(--paper); border-color: rgba(242,242,240,.35); }
+.ask:hover { background: var(--paper); color: var(--black); border-color: var(--black); }
+.ask-panel { position: fixed; right: 22px; bottom: 74px; z-index: 60; width: min(380px, calc(100vw - 44px)); background: var(--black); color: var(--paper); border: 1px solid rgba(242,242,240,.3); padding: 20px; display: none; transform-origin: bottom right; }
+.ask-panel.open { display: block; opacity: 1; transform: none; transition: opacity .25s var(--ease), transform .3s var(--ease); }
+.ask-panel .h3 { font-size: 32px; }
+.ask-panel p { margin: 6px 0 16px; font-size: 14px; color: rgba(242,242,240,.64); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.chips button { font: 500 13px/1 var(--body); color: var(--paper); background: none; border: 1px solid rgba(242,242,240,.25); padding: 8px 10px; cursor: pointer; transition: border-color .2s var(--ease), background-color .2s var(--ease), color .2s var(--ease); }
+.chips button:hover { background: var(--paper); color: var(--black); border-color: var(--paper); }
+.ask-panel input { color: var(--paper); border-bottom-color: rgba(242,242,240,.3); }
+/* Production only: the conversation. The mockup's panel stops at the input;
+   turns stack above it in the panel's two inks, newest at the bottom. */
+.ask-form { display: block; }
+.ask-panel .field { display: block; }
+.ask-log { position: relative; max-height: min(320px, calc(100dvh - 380px)); overflow-y: auto; overscroll-behavior: contain; margin: 0 0 12px; border-top: 1px solid rgba(242,242,240,.2); }
+.ask-log:empty { display: none; }
+.turn { padding: 12px 0; border-bottom: 1px solid rgba(242,242,240,.12); }
+.turn .ui { font-size: 12px; color: rgba(242,242,240,.64); }
+.ask-panel .turn p { margin: 4px 0 0; font-size: 14.5px; line-height: 1.55; color: var(--paper); white-space: pre-line; overflow-wrap: anywhere; }
+.turn.user p { color: rgba(242,242,240,.64); }
+.ask-panel .turn.thinking p { color: rgba(242,242,240,.64); }
 
 /* Case study */
 .cs-hero { padding-top: 56px; }
@@ -363,7 +390,10 @@ footer.band { overflow: hidden; }
   @starting-style {
     .sheet.open { clip-path: inset(0 0 100% 0); }
     .sheet.open nav a { opacity: 0; }
+    .ask-panel.open { opacity: 0; transform: scale(.96); }
   }
+  .turn.thinking span { animation: wait 1.2s steps(4, end) infinite; display: inline-block; overflow: hidden; vertical-align: bottom; width: 3ch; }
+  @keyframes wait { from { width: 0; } }
   .sheet.open nav a:nth-child(2) { transition-delay: .05s; }
   .sheet.open nav a:nth-child(3) { transition-delay: .1s; }
   .sheet.open nav a:nth-child(4) { transition-delay: .15s; }
@@ -532,6 +562,8 @@ footer.band { overflow: hidden; }
   .cs-meta { grid-template-columns: 1fr 1fr; }
   .cs-meta div, .cs-meta div + div { padding: 14px 12px 14px 0; border-left: 0; }
   .cs-meta div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--rule); }
+  .ask { width: 46px; height: 46px; padding: 0; justify-content: center; }
+  .ask .label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 }
 @media (max-width: 480px) {
   .hero h1 { font-size: 52px; }

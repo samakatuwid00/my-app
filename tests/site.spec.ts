@@ -316,3 +316,111 @@ test.describe('case study', () => {
     })
   })
 })
+
+test.describe('assistant', () => {
+  // Every assistant test routes the API: the suite must never reach Groq.
+  test.beforeEach(async ({ page }) => {
+    await page.route('**/api/ask', (r) => r.fulfill({ json: { answer: 'I build Laravel systems.' } }))
+  })
+
+  test('button opens the panel; a chip asks and is answered locally', async ({ page }) => {
+    let calls = 0
+    await page.route('**/api/ask', (r) => { calls++; return r.fulfill({ json: { answer: 'unused' } }) })
+    await page.goto('/')
+    const button = page.getByRole('button', { name: /ask about my work/i })
+    const dialog = page.getByRole('dialog', { name: /ask about my work/i })
+    await expect(dialog).toBeHidden()
+    await button.click()
+    await expect(dialog).toBeVisible()
+    await expect(button).toHaveAttribute('aria-expanded', 'true')
+    await expect(dialog.getByRole('textbox', { name: /your question/i })).toBeFocused()
+    await dialog.getByRole('button', { name: /what's your stack/i }).click()
+    const log = dialog.getByRole('log')
+    await expect(log).toContainText(/what's your stack\?/i)
+    await expect(log).toContainText('Most production work is Laravel')
+    expect(calls).toBe(0)
+    await page.keyboard.press('Escape')
+    await expect(dialog).toBeHidden()
+    await expect(button).toBeFocused()
+    await expect(button).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  test('a typed question goes to the API, with a thinking state', async ({ page }) => {
+    let body: unknown = null
+    let release!: () => void
+    const held = new Promise<void>((resolve) => { release = resolve })
+    await page.route('**/api/ask', async (r) => {
+      body = r.request().postDataJSON()
+      await held
+      await r.fulfill({ json: { answer: 'I build Laravel systems.' } })
+    })
+    await page.goto('/')
+    await page.getByRole('button', { name: /ask about my work/i }).click()
+    const dialog = page.getByRole('dialog', { name: /ask about my work/i })
+    const input = dialog.getByRole('textbox', { name: /your question/i })
+    await input.fill('Do you like jazz?')
+    await input.press('Enter')
+    await expect(dialog.getByText(/thinking/i)).toBeVisible()
+    release()
+    await expect(dialog.getByRole('log')).toContainText('I build Laravel systems.')
+    await expect(dialog.getByText(/thinking/i)).toBeHidden()
+    await expect(input).toHaveValue('')
+    expect(body).toEqual({ messages: [{ role: 'user', text: 'Do you like jazz?' }] })
+  })
+
+  test('an API failure falls back to the offline reply', async ({ page }) => {
+    await page.route('**/api/ask', (r) => r.fulfill({ status: 500, json: { error: 'down' } }))
+    await page.goto('/')
+    await page.getByRole('button', { name: /ask about my work/i }).click()
+    const dialog = page.getByRole('dialog', { name: /ask about my work/i })
+    const input = dialog.getByRole('textbox', { name: /your question/i })
+    await input.fill('Do you like jazz?')
+    await input.press('Enter')
+    await expect(dialog.getByRole('log')).toContainText('outside what I can answer here')
+  })
+
+  test('slash opens the panel when nothing else is open', async ({ page }) => {
+    await page.goto('/')
+    await page.locator('body').click({ position: { x: 5, y: 400 } })
+    await page.keyboard.press('/')
+    const dialog = page.getByRole('dialog', { name: /ask about my work/i })
+    await expect(dialog).toBeVisible()
+    await expect(dialog.getByRole('textbox', { name: /your question/i })).toBeFocused()
+    await expect(dialog.getByRole('textbox', { name: /your question/i })).toHaveValue('')
+  })
+
+  test('slash is ignored while the phone menu is open', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'the menu sheet only opens on phones')
+    await page.goto('/')
+    await page.getByRole('button', { name: /menu/i }).click()
+    await expect(page.getByRole('dialog', { name: 'Menu' })).toBeVisible()
+    await page.keyboard.press('/')
+    await expect(page.getByRole('dialog', { name: /ask about my work/i })).toBeHidden()
+  })
+
+  test('slash is ignored while typing in a field', async ({ page }) => {
+    await page.goto('/#contact')
+    const name = page.locator('#contact input').first()
+    await name.click()
+    await page.keyboard.press('/')
+    await expect(name).toHaveValue('/')
+    await expect(page.getByRole('dialog', { name: /ask about my work/i })).toBeHidden()
+  })
+
+  test('an outside click closes the panel', async ({ page }) => {
+    await page.goto('/')
+    await page.getByRole('button', { name: /ask about my work/i }).click()
+    const dialog = page.getByRole('dialog', { name: /ask about my work/i })
+    await expect(dialog).toBeVisible()
+    await page.locator('body').click({ position: { x: 5, y: 400 } })
+    await expect(dialog).toBeHidden()
+  })
+
+  test('the FAQ link opens the panel', async ({ page }) => {
+    await page.goto('/#faq')
+    await page.locator('#faq').getByRole('button', { name: /ask the assistant/i }).click()
+    const dialog = page.getByRole('dialog', { name: /ask about my work/i })
+    await expect(dialog).toBeVisible()
+    await expect(dialog.getByRole('textbox', { name: /your question/i })).toBeFocused()
+  })
+})
