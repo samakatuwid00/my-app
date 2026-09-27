@@ -109,16 +109,13 @@ export const projectFacts: ProjectFacts[] = [
       'Analytics Dashboard',
       'Role-Based Access Control',
     ],
-    // NOTE: "ClickHouse Three" is unverified — no source in the knowledge vault
-    // documents this system's stack, and the name does not match any library
-    // this project is known to use. Confirm or replace it; do not treat the
-    // rest of this list as vault-grounded either.
+    // NOTE: no source in the knowledge vault documents this system's stack, so
+    // do not treat this list as vault-grounded.
     technologies: [
       'Laravel',
       'PHP',
       'Blade',
       'Tailwind CSS',
-      'ClickHouse Three',
       'Maatwebsite Excel',
       'Intervention Image',
       'Google Sheets API',
@@ -185,41 +182,6 @@ export const projectFacts: ProjectFacts[] = [
     features: ['Token API on the library system'],
     technologies: ['Flutter'],
     status: 'in-progress',
-  },
-  {
-    // Hidden: never rendered and never sent to the assistant while its
-    // credential is unrotated (vault: wiki/Eurasian Paradise Resort System.md).
-    slug: 'eurasian',
-    title: 'Eurasian',
-    category: 'Resort operations',
-    description:
-      'End-to-end resort operations platform built to streamline reservations, booking workflows, guest records, reporting, and management visibility.',
-    stack: 'PHP, MySQL',
-    features: [
-      'Online Reservations',
-      'Booking Workflows',
-      'Business Automation',
-      'Management Dashboards',
-      'AI Chatbot',
-      'Dashboard Projection',
-    ],
-    technologies: [
-      'PHP',
-      'MySQL',
-      'JavaScript',
-      'Bootstrap',
-      'Apache',
-      'PHPMailer',
-      'SMTP',
-      'ApexCharts',
-      'FullCalendar',
-      'DataTables',
-      'WhatsApp Cloud API',
-      'REST API',
-    ],
-    status: 'live',
-    hidden: true,
-    liveUrl: 'https://eurasian.freehosting.dev/',
   },
   {
     // Formerly JARVIS HUD. No githubUrl: the JARVIS repo exposes private data
@@ -339,12 +301,15 @@ const CURATED: SkillGroup[] = [
 const curated = new Set(CURATED.flatMap((group) => group.items.map((item) => item.replace(/\s*\(.+\)$/, ''))))
 
 // Everything else the shipped systems actually run on. Derived rather than
-// listed, so adding a project surfaces its stack here automatically.
+// listed, so adding a project surfaces its stack here automatically. Only live
+// and internal systems count: a demo or an unfinished app is not production.
+const inProduction = projectFacts.filter((project) => project.status === 'live' || project.status === 'internal')
+
 export const skillGroups: SkillGroup[] = [
   ...CURATED,
   {
     label: 'Also shipped in production',
-    items: [...new Set(projectFacts.flatMap((project) => project.technologies))]
+    items: [...new Set(inProduction.flatMap((project) => project.technologies))]
       .filter((name) => !curated.has(name))
       .sort((a, b) => a.localeCompare(b)),
   },

@@ -34,11 +34,10 @@ const previewAlts: Partial<Record<string, string>> = {
   lrmis: 'LRMIS national map dashboard',
 }
 
-export const visibleProjects = projectFacts.filter((p) => !p.hidden)
-export const featuredProjects = visibleProjects.filter((p) => p.featured)
-export const moreProjects = visibleProjects.filter(
+export const featuredProjects = projectFacts.filter((p) => p.featured)
+export const moreProjects = projectFacts.filter(
   (p) => !p.featured && ['internal', 'in-progress'].includes(p.status),
 )
-export const experiments = visibleProjects.filter((p) => ['demo', 'private'].includes(p.status))
+export const experiments = projectFacts.filter((p) => ['demo', 'private'].includes(p.status))
 export const previewFor = (slug: string) => previews[slug]
 export const previewAltFor = (slug: string) => previewAlts[slug]

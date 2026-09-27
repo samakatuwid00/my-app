@@ -25,7 +25,6 @@ export type ProjectFacts = {
   features: string[]
   status: ProjectStatus
   featured?: boolean // appears as a large case row
-  hidden?: boolean // never rendered, never sent to the assistant
   liveUrl?: string
   // Public source repo. Leave it off any repo that is private or exposes
   // private data: a visitor who follows it lands on a 404 or on data that was

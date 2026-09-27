@@ -1,7 +1,8 @@
 import { Link, useParams } from 'react-router-dom'
 import { Band } from '../components/layout/Band'
 import { Halftone } from '../components/ui/Halftone'
-import { featuredProjects, previewAltFor, previewFor, visibleProjects } from '../data/projects'
+import { projectFacts } from '../data/facts'
+import { featuredProjects, previewAltFor, previewFor } from '../data/projects'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { NotFoundView } from './NotFoundView'
 
@@ -19,7 +20,7 @@ function nextCaseStudy(slug: string) {
 
 export function CaseStudyView() {
   const { slug = '' } = useParams()
-  const project = visibleProjects.find((p) => p.slug === slug)
+  const project = projectFacts.find((p) => p.slug === slug)
   useDocumentTitle(project?.caseStudy ? `${project.title} · Roger A. Abay Jr.` : undefined)
 
   if (!project?.caseStudy) return <NotFoundView />
