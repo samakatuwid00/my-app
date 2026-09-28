@@ -14,11 +14,13 @@ const bare = (href: string) => href.replace(/^https?:\/\/(www\.)?/, '')
 
 const linkedIn = linkFor('linkedin')
 const gitHub = linkFor('github')
+const facebook = linkFor('facebook')
 
 const CHANNELS = [
   { id: 'email', label: 'Email', value: site.email, href: `mailto:${site.email}` },
   { id: 'linkedin', label: 'LinkedIn', value: bare(linkedIn), href: linkedIn },
   { id: 'github', label: 'GitHub', value: bare(gitHub), href: gitHub },
+  { id: 'facebook', label: 'Facebook', value: bare(facebook), href: facebook },
 ]
 
 type CopyState = 'idle' | 'done' | 'failed'
@@ -75,7 +77,7 @@ export function Contact() {
               className="tabs"
               role="tablist"
               aria-label="Contact channel"
-              style={{ '--i': i } as CSSProperties}
+              style={{ '--i': i, '--n': CHANNELS.length } as CSSProperties}
               onKeyDown={onKeyDown}
             >
               <span className="pill" aria-hidden="true" />
