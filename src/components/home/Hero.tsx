@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import resume from '../../assets/full.pdf'
 import { credits, hero, site, socialLinks } from '../../data/site'
@@ -10,14 +10,38 @@ const PROFILES = [
   { label: 'Email', href: `mailto:${site.email}` },
 ]
 
+const HEADER_HEIGHT = 60
+
+// While the full name is on screen the header's short name would repeat it, so
+// the root carries .hero-name and the header shows only the mark.
+function useHeroNameFlag() {
+  const ref = useRef<HTMLHeadingElement>(null)
+  useEffect(() => {
+    const name = ref.current
+    if (!name) return
+    const root = document.documentElement
+    const observer = new IntersectionObserver(
+      ([entry]) => root.classList.toggle('hero-name', entry.isIntersecting),
+      { rootMargin: `-${HEADER_HEIGHT}px 0px 0px 0px` },
+    )
+    observer.observe(name)
+    return () => {
+      observer.disconnect()
+      root.classList.remove('hero-name')
+    }
+  }, [])
+  return ref
+}
+
 export function Hero() {
+  const nameRef = useHeroNameFlag()
   return (
     <Band as="div" tone="dark" className="hero">
       <div className="wrap">
         <div className="intro">
           <Portrait />
           <div>
-            <h1 className="display">
+            <h1 ref={nameRef} className="display">
               {hero.name.map((part, i) => (
                 <Fragment key={part}>{i > 0 && ' '}<span>{part}</span></Fragment>
               ))}

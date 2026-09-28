@@ -386,8 +386,8 @@ test.describe('contact', () => {
     await expect(page.locator('#reach-v')).toHaveText('linkedin.com/in/roger-abay-30394441b')
     await page.keyboard.press('ArrowLeft')
     await page.keyboard.press('ArrowLeft')
-    await expect(page.getByRole('tab', { name: 'GitHub' })).toBeFocused()
-    await expect(page.locator('#reach-v')).toHaveText('github.com/samakatuwid00')
+    await expect(page.getByRole('tab', { name: 'Facebook' })).toBeFocused()
+    await expect(page.locator('#reach-v')).toHaveText('facebook.com/niko.0y')
   })
   test('the longest address never widens the page', async ({ page }) => {
     await page.goto('/#contact')
@@ -740,4 +740,31 @@ test('experience role rows are named groups', async ({ page }) => {
     await expect(row).toHaveAttribute('role', 'group')
     await expect(row).toHaveAccessibleName(/\S/)
   }
+})
+
+test.describe('hero', () => {
+  test('the header name waits until the hero name scrolls away', async ({ page }) => {
+    await page.goto('/')
+    const brandName = page.locator('header.site .brand b')
+    await expect(brandName).toBeHidden()
+    await page.evaluate(() => window.scrollTo(0, 900))
+    await expect(brandName).toBeVisible()
+    await page.goto('/work/irims-v')
+    await expect(brandName).toBeVisible()
+  })
+  test('on a tablet the portrait sits beside the name', async ({ page }) => {
+    await page.setViewportSize({ width: 768, height: 1024 })
+    await page.goto('/')
+    const portrait = await page.locator('#me .portrait').boundingBox()
+    const name = await page.locator('.hero h1').boundingBox()
+    expect(portrait!.x + portrait!.width).toBeLessThan(name!.x)
+    expect(Math.abs(portrait!.y - name!.y)).toBeLessThan(80)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(768)
+  })
+  test('the portrait is compact on a phone', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'desktop keeps the 300px portrait')
+    await page.goto('/')
+    const box = await page.locator('#me .portrait').boundingBox()
+    expect(box?.width).toBeLessThanOrEqual(180)
+  })
 })
