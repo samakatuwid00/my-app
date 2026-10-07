@@ -105,7 +105,14 @@ export const socialLinks = [
 export const hero = {
   name: ['Roger A.', 'Abay Jr.'],
   tagline: 'Full-stack developer. Systems that replace paper.',
-  lede: 'I scope, build, deploy, and keep running the Laravel and PostgreSQL systems DepEd offices use every day, from a regional inventory to a national learning-resource platform. Based in Camarines Sur, Philippines.',
+  // The second line of the title: what the AI work is, named by what it does.
+  // "Applied", not "AI engineer": the evidence is AI built into real systems,
+  // not model training or evaluation work.
+  applied: 'Applied AI where it earns its place: a voice assistant with its own model router, cover OCR that fills in inventory records, and data mappings Gemini drafts and a person approves.',
+  appliedShort: 'Applied AI: a voice assistant, cover OCR, Gemini-drafted data mappings.',
+  lede: 'I scope, build, deploy, and keep running the Laravel and PostgreSQL systems DepEd offices use every day, from a regional inventory to a national learning-resource platform, and the Flutter app that puts the library in a student’s pocket. Based in Camarines Sur, Philippines.',
+  // Phones get one sentence instead of the paragraph.
+  ledeShort: 'I build and run the systems DepEd offices use every day. Camarines Sur, Philippines.',
 } as const
 
 export const credits = [

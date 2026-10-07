@@ -3,6 +3,7 @@ import { education, experience } from '../../data/experience'
 import { useInView } from '../../hooks/useInView'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { Band } from '../layout/Band'
+import { StackList } from './StackList'
 
 const FIRST = 2019
 const now = new Date()
@@ -81,6 +82,7 @@ export function Experience() {
             </div>
           ))}
         </div>
+        <StackList />
       </div>
     </Band>
   )

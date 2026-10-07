@@ -85,16 +85,7 @@ header.site .wrap { display: grid; grid-template-columns: 1fr auto 1fr; align-it
 .links a:hover::after, .links a[aria-current="true"]::after { transform: scaleX(1); transform-origin: left; }
 .actions { display: flex; gap: 8px; justify-self: end; }
 .actions .btn { height: 36px; padding: 0 14px; font-size: 14px; }
-.menu-btn { display: none; }
 
-/* Mobile menu: a black sheet that wipes down, links set large */
-.sheet { position: fixed; inset: 0; z-index: 65; background: var(--black); color: var(--paper); display: none; flex-direction: column; padding: 18px 24px 32px; }
-.sheet.open { display: flex; clip-path: inset(0 0 0 0); transition: clip-path .5s var(--ease); }
-.sheet .top { display: flex; justify-content: space-between; align-items: center; height: 40px; }
-.sheet nav { display: grid; margin-top: 40px; border-top: 1px solid rgba(242,242,240,.2); }
-.sheet nav a { font: 300 52px/1 var(--display); text-transform: uppercase; text-decoration: none; padding: 16px 0; border-bottom: 1px solid rgba(242,242,240,.2); }
-.sheet.open nav a { opacity: 1; transition: opacity .4s var(--ease); }
-.sheet .btns { margin-top: auto; gap: 8px; }
 
 /* ============ Hero ============
    Portrait beside the introduction, the way a printed profile sits beside
@@ -107,9 +98,6 @@ header.site .wrap { display: grid; grid-template-columns: 1fr auto 1fr; align-it
    is one device pixel on high-density screens and blends to a smooth print on
    standard ones. Floyd-Steinberg keeps the eyes and mouth that an 8x8 Bayer
    grid dissolves (compare docs/assets/portrait-options.png). */
-.hero .wrap { padding-top: 104px; padding-bottom: 96px; }
-.intro { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 64px; align-items: start; }
-.portrait { width: 300px; height: 300px; }
 /* The portrait thinks out loud: a paper bubble rises from the head on hover,
    focus, or tap, and each visit shows the next line. */
 .me { position: relative; margin: 0; width: 300px; }
@@ -130,20 +118,6 @@ header.site .wrap { display: grid; grid-template-columns: 1fr auto 1fr; align-it
   opacity: 1; visibility: visible; transform: none;
   transition: opacity .25s var(--ease), transform .5s var(--ease), visibility 0s;
 }
-.hero h1 { font-size: clamp(56px, 7.4vw, 96px); margin-top: -8px; }
-.hero h1 span { display: block; }
-.hero p.tagline { font: 300 clamp(24px, 2.4vw, 30px)/1.15 var(--display); margin: 20px 0 0; }
-.hero .lede { max-width: 50ch; margin: 20px 0 0; font-size: 17px; line-height: 1.6; color: var(--soft); }
-.social { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 22px 0 32px; }
-.social a { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--soft); transition: color .2s var(--ease); }
-.social a:hover { color: var(--fg); }
-.social svg { width: 12px; height: 12px; transition: transform .3s var(--ease); }
-.social a:hover svg { transform: translate(2px, -2px); }
-.credits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 80px 0 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
-.credits div { padding: 20px 20px 20px 0; }
-.credits div + div { padding-left: 20px; border-left: 1px solid var(--rule); }
-.credits dt { color: var(--soft); margin-bottom: 6px; }
-.credits dd { margin: 0; font-size: 14.5px; line-height: 1.45; }
 
 /* Halftone wrapper for every screenshot. Hover lifts the screen: the dots
    clear and the capture sharpens, as if the print came into focus. */
@@ -165,38 +139,8 @@ section.band.flush { padding-top: 0; }
 .head { display: grid; grid-template-columns: 1fr minmax(0, 380px); gap: 32px; align-items: end; margin-bottom: 64px; }
 .head p { margin: 0; color: var(--soft); font-size: 15.5px; }
 
-/* Selected work */
-.case { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 56px; padding: 56px 0; border-top: 1px solid var(--rule); align-items: start; }
-.case:nth-of-type(even) > a { order: 2; }
-.case .ht { aspect-ratio: 16 / 10; box-shadow: 0 0 0 1px var(--rule); }
-.case p { margin: 16px 0 24px; color: var(--soft); max-width: 52ch; }
-.facts { display: grid; grid-template-columns: 72px 1fr; gap: 10px 16px; margin: 0 0 32px; font-size: 14.5px; }
-.facts dt { color: var(--soft); padding-top: 2px; }
-.facts dd { margin: 0; }
-.live::before { content: ''; display: inline-block; width: 7px; height: 7px; background: currentColor; margin-right: 9px; vertical-align: 1px; }
 
-/* Tables: more work, services, stack, experience */
-/* display: block undoes Tailwind's `table` utility, which the class name also matches. */
-.table { display: block; border-top: 1px solid var(--rule); }
-.tr { display: grid; grid-template-columns: 220px minmax(0, 1fr) auto; gap: 32px; padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
-.tr > .ui { color: var(--soft); }
-.tr p { margin: 6px 0 0; color: var(--soft); font-size: 15px; max-width: 62ch; }
-.name { font: 300 30px/1.05 var(--display); }
-.go { text-decoration: none; white-space: nowrap; }
-.go:hover { text-decoration: underline; text-underline-offset: 4px; }
 
-/* What I do: four figures read left to right as one process */
-.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 32px; }
-.flow li { border-top: 1px solid var(--rule); padding-top: 24px; }
-.flow svg { display: block; width: 100%; height: auto; max-width: 220px; margin-bottom: 20px; color: var(--fg); }
-.flow .step { font: 300 30px/1.05 var(--display); margin: 0 0 8px; }
-.flow p { margin: 0; color: var(--soft); font-size: 15px; max-width: 28ch; }
-.stack { margin-top: 88px; display: grid; gap: 18px; }
-.stack > div { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 24px; align-items: baseline; }
-.stack .ui { color: var(--soft); }
-.tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-.tags li { font-size: 14px; line-height: 1; padding: 8px 12px; border: 1px solid var(--rule); transition: border-color .2s var(--ease), background-color .2s var(--ease); }
-.tags li:hover { border-color: var(--fg); }
 
 /* Experience: the timeline carries the dates, the rows carry one line each */
 .tl { margin: 0 0 72px; display: grid; grid-template-columns: 170px repeat(var(--years, 9), minmax(0, 1fr)); row-gap: 12px; align-items: center; }
@@ -248,17 +192,6 @@ blockquote { margin: 0; padding: 0 0 36px; }
 blockquote + blockquote { padding-top: 36px; border-top: 1px solid var(--rule); }
 blockquote p { margin: 0 0 16px; font: 300 clamp(26px, 2.6vw, 34px)/1.14 var(--display); }
 
-/* Experiments: an index, not a card grid */
-.index { border-top: 1px solid var(--rule); }
-.index a, .index .item { display: grid; grid-template-columns: 200px minmax(0, 1fr) auto; gap: 32px; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--rule); text-decoration: none; transition: background-color .25s var(--ease); }
-.index a:hover { background: var(--tint); }
-.index .ht { aspect-ratio: 16 / 10; }
-/* Production only: Cygnus's screenshot is framed on its middle, not its top. */
-.ht.center img { object-position: center 40%; }
-.index p { margin: 6px 0 0; color: var(--soft); font-size: 15px; max-width: 58ch; }
-.index .go { padding-right: 16px; display: inline-flex; gap: 8px; align-items: center; }
-.index .go svg { width: 14px; height: 14px; transition: transform .35s var(--ease); }
-.index a:hover .go svg { transform: translate(3px, -3px); }
 
 /* FAQ: the answer opens to its height instead of snapping */
 .faq { border-top: 1px solid var(--rule); }
@@ -327,12 +260,12 @@ input[aria-invalid="true"], textarea[aria-invalid="true"] { border-bottom-color:
 
 /* Footer */
 footer.band { overflow: hidden; }
-.ghost { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: 200 clamp(160px, 24vw, 340px)/.8 var(--display); letter-spacing: -.03em; text-transform: uppercase; color: rgba(11,11,11,.045); white-space: nowrap; pointer-events: none; user-select: none; }
-.foot { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; padding-top: 112px; padding-bottom: 112px; }
-.foot p { margin: 0; line-height: 2; }
-.foot .r { text-align: right; }
-.foot a { text-decoration: none; }
-.foot a:hover { text-decoration: underline; text-underline-offset: 4px; }
+footer .ghost { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: 200 clamp(160px, 24vw, 340px)/.8 var(--display); letter-spacing: -.03em; text-transform: uppercase; color: rgba(11,11,11,.045); white-space: nowrap; pointer-events: none; user-select: none; }
+footer .foot { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; padding-top: 112px; padding-bottom: 112px; }
+footer .foot p { margin: 0; line-height: 2; }
+footer .foot .r { text-align: right; }
+footer .foot a { text-decoration: none; }
+footer .foot a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .glyphs { display: flex; gap: 12px; }
 .glyphs a { width: 42px; height: 50px; border: 1px solid var(--black); display: grid; place-items: center; transition: background-color .2s var(--ease), color .2s var(--ease); }
 .glyphs a:hover { background: var(--black); color: var(--paper); text-decoration: none; }
@@ -404,102 +337,20 @@ footer.band { overflow: hidden; }
   .hero h1 span { animation: ink .9s var(--ease) both; }
   .hero h1 span:nth-child(2) { animation-delay: .09s; }
   @keyframes ink { from { clip-path: inset(-20% 100% -20% 0); } to { clip-path: inset(-20% 0 -20% 0); } }
-  .hero .tagline, .hero .lede, .hero .social, .hero .btns, .hero .credits { animation: settle .8s var(--ease) both; }
+  .hero .tagline, .hero .applied, .hero .lede, .hero .btns, .hero .credits { animation: settle .8s var(--ease) both; }
   .hero .tagline { animation-delay: .35s; }
   .hero .lede { animation-delay: .45s; }
-  .hero .social { animation-delay: .52s; }
+  .hero .applied { animation-delay: .4s; }
   .hero .btns { animation-delay: .58s; }
   .hero .credits { animation-delay: .7s; }
   @keyframes settle { from { opacity: 0; filter: blur(4px); } }
 
   @starting-style {
-    .sheet.open { clip-path: inset(0 0 100% 0); }
-    .sheet.open nav a { opacity: 0; }
     .ask-panel.open { opacity: 0; transform: scale(.96); }
   }
   .turn.thinking span { animation: wait 1.2s steps(4, end) infinite; display: inline-block; overflow: hidden; vertical-align: bottom; width: 3ch; }
   @keyframes wait { from { width: 0; } }
-  .sheet.open nav a:nth-child(2) { transition-delay: .05s; }
-  .sheet.open nav a:nth-child(3) { transition-delay: .1s; }
-  .sheet.open nav a:nth-child(4) { transition-delay: .15s; }
-  .sheet.open nav a:nth-child(5) { transition-delay: .2s; }
 
-  /* Services figures. Each one acts out its own step once when it arrives
-     (.on), then keeps a quiet loop that runs only while it is on screen
-     (.in-view). Armed from script, so without it every figure stays complete. */
-  .flow.armed .draw { stroke-dasharray: 1; stroke-dashoffset: 1; }
-  .flow.armed .on .draw { animation: draw .9s var(--ease) var(--d, 0s) forwards; }
-  @keyframes draw { to { stroke-dashoffset: 0; } }
-  .flow.armed li:not(.in-view) * { animation-play-state: paused !important; }
-
-  /* Records: paper recedes as the table fills, the lens keeps scanning rows */
-  .fig-records .paper { opacity: .35; }
-  .flow.armed .fig-records .head-fill { opacity: 0; }
-  .flow.armed .fig-records.on .head-fill { animation: appear .5s .3s var(--ease) forwards; }
-  .flow.armed .fig-records.on .paper { animation: recede 1.4s var(--ease) forwards; }
-  .fig-records .lens { transform-box: view-box; }
-  .flow.armed .fig-records.on .lens { animation: scan 7s 1.3s ease-in-out infinite; }
-  @keyframes appear { to { opacity: 1; } }
-  @keyframes recede { from { opacity: .7; transform: translateX(-3px); } to { opacity: .22; } }
-  @keyframes scan {
-    0%, 100% { transform: translate(0, 0); }
-    22% { transform: translate(-58px, -40px); }
-    44% { transform: translate(-24px, -26px); }
-    66% { transform: translate(-50px, -12px); }
-    84% { transform: translate(-6px, -12px); }
-  }
-
-  /* Approvals: a token carries the request, waits at the clock, lands on the tick */
-  .flow.armed .fig-approvals.on .march { animation: march 1s linear infinite; }
-  @keyframes march { to { stroke-dashoffset: -10; } }
-  .fig-approvals .hand { transform-box: view-box; transform-origin: 72px 52px; }
-  .flow.armed .fig-approvals.on .hand { animation: tick-tock 4.2s linear infinite; }
-  @keyframes tick-tock { 0%, 30% { transform: rotate(0); } 60%, 100% { transform: rotate(360deg); } }
-  .flow.armed .fig-approvals .token { opacity: 0; }
-  .flow.armed .fig-approvals.on .token { animation: carry 4.2s cubic-bezier(.45, 0, .2, 1) infinite; }
-  @keyframes carry {
-    0% { transform: translateX(0); opacity: 0; }
-    6% { opacity: 1; }
-    28%, 58% { transform: translateX(30px); opacity: 1; }
-    84% { transform: translateX(76px); opacity: 1; }
-    92%, 100% { transform: translateX(76px); opacity: 0; }
-  }
-  .flow.armed .fig-approvals .tick { stroke-dasharray: 1; stroke-dashoffset: 1; }
-  .flow.armed .fig-approvals.on .tick { animation: approve 4.2s var(--ease) infinite; }
-  @keyframes approve { 0%, 80% { stroke-dashoffset: 1; } 90%, 100% { stroke-dashoffset: 0; } }
-  .fig-approvals .done { transform-box: fill-box; transform-origin: center; }
-  .flow.armed .fig-approvals.on .done { animation: settle-ok 4.2s var(--ease) infinite; }
-  @keyframes settle-ok { 0%, 80% { transform: scale(1); } 86% { transform: scale(1.14); } 94%, 100% { transform: scale(1); } }
-
-  /* Dashboards: bars grow in, then breathe like live data; the latest point pings */
-  .fig-dash .bar { transform-box: fill-box; transform-origin: bottom; }
-  .flow.armed .fig-dash .bar { transform: scaleY(0); }
-  .flow.armed .fig-dash.on .bar {
-    animation: grow .9s var(--ease) var(--d) forwards, breathe var(--t) ease-in-out calc(var(--d) + 1s) infinite alternate;
-  }
-  @keyframes grow { to { transform: scaleY(1); } }
-  @keyframes breathe { from { transform: scaleY(1); } to { transform: scaleY(.82); } }
-  .fig-dash .ping, .fig-dash .dot { transform-box: fill-box; transform-origin: center; }
-  .flow.armed .fig-dash .ping, .flow.armed .fig-dash .dot { opacity: 0; }
-  .flow.armed .fig-dash.on .dot { animation: appear .3s 1.4s forwards; }
-  .flow.armed .fig-dash.on .ping { animation: ping 2.2s 1.5s var(--ease) infinite; }
-  @keyframes ping { from { opacity: .8; transform: scale(1); } to { opacity: 0; transform: scale(3.4); } }
-
-  /* Deploy: servers stack in, lights blink in turn, a pulse runs the line */
-  .flow.armed .fig-deploy .srv { opacity: 0; }
-  .flow.armed .fig-deploy.on .srv { animation: rack .7s var(--ease) var(--d) forwards; }
-  @keyframes rack { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-  .flow.armed .fig-deploy.on .led { animation: blink 2.4s var(--b) steps(1, end) infinite; }
-  @keyframes blink { 0%, 70% { opacity: 1; } 75% { opacity: .15; } 85% { opacity: 1; } 90% { opacity: .15; } 95%, 100% { opacity: 1; } }
-  .fig-deploy .beat { stroke-dasharray: .22 .78; stroke-dashoffset: 1; opacity: 0; }
-  .flow.armed .fig-deploy.on .beat { animation: beat 2s linear calc(.8s + var(--b, 0s)) infinite; }
-  @keyframes beat { 0% { stroke-dashoffset: 1; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 1; } }
-
-  /* The arrows between steps lean forward, one after another */
-  .flow.armed .on .nudge { animation: nudge 2.4s ease-in-out infinite; }
-  .flow.armed .fig-approvals.on .nudge { animation-delay: .3s; }
-  .flow.armed .fig-dash.on .nudge { animation-delay: .6s; }
-  @keyframes nudge { 0%, 60%, 100% { transform: none; } 30% { transform: translateX(3px); } }
 
   .tl.armed .bar { transform: scaleX(0); }
   .tl.armed.drawn .bar { transform: none; transition: transform .9s var(--ease), opacity .3s var(--ease); }
@@ -554,37 +405,22 @@ footer.band { overflow: hidden; }
   html { scroll-padding-top: 60px; }
   body::after { border-width: 4px; }
   header.site .wrap { grid-template-columns: 1fr auto; height: 60px; }
-  .links, .actions, .brand small { display: none; }
-  .menu-btn { display: inline-flex; height: 36px; padding: 0 14px; font-size: 14px; }
-  .hero .wrap { padding-top: 88px; padding-bottom: 64px; }
-  .credits div:last-child { border-bottom: 1px solid var(--rule); }
-  .intro { grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
-  .me, .portrait { width: 200px; height: auto; }
+  .brand small { display: none; }
   .thought { bottom: calc(100% - 30px); left: 32px; width: 184px; }
-  .credits { grid-template-columns: 1fr 1fr; margin-top: 56px; border-bottom: 0; }
-  .credits div, .credits div + div { padding: 16px 12px 16px 0; border-left: 0; border-bottom: 1px solid var(--rule); }
-  .credits div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--rule); }
   .head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px; }
   section.band { padding: 88px 0; }
-  .case, .recog, .contact, .cs-sec { grid-template-columns: 1fr; gap: 28px; }
+  .recog, .contact, .cs-sec { grid-template-columns: 1fr; gap: 28px; }
   /* Production only: minmax(0, …) so the unbroken LinkedIn address ellipsizes instead of widening the page (the mockup scrolls sideways at 390px). */
   .contact { grid-template-columns: minmax(0, 1fr); }
-  .case:nth-of-type(even) > a { order: 0; }
   .recog figure { position: static; }
-  .tr { grid-template-columns: 1fr; gap: 6px; }
-  .flow { grid-template-columns: 1fr 1fr; gap: 40px 20px; }
-  .flow .step { font-size: 26px; }
-  .stack > div, .role-row { grid-template-columns: 1fr; gap: 10px; }
+  .role-row { grid-template-columns: 1fr; gap: 10px; }
   .tl { grid-template-columns: 92px repeat(var(--years, 9), minmax(0, 1fr)); row-gap: 10px; }
   .tl .lab { font-size: 11px; letter-spacing: .04em; }
   .tl .axis { font-size: 10px; letter-spacing: 0; }
   .tl .mark { font-size: 0; }
   .role-row .org { display: block; margin: 6px 0 0; }
-  .index a, .index .item { grid-template-columns: 112px minmax(0, 1fr); gap: 16px; }
-  .index .item > :last-child { grid-column: 2; justify-self: start; }
-  .index .go { display: none; }
-  .foot { grid-template-columns: 1fr; padding-top: 72px; padding-bottom: 72px; }
-  .foot .r { text-align: left; }
+  footer .foot { grid-template-columns: 1fr; padding-top: 72px; padding-bottom: 72px; }
+  footer .foot .r { text-align: left; }
   .cs-meta { grid-template-columns: 1fr 1fr; }
   .cs-meta div, .cs-meta div + div { padding: 14px 12px 14px 0; border-left: 0; }
   .cs-meta div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--rule); }
@@ -592,14 +428,6 @@ footer.band { overflow: hidden; }
   .ask .label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 }
 @media (max-width: 640px) {
-  .hero .wrap { padding-top: 56px; }
-  .intro { grid-template-columns: minmax(0, 1fr); gap: 32px; }
-  .me, .portrait { width: 168px; }
   /* Beside the head rather than above it, so it never slides under the header */
   .thought { bottom: 58%; left: 150px; width: min(220px, calc(100vw - 190px)); }
-}
-@media (max-width: 480px) {
-  .hero h1 { font-size: 52px; }
-  .credits { grid-template-columns: 1fr; }
-  .credits div:nth-child(even) { padding-left: 0; border-left: 0; }
 }

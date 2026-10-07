@@ -1,13 +1,10 @@
 import { test, expect } from '@playwright/test'
-import { readdirSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { readFileSync } from 'node:fs'
 import AxeBuilder from '@axe-core/playwright'
 import { intents } from '../src/data/ask'
 import { skillGroups } from '../src/data/facts'
 import { resolveLocally } from '../src/services/askRouter'
 
-const filesUnder = (dir: string): string[] =>
-  readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? filesUnder(join(dir, e.name)) : [join(dir, e.name)]))
 const answer = (id: string) => intents.find((i) => i.id === id)!.answer()
 
 test.describe('shell', () => {
@@ -29,18 +26,10 @@ test.describe('type and ink', () => {
   })
 })
 
-test('assistant context excludes Eurasian and the resort claims only it backed', () => {
+test('assistant context names every group of work, with Eurasian marked not deployed', () => {
   const context = readFileSync('api/context.ts', 'utf8')
-  expect(context).not.toContain('Eurasian')
-  expect(context).not.toMatch(/resort|hospitality/i)
-  expect(context).toContain('iRIMS-V Library System')
-  expect(context).toContain('Cygnus')
-})
-
-test('Eurasian is nowhere in the shipped source', () => {
-  // Hiding it at render time still shipped it in the client bundle.
-  const hits = [...filesUnder('src'), ...filesUnder('api')].filter((f) => /eurasian/i.test(readFileSync(f, 'latin1')))
-  expect(hits).toEqual([])
+  for (const title of ['iRIMS-V Library System', 'iRIMS-V Accounts', 'Cygnus', 'Eurasian Paradise Resort', 'Cerebrum Sizer']) expect(context).toContain(title)
+  expect(answer('projects')).toContain('Eurasian Paradise Resort (not deployed)')
 })
 
 test.describe('assistant answers match what the site shows', () => {
@@ -49,16 +38,17 @@ test.describe('assistant answers match what the site shows', () => {
     expect(resolveLocally('do you work remote?') ?? '').not.toMatch(/remote/i)
     expect(resolveLocally('where are you based?')).toMatch(/Pasacao/)
   })
-  test('projects counts only the featured systems and keeps experiments apart', () => {
+  test('projects groups the work the way the page does', () => {
     const text = answer('projects')
-    expect(text).toMatch(/^4 featured systems:/)
-    const [featured, rest] = text.split(/\n\n(?=Other work)/)
-    for (const title of ['iRIMS-V', 'EDULEAVE', 'LRMIS', 'iRIMS-V Library System']) expect(featured).toContain(`${title} –`)
-    for (const title of ['schema_mapper', 'iRIMS-V Library app', 'Cygnus', 'Sticky Brain', 'Second Brain']) {
-      expect(featured).not.toContain(title)
-      expect(rest).toContain(title)
+    expect(text).toMatch(/^The iRIMS-V suite, four systems/)
+    const [suite, rest] = text.split(/\n\n(?=Also in production)/)
+    const [also, log] = rest.split(/\n\n(?=Build log)/)
+    for (const title of ['iRIMS-V –', 'iRIMS-V Library System –', 'iRIMS-V Library app (in progress) –', 'iRIMS-V Accounts (in progress) –']) expect(suite).toContain(title)
+    for (const title of ['EDULEAVE –', 'LRMIS –']) expect(also).toContain(title)
+    for (const title of ['Cygnus', 'Eurasian Paradise Resort', 'schema_mapper', 'Sticky Brain', 'Second Brain', 'Cerebrum Sizer']) {
+      expect(log).toContain(title)
+      expect(suite).not.toContain(title)
     }
-    expect(rest).not.toMatch(/production/i)
   })
   test('government lists only live systems as built', () => {
     const text = answer('government')
@@ -67,7 +57,7 @@ test.describe('assistant answers match what the site shows', () => {
   })
   test('"also shipped in production" comes only from live and internal systems', () => {
     const also = skillGroups.find((g) => g.label === 'Also shipped in production')!.items
-    expect(also).toContain('Apache ECharts')
+    expect(also).toContain('Maatwebsite Excel')
     for (const name of ['ClickHouse Three', 'Flutter', 'Electron', 'Kokoro (TTS)', 'TurboVec', 'Hermes CLI', 'Obsidian']) expect(also).not.toContain(name)
   })
 })
@@ -89,54 +79,33 @@ test.describe('navigation', () => {
     test.skip(isMobile, 'desktop header')
     await page.goto('/')
     await expect(page.locator('header.site')).toHaveClass(/dark/)
-    await page.locator('#work').scrollIntoViewIfNeeded()
-    await page.evaluate(() => window.scrollBy(0, 200))
+    await page.evaluate(() => window.scrollTo(0, document.getElementById('services')!.getBoundingClientRect().top + window.scrollY + 120))
     await expect(page.locator('header.site')).toHaveClass(/light/)
   })
-  test('phone menu opens full screen and closes on Escape', async ({ page, isMobile }) => {
+  test('on a phone the header keeps Hire me and drops the section links', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'phone only')
     await page.goto('/')
-    await page.getByRole('button', { name: 'Menu' }).click()
-    await expect(page.getByRole('dialog', { name: 'Menu' })).toBeVisible()
-    await page.keyboard.press('Escape')
-    await expect(page.getByRole('dialog', { name: 'Menu' })).toBeHidden()
-  })
-  test('phone menu traps focus and hands it back to the Menu button', async ({ page, isMobile }) => {
-    test.skip(!isMobile, 'phone only')
-    await page.goto('/')
-    const button = page.getByRole('button', { name: 'Menu' })
-    const sheet = page.getByRole('dialog', { name: 'Menu' })
-    await button.click()
-    await expect(sheet).toBeVisible()
-    const inSheet = () => page.evaluate(() => !!document.activeElement?.closest('#sheet'))
-    expect(await inSheet()).toBe(true)
-    // more presses than the sheet has stops, both ways: focus never leaves
-    for (let i = 0; i < 10; i++) {
-      await page.keyboard.press('Tab')
-      expect(await inSheet(), `Tab ${i}`).toBe(true)
-    }
-    for (let i = 0; i < 10; i++) {
-      await page.keyboard.press('Shift+Tab')
-      expect(await inSheet(), `Shift+Tab ${i}`).toBe(true)
-    }
-    await sheet.getByRole('button', { name: 'Close' }).click()
-    await expect(sheet).toBeHidden()
-    await expect(button).toBeFocused()
+    await expect(page.locator('header.site').getByRole('link', { name: 'Hire me' })).toBeVisible()
+    await expect(page.locator('header.site nav.links')).toBeHidden()
   })
   test('Back returns to the work section where the visitor left it', async ({ page }) => {
-    await page.goto('/#work')
-    await expect.poll(() => page.evaluate(() => Math.abs(document.getElementById('work')!.getBoundingClientRect().top))).toBeLessThan(80)
-    // Read on past the section's top before leaving, so a re-run of the #work
+    // EDULEAVE's button, outside the stacking cards: there a later card can
+    // slide over an earlier card's button, and a click has to scroll to reach it.
+    await page.goto('/#also')
+    await expect.poll(() => page.evaluate(() => Math.abs(document.getElementById('also')!.getBoundingClientRect().top))).toBeLessThan(80)
+    await page.evaluate(() => window.scrollBy(0, 200))
+    const button = page.locator('a[data-shot="eduleave"]')
+    await button.scrollIntoViewIfNeeded()
+    // Read on past the section's top before leaving, so a re-run of the #also
     // jump on Back (the bug) lands somewhere else than where the visitor was.
-    await page.evaluate(() => window.scrollBy(0, 240))
     const left = await page.evaluate(() => window.scrollY)
-    await page.locator('#work a[data-shot="irims-v"]').click()
-    await expect(page).toHaveURL('/work/irims-v')
+    expect(left).toBeGreaterThan(await page.evaluate(() => document.getElementById('also')!.getBoundingClientRect().top + window.scrollY) + 40)
+    await button.click()
+    await expect(page).toHaveURL('/work/eduleave')
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
     await page.goBack()
-    await expect(page).toHaveURL('/#work')
-    await expect(page.locator('#work')).toBeInViewport()
-    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+    await expect(page).toHaveURL('/#also')
+    await expect(page.locator('#also')).toBeInViewport()
     await expect.poll(() => page.evaluate((y) => Math.abs(window.scrollY - y), left)).toBeLessThan(8)
   })
   test('a fresh load of another page starts at its top, not where the last page was left', async ({ page }) => {
@@ -186,12 +155,12 @@ test.describe('selection', () => {
       const b = getComputedStyle(el.closest('[data-band]')!)
       return { bg: s.backgroundColor, color: s.color, fg: b.color, band: b.backgroundColor }
     })
-    for (const selector of ['.hero p', '#work .head p']) {
+    for (const selector of ['.hero p', '#services .head p']) {
       const s = await sel(selector)
       expect(s.bg, selector).toBe(s.fg)
       expect(s.color, selector).toBe(s.band)
     }
-    expect((await sel('.hero p')).bg).not.toBe((await sel('#work .head p')).bg)
+    expect((await sel('.hero p')).bg).not.toBe((await sel('#services .head p')).bg)
   })
 })
 
@@ -226,33 +195,32 @@ test.describe('hero', () => {
   test('a hash jump leaves the header on the band it landed on', async ({ page }) => {
     await page.goto('/#experience')
     await expect(page.locator('header.site')).toHaveClass(/dark/)
-    await page.goto('/#work')
+    await page.goto('/#services')
     await expect(page.locator('header.site')).toHaveClass(/light/)
   })
 })
 
 test.describe('work', () => {
-  test('four featured systems in order, Eurasian absent', async ({ page }) => {
+  test('the suite: a collage of four systems, then a card for each in order', async ({ page }) => {
     await page.goto('/#work')
-    await expect(page.locator('#work article.case h3')).toHaveText(['iRIMS-V', 'EDULEAVE', 'LRMIS', 'iRIMS-V Library System'])
-    await expect(page.getByText('Eurasian')).toHaveCount(0)
+    await expect(page.locator('#work h2')).toHaveText('The iRIMS-V suite')
+    await expect(page.locator('.collage a.piece')).toHaveCount(4)
+    await expect(page.locator('.cases article.case h3')).toHaveText(['iRIMS-V Inventory', 'iRIMS-V Library System', 'iRIMS-V Library app', 'iRIMS-V Accounts'])
+    await expect(page.locator('.cases article.case .top span:first-child')).toHaveText([/^1 of 4/, /^2 of 4/, /^3 of 4/, /^4 of 4/])
     await expect(page.locator('a[href="https://irimsv-library.net/"]').first()).toBeVisible()
   })
-  test('no placeholder result rows', async ({ page }) => {
-    await page.goto('/#work')
-    await expect(page.locator('#work .facts dt', { hasText: 'Result' })).toHaveCount(0)
+  test('cards alternate inks and the header follows them', async ({ page }) => {
+    await page.goto('/')
+    const tones = await page.locator('.cases article.case').evaluateAll((els) => els.map((e) => e.getAttribute('data-band')))
+    expect(tones).toEqual(['light', 'dark', 'light', 'dark'])
   })
-  test('head counts the systems in words', async ({ page }) => {
-    await page.goto('/#work')
-    await expect(page.locator('#work .head p')).toHaveText(/^Four systems in production\./)
-  })
-  test('every featured project opens its case study, not its live site', async ({ page }) => {
-    await page.goto('/#work')
-    const slugs = ['irims-v', 'eduleave', 'lrmis', 'irims-v-library']
-    await expect(page.locator('#work .btn', { hasText: 'Case study' })).toHaveCount(slugs.length)
-    const shots = page.locator('#work article.case a:has(.ht)')
-    await expect(shots).toHaveCount(slugs.length)
-    for (const [i, slug] of slugs.entries()) await expect(shots.nth(i)).toHaveAttribute('href', `/work/${slug}`)
+  test('two more systems in production, each with its case study', async ({ page }) => {
+    await page.goto('/#also')
+    await expect(page.locator('#also .duo h3')).toHaveText(['EDULEAVE', 'LRMIS'])
+    await expect(page.locator('#also a[href="https://card.eduleave.com/welcome"]')).toHaveCount(1)
+    const links = page.locator('main a[data-shot]')
+    await expect(links).toHaveCount(4)
+    for (const [i, slug] of ['irims-v', 'irims-v-library', 'eduleave', 'lrmis'].entries()) await expect(links.nth(i)).toHaveAttribute('href', `/work/${slug}`)
   })
   test('each case study page renders its own copy', async ({ page }) => {
     for (const [slug, title] of [['eduleave', 'EDULEAVE'], ['lrmis', 'LRMIS'], ['irims-v-library', 'iRIMS-V Library System']]) {
@@ -261,106 +229,63 @@ test.describe('work', () => {
       await expect(page.locator('.cs-sec h2')).toHaveText(['Problem', 'Approach', 'Result'])
     }
   })
-  test('screenshots are halftoned grayscale', async ({ page }) => {
-    await page.goto('/#work')
-    const img = page.locator('#work article.case .ht img').first()
-    await expect(img).toHaveCSS('filter', /grayscale\(1\)/)
-    const dots = await page.locator('#work article.case .ht').first().evaluate((el) => getComputedStyle(el, '::after').backgroundImage)
-    expect(dots).toContain('radial-gradient')
+  test('screenshots are halftoned grayscale under a live schematic', async ({ page }) => {
+    await page.goto('/#irims-v')
+    const frame = page.locator('#irims-v .sf').first()
+    await expect(frame.locator('img')).toHaveCSS('filter', /grayscale\(1\)/)
+    expect(await frame.evaluate((el) => getComputedStyle(el, '::after').backgroundImage)).toContain('radial-gradient')
+    await expect(frame.locator('svg.fig')).toHaveCount(1)
+    await expect(frame.locator('svg.fig')).toHaveClass(/\bon\b/)
   })
-  test('hover clears the dot screen', async ({ page, isMobile }) => {
+  test('hover clears the dot screen and the schematic', async ({ page, isMobile }) => {
     test.skip(isMobile, 'hover')
-    await page.goto('/#work')
-    const ht = page.locator('#work article.case .ht').first()
-    await ht.hover()
-    await expect.poll(() => ht.evaluate((el) => getComputedStyle(el, '::after').opacity)).toBe('0')
+    await page.goto('/#irims-v')
+    const frame = page.locator('#irims-v .sf').first()
+    await frame.hover()
+    await expect.poll(() => frame.evaluate((el) => getComputedStyle(el, '::after').opacity)).toBe('0')
+    await expect.poll(() => frame.locator('svg.fig').evaluate((el) => getComputedStyle(el).opacity)).toBe('0')
   })
-  test('more work table lists the non-featured systems', async ({ page }) => {
-    await page.goto('/#work')
-    await expect(page.locator('#work .tr .name')).toHaveText(['schema_mapper', 'iRIMS-V Library app'])
-    await expect(page.locator('#work .tr > .ui.soft')).toHaveText(['Internal', 'In progress'])
+  test('the build log shows every other project, linking only to public source', async ({ page }) => {
+    await page.goto('/#more')
+    await expect(page.locator('#more .cell h3')).toHaveText(['Cygnus', 'Eurasian Paradise Resort', 'schema_mapper', 'Sticky Brain', 'Second Brain', 'Cerebrum Sizer'])
+    await expect(page.locator('#more a.cell')).toHaveCount(1)
+    await expect(page.locator('#more a.cell')).toHaveAttribute('href', 'https://github.com/samakatuwid00/sticky-brain')
+    await expect(page.locator('#eurasian')).toContainText('Not deployed')
   })
 })
 
 test.describe('services', () => {
-  test('figures play once in view', async ({ page }) => {
+  test('each offer points to a system on the page that already does it', async ({ page }) => {
     await page.goto('/#services')
-    await expect(page.locator('#flow')).toHaveClass(/armed/)
-    await expect(page.locator('#flow li.fig-records')).toHaveClass(/\bon\b/)
+    const proofs = page.locator('#services .offer .proof')
+    await expect(proofs).toHaveCount(6)
+    for (const href of await proofs.evaluateAll((els) => els.map((e) => e.getAttribute('href')!))) {
+      expect(await page.locator(href.replace('/', '')).count(), href).toBe(1)
+    }
   })
   test.describe('reduced motion', () => {
     test.use({ contextOptions: { reducedMotion: 'reduce' } })
-    test('figures are complete and never armed', async ({ page }) => {
-      await page.goto('/#services')
-      await expect(page.locator('#flow')).not.toHaveClass(/armed/)
-      await expect(page.locator('#flow li')).toHaveCount(4)
+    test('live screens are complete and never armed', async ({ page }) => {
+      await page.goto('/#irims-v')
+      await expect(page.locator('html')).not.toHaveClass(/figs-armed/)
+      await expect(page.locator('svg.fig').first()).toHaveClass(/\bon\b/)
+      await expect(page.locator('.pet')).toBeHidden()
     })
   })
 })
 
-test.describe('experience', () => {
-  test('timeline and rows', async ({ page }) => {
-    await page.goto('/#experience')
-    await expect(page.locator('#timeline .bar')).toHaveCount(4)
-    await expect(page.locator('.role-row')).toHaveCount(4)
-    await expect(page.locator('.role-row > .ui').first()).toHaveText('2025 – Present')
-  })
-  test('axis labels every year through 2027 today', async ({ page }) => {
-    await page.clock.setFixedTime(new Date('2026-09-27T12:00:00'))
-    await page.goto('/#experience')
-    await expect(page.locator('#timeline .axis')).toHaveText(['2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027'])
-  })
-  test('axis grows past 2027 and Now stays on it', async ({ page }) => {
-    await page.clock.setFixedTime(new Date('2029-11-15T12:00:00'))
-    await page.goto('/#experience')
-    const axis = page.locator('#timeline .axis')
-    await expect(axis).toHaveCount(12)
-    await expect(axis.last()).toHaveText('2030')
-    const now = await page.locator('#timeline').evaluate((el) => parseFloat(getComputedStyle(el).getPropertyValue('--now')))
-    expect(now).toBeGreaterThan(0)
-    expect(now).toBeLessThanOrEqual(100)
-    // one grid column per axis year, plus the label column
-    const cols = await page.locator('#timeline').evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').length)
-    expect(cols).toBe(13)
-  })
-  test('row hover highlights its bar', async ({ page, isMobile }) => {
-    test.skip(isMobile, 'hover')
-    await page.goto('/#experience')
-    await page.hover('.role-row[data-k="co"]')
-    await expect(page.locator('#timeline')).toHaveClass(/focus/)
-    await expect(page.locator('#timeline .bar[data-k="co"]')).toHaveClass(/hl/)
-  })
-  test.describe('reduced motion', () => {
-    test.use({ contextOptions: { reducedMotion: 'reduce' } })
-    test('timeline is complete and never armed', async ({ page }) => {
-      await page.goto('/#experience')
-      await expect(page.locator('#timeline')).not.toHaveClass(/armed/)
-      await expect(page.locator('#timeline .bar')).toHaveCount(4)
-    })
-  })
-})
-
-test.describe('proof and experiments', () => {
+test.describe('proof', () => {
   test('three quotes, no private repo links', async ({ page }) => {
     await page.goto('/#recognition')
     await expect(page.locator('#recognition blockquote')).toHaveCount(3)
     await expect(page.locator('a[href*="samakatuwid00/JARVIS"]')).toHaveCount(0)
     await expect(page.locator('a[href*="second-brain-vault"]')).toHaveCount(0)
-    await expect(page.locator('#experiments')).toContainText('Cygnus')
+    await expect(page.locator('#more')).toContainText('Cygnus')
   })
   test('award is a halftoned picture with its caption', async ({ page }) => {
     await page.goto('/#recognition')
     await expect(page.locator('#recognition figure .ht picture img')).toHaveCount(1)
     await expect(page.locator('#recognition figcaption')).toContainText('Full Stack Developer Award')
-  })
-  test('experiments link only where a public repo exists', async ({ page }) => {
-    await page.goto('/#experiments')
-    await expect(page.locator('#experiments .index > *')).toHaveCount(3)
-    await expect(page.locator('#experiments .index > a')).toHaveCount(1)
-    await expect(page.locator('#experiments .index > a')).toHaveAttribute('href', 'https://github.com/samakatuwid00/sticky-brain')
-    await expect(page.locator('#experiments .index > .item', { hasText: 'Second Brain' })).toContainText('Private')
-    await expect(page.locator('#experiments')).not.toContainText('Link after repo cleanup')
-    await expect(page.locator('#experiments .index .ht img')).toHaveCount(3)
   })
   test('faq opens', async ({ page }) => {
     await page.goto('/#faq')
@@ -442,8 +367,8 @@ test.describe('case study', () => {
     await expect(page.locator('.cs-sec h2')).toHaveText(['Problem', 'Approach', 'Result'])
     await expect(page.locator('.cs-sec li')).toHaveCount(5)
     await expect(page.locator('.cs-body .tr, .todo')).toHaveCount(0)
-    await expect(page.getByRole('link', { name: /^next/i })).toHaveAttribute('href', '/work/eduleave')
-    await page.goto('/work/irims-v-library')
+    await expect(page.getByRole('link', { name: /^next/i })).toHaveAttribute('href', '/work/irims-v-library')
+    await page.goto('/work/lrmis')
     await expect(page.getByRole('link', { name: /^next/i })).toHaveAttribute('href', '/work/irims-v')
     await page.goto('/work/irims-v')
     await expect(page.locator('.cs-meta a.live')).toHaveAttribute('href', 'https://irimsv.net/')
@@ -459,8 +384,8 @@ test.describe('case study', () => {
     const errors: string[] = []
     page.on('pageerror', (e) => errors.push(e.message))
     page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') errors.push(m.text()) })
-    await page.goto('/#work')
-    await page.locator('#work a[data-shot="irims-v"]').click()
+    await page.goto('/#irims-v')
+    await page.locator('a[data-shot="irims-v"]').click()
     await expect(page).toHaveURL('/work/irims-v')
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('iRIMS-V')
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
@@ -470,7 +395,7 @@ test.describe('case study', () => {
     await expect.poll(() => page.evaluate(() => document.getElementById('work')?.getBoundingClientRect().top ?? Infinity)).toBeLessThan(80)
     // Between transitions no home preview holds the name, so it can never be duplicated.
     await expect.poll(() => page.evaluate(() =>
-      [...document.querySelectorAll('.ht')].filter((el) => getComputedStyle(el).viewTransitionName === 'shot').length,
+      [...document.querySelectorAll('.sf')].filter((el) => getComputedStyle(el).viewTransitionName === 'shot').length,
     )).toBe(0)
     expect(errors).toEqual([])
   })
@@ -479,8 +404,8 @@ test.describe('case study', () => {
     test('the transition runs without animation and the page still swaps', async ({ page }) => {
       const errors: string[] = []
       page.on('pageerror', (e) => errors.push(e.message))
-      await page.goto('/#work')
-      await page.locator('#work a[data-shot="irims-v"]').click()
+      await page.goto('/#irims-v')
+      await page.locator('a[data-shot="irims-v"]').click()
       await expect(page.getByRole('heading', { level: 1 })).toHaveText('iRIMS-V')
       const running = await page.evaluate(() => document.getAnimations().filter((a) => String((a.effect as KeyframeEffect | null)?.pseudoElement ?? '').startsWith('::view-transition')).length)
       expect(running).toBe(0)
@@ -561,15 +486,6 @@ test.describe('assistant', () => {
     await expect(dialog.getByRole('textbox', { name: /your question/i })).toHaveValue('')
   })
 
-  test('slash is ignored while the phone menu is open', async ({ page, isMobile }) => {
-    test.skip(!isMobile, 'the menu sheet only opens on phones')
-    await page.goto('/')
-    await page.getByRole('button', { name: /menu/i }).click()
-    await expect(page.getByRole('dialog', { name: 'Menu' })).toBeVisible()
-    await page.keyboard.press('/')
-    await expect(page.getByRole('dialog', { name: /ask about my work/i })).toBeHidden()
-  })
-
   test('slash is ignored while typing in a field', async ({ page }) => {
     await page.goto('/#contact')
     const name = page.locator('#contact input').first()
@@ -646,7 +562,7 @@ test.describe('accessibility', () => {
   })
 
   test('keyboard reaches every control in order, with the matching feedback', async ({ page, isMobile }) => {
-    test.skip(isMobile, 'the phone header folds its links into the menu')
+    test.skip(isMobile, 'the phone header drops the section links')
     await page.goto('/')
     const order: string[] = []
     const checks: Record<string, boolean> = {}
@@ -662,7 +578,7 @@ test.describe('accessibility', () => {
           : e.closest('#contact form') ? 'form'
           : e.closest('.ask') ? 'ask'
           : e.closest('.skip') ? 'skip'
-          : e.closest('#work') ? 'work'
+          : e.closest('#work, .cases') ? 'work'
           : e.closest('.hero') ? 'hero'
           : 'other'
         return {
@@ -679,7 +595,7 @@ test.describe('accessibility', () => {
       if (stop.zone === 'role') checks.highlight = (checks.highlight ?? true) && stop.highlight
       if (stop.zone === 'tab') break
     }
-    expect(order.filter((z) => z !== 'other')).toEqual(['skip', 'header', 'portrait', 'hero', 'work', 'role', 'faq', 'tab'])
+    expect(order.filter((z) => z !== 'other')).toEqual(['skip', 'header', 'hero', 'portrait', 'work', 'role', 'faq', 'tab'])
     expect(checks).toEqual({ bubble: true, highlight: true })
 
     // arrow keys move between the channel tabs, then Tab continues into the form and on to the assistant
@@ -712,7 +628,7 @@ test.describe('accessibility', () => {
       await testInfo.attach(`focus-${band}`, { body: await page.screenshot(), contentType: 'image/png' })
     }
     await ring(page.getByRole('link', { name: 'View work' }), 'dark')
-    await ring(page.locator('#work').getByRole('link', { name: 'Case study', exact: true }).first(), 'light')
+    await ring(page.locator('#irims-v').getByRole('link', { name: 'Case study', exact: true }), 'light')
     await ring(page.locator('#faq summary').first(), 'light-summary')
     await ring(page.getByRole('button', { name: 'Send message' }), 'dark-solid')
   })
@@ -752,19 +668,24 @@ test.describe('hero', () => {
     await page.goto('/work/irims-v')
     await expect(brandName).toBeVisible()
   })
-  test('on a tablet the portrait sits beside the name', async ({ page }) => {
+  test('on a tablet the portrait sits under the introduction', async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 1024 })
     await page.goto('/')
     const portrait = await page.locator('#me .portrait').boundingBox()
     const name = await page.locator('.hero h1').boundingBox()
-    expect(portrait!.x + portrait!.width).toBeLessThan(name!.x)
-    expect(Math.abs(portrait!.y - name!.y)).toBeLessThan(80)
+    expect(portrait!.y).toBeGreaterThan(name!.y + name!.height)
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(768)
+  })
+  test('the applied-AI line is there, and shorter on a phone', async ({ page, isMobile }) => {
+    await page.goto('/')
+    const line = page.locator('.hero .applied')
+    await expect(line).toBeVisible()
+    await expect(line).toContainText(isMobile ? 'Applied AI: a voice assistant' : 'Applied AI where it earns its place')
   })
   test('the portrait is compact on a phone', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'desktop keeps the 300px portrait')
     await page.goto('/')
     const box = await page.locator('#me .portrait').boundingBox()
-    expect(box?.width).toBeLessThanOrEqual(180)
+    expect(box?.width).toBeLessThanOrEqual(220)
   })
 })

@@ -1,11 +1,11 @@
 import type { ProjectFacts } from '../types/portfolio'
 
-// Row order is the render order: the featured rows appear on the home page in
-// this order, then the "more work" table, then the experiments index.
+// `group` decides where a project shows on the home page: the four iRIMS-V
+// suite cards, the "Also in production" pair, or the build log. Within a group
+// the order is set in projects.ts, not here.
 //
-// `description`, `client`, and `role` are copied verbatim from the approved
-// mockup (docs/redesign-mockup-v2.html): the featured `article.case` blocks, the
-// "more work" table rows, and the experiments index. Do not paraphrase them.
+// `card` is the short copy the page shows; `description`, `caseStudy` and the
+// rest stay complete because the assistant and the case-study pages read them.
 export const projectFacts: ProjectFacts[] = [
   {
     slug: 'irims-v',
@@ -40,7 +40,20 @@ export const projectFacts: ProjectFacts[] = [
       'REST API',
     ],
     status: 'live',
-    featured: true,
+    group: 'suite',
+    card: {
+      name: 'iRIMS-V Inventory',
+      label: 'Inventory',
+      note: 'live · 13 divisions',
+      lede: 'One inventory for every learning resource in Region V, from the regional dashboard down to one school’s shelf.',
+      points: [
+        'A four-level station hierarchy: school, district, division, region',
+        'A masterlist queue checks each new title against existing ones before approval',
+        'ECharts dashboards and beginning-of-school-year monitoring per station',
+      ],
+      role: 'Designed, built, deployed, maintain',
+      stack: 'Laravel 12 · PostgreSQL · htmx · ECharts',
+    },
     liveUrl: 'https://irimsv.net/',
     caseStudy: {
       expansion: 'Integrated Resource Inventory and Mapping System for Region V',
@@ -89,8 +102,18 @@ export const projectFacts: ProjectFacts[] = [
       'SMTP',
     ],
     status: 'live',
-    featured: true,
-    liveUrl: 'https://eduleave.com/welcome',
+    group: 'also',
+    card: {
+      name: 'EDULEAVE',
+      label: 'HR workflow · on contract',
+      note: 'live',
+      lede: 'Leave cards for a DepEd division HR office, off paper: requests route for approval and every decision stays on record.',
+      points: [
+      ],
+      role: 'Sole developer',
+      stack: 'Laravel 12 · MySQL · Queues',
+    },
+    liveUrl: 'https://card.eduleave.com/welcome',
     caseStudy: {
       lede: 'Leave credits and approvals for a DepEd division HR office, moved off paper cards and into one record.',
       problem:
@@ -134,7 +157,17 @@ export const projectFacts: ProjectFacts[] = [
       'Google Sheets API',
     ],
     status: 'live',
-    featured: true,
+    group: 'also',
+    card: {
+      name: 'LRMIS',
+      label: 'National platform · DepEd Central Office',
+      note: 'live',
+      lede: 'The national learning-resource platform. I owned the station hierarchy, allocation and distribution, and role-based access.',
+      points: [
+      ],
+      role: 'Feature owner',
+      stack: 'Laravel 11 · ClickHouse · Sheets API',
+    },
     liveUrl: 'https://lrmis.deped.gov.ph/',
     caseStudy: {
       lede: 'The national learning-resource platform for Philippine schools, where I owned features inside the platform team.',
@@ -181,7 +214,20 @@ export const projectFacts: ProjectFacts[] = [
       'Pest (PHP testing)',
     ],
     status: 'live',
-    featured: true,
+    group: 'suite',
+    card: {
+      name: 'iRIMS-V Library System',
+      label: 'Library',
+      note: 'live · Region V',
+      lede: 'Catalog, QR labels and borrowing for school and office libraries that used to run on logbooks.',
+      points: [
+        'Every copy gets a catalog entry and a QR label',
+        'Reserve with a cart, borrow by scan, get a receipt in the browser',
+        'Live updates over Reverb and a token API for the mobile app',
+      ],
+      role: 'Designed, built, maintain',
+      stack: 'Laravel 12 · Inertia · Vue 3 · Reverb',
+    },
     // irimsv-library.net, no hyphen after "irims". The résumé PDF's
     // irims-v-library.net is a typo.
     liveUrl: 'https://irimsv-library.net/',
@@ -209,17 +255,32 @@ export const projectFacts: ProjectFacts[] = [
     features: ['Publishes iRIMS-V records into LRMIS staging'],
     technologies: ['Python', 'FastAPI', 'PostgreSQL', 'MySQL', 'Docker Compose'],
     status: 'internal',
+    group: 'log',
   },
   {
     slug: 'irims-v-library-app',
     title: 'iRIMS-V Library app',
     category: 'Mobile',
     description:
-      'Flutter app for teachers and students, backed by a new token API on the library system. Core phases done; APK and a school pilot next.',
-    stack: 'Flutter, token API',
-    features: ['Token API on the library system'],
-    technologies: ['Flutter'],
+      'Flutter app for students and teachers in DepEd Region V, on the same accounts, catalog and reservation rules as the library system. Seventeen test builds since October 3, now at v0.5.9; a one-division pilot is next.',
+    stack: 'Flutter, Sanctum token API, Reverb',
+    features: ['Student sign-up approved by the teacher', 'School and division hub shelves', 'Cart, reservation and a 3-day claim window', 'Reading goals, badges and leaderboards', 'Live updates over Reverb websockets'],
+    technologies: ['Flutter', 'Dart', 'provider', 'dio', 'Laravel Sanctum', 'Laravel Reverb'],
     status: 'in-progress',
+    group: 'suite',
+    card: {
+      name: 'iRIMS-V Library app',
+      label: 'Mobile',
+      note: 'test builds · v0.5.9',
+      lede: 'The library in a student’s pocket: browse the school shelf, reserve a copy, pick it up.',
+      points: [
+        'Students sign up by school; their teacher approves them on the web',
+        'Reading goals, badges, and leaderboards from school up to region',
+        'A junior look for Kinder to Grade 6, a teen look for Grades 7 to 12',
+      ],
+      role: 'Designed, built',
+      stack: 'Flutter 3.47 · Sanctum tokens · Reverb',
+    },
   },
   {
     // Formerly JARVIS HUD. No githubUrl: the JARVIS repo exposes private data
@@ -233,6 +294,7 @@ export const projectFacts: ProjectFacts[] = [
     features: ['Whisper speech-to-text', 'Kokoro text-to-speech', 'Multi-provider LLM routing', 'Electron desktop app'],
     technologies: ['Python', 'Whisper (STT)', 'Kokoro (TTS)', 'Electron'],
     status: 'demo',
+    group: 'log',
   },
   {
     slug: 'sticky-brain',
@@ -257,6 +319,7 @@ export const projectFacts: ProjectFacts[] = [
       'Hermes CLI',
     ],
     status: 'demo',
+    group: 'log',
     githubUrl: 'https://github.com/samakatuwid00/sticky-brain',
   },
   {
@@ -281,6 +344,64 @@ export const projectFacts: ProjectFacts[] = [
       'Markdown',
     ],
     status: 'private',
+    group: 'log',
+  },
+  {
+    slug: 'irims-v-accounts',
+    title: 'iRIMS-V Accounts',
+    category: 'Single sign-on',
+    description:
+      'One sign-in for the iRIMS-V suite: login, registration, password reset, and a launcher that sends a user into the inventory or the library with a signed, single-use token.',
+    client: 'DepEd Region V',
+    role: 'Designing, building',
+    stack: 'Laravel 12, Tailwind 4, Vite 7',
+    features: ['Signed single-use SSO tokens with a nonce table', 'Throttled auth routes', 'Per-system access rules'],
+    technologies: ['Laravel', 'PHP', 'Tailwind CSS', 'Vite'],
+    status: 'in-progress',
+    group: 'suite',
+    card: {
+      name: 'iRIMS-V Accounts',
+      label: 'Single sign-on',
+      note: 'in progress · Oct 2026',
+      lede: 'One sign-in for the whole suite, so nobody keeps three passwords.',
+      points: [
+        'Login, registration and password reset in one place',
+        'A launcher sends each user into a system with a signed, single-use token',
+        'Throttled routes and per-system access rules',
+      ],
+      role: 'Designing, building',
+      stack: 'Laravel 12 · Tailwind 4 · Vite 7',
+    },
+  },
+  {
+    // A capstone overhauled in 2026. Not deployed: it runs locally on XAMPP.
+    slug: 'eurasian',
+    title: 'Eurasian Paradise Resort',
+    category: 'Booking system',
+    description:
+      'Guests check availability, book a room or cottage, and send a GCash, PayPal or cash reference; staff confirm it, check guests in and out, and watch occupancy and revenue. A row lock stops double bookings.',
+    stack: 'PHP 8, MySQL, PDO, Bootstrap, PHPMailer',
+    features: [
+      'Availability search by dates and headcount',
+      'Payment references verified by staff',
+      'Booking calendar with check-in and check-out',
+      'AI concierge chatbot',
+    ],
+    technologies: ['PHP', 'MySQL', 'PDO', 'Bootstrap', 'jQuery', 'PHPMailer', 'WhatsApp Cloud API'],
+    status: 'demo',
+    group: 'log',
+  },
+  {
+    slug: 'cerebrum-sizer',
+    title: 'Cerebrum Sizer',
+    category: 'PWA',
+    description:
+      'Paste a trade signal and get the exact size to enter at a fixed risk, what the stop would cost, and a warning when the signal is stale. Installable, works offline.',
+    stack: 'Vanilla JS, service worker',
+    features: ['Signal parsing', 'Fixed-risk sizing', 'Stale-signal warning', 'Result log'],
+    technologies: ['JavaScript', 'Service worker', 'Web app manifest'],
+    status: 'private',
+    group: 'log',
   },
 ]
 
@@ -297,51 +418,34 @@ export type SkillGroup = {
 // what you build is the offer most independent developers cannot make, and it
 // is what the maintenance retainer in `services.ts` is sold on.
 const CURATED: SkillGroup[] = [
-  { label: 'Languages', items: ['PHP', 'JavaScript', 'TypeScript', 'Python', 'HTML5'] },
+  { label: 'Languages', items: ['PHP 8.2', 'TypeScript', 'JavaScript', 'Python 3.10+', 'Dart 3.13'] },
   {
     label: 'Frameworks',
-    items: [
-      'Laravel',
-      'React',
-      'Vue.js',
-      'Inertia.js',
-      'FastAPI',
-      'Node.js',
-      'Alpine.js',
-      'htmx',
-      'Tailwind CSS',
-      'Bootstrap',
-    ],
+    items: ['Laravel 11 · 12', 'Inertia 2 + Vue 3.5', 'React 19', 'Flutter 3.47', 'FastAPI', 'Electron', 'Alpine.js · htmx', 'Tailwind CSS 4'],
   },
-  { label: 'Databases', items: ['PostgreSQL', 'MySQL', 'SQLite'] },
-  {
-    label: 'Testing',
-    items: ['Pest (PHP testing)', 'PHPStan / Larastan', 'Laravel Pint', 'pytest', 'ESLint', 'Git'],
-  },
-  {
-    label: 'Deploy and infra',
-    items: [
-      'Docker',
-      'Docker Compose',
-      'Coolify',
-      'Dokploy',
-      'Traefik',
-      'Nginx',
-      'Linux VPS',
-      'Vercel',
-      'Grafana',
-    ],
-  },
+  { label: 'Data', items: ['PostgreSQL · tsvector, UUID', 'MySQL', 'SQLite', 'ClickHouse', 'Apache ECharts 6', 'Chart.js 4'] },
+  { label: 'Realtime and auth', items: ['Laravel Reverb', 'Sanctum tokens', 'Laravel Queues', 'Resend · SMTP', 'Cloudflare Turnstile', 'Signed SSO tokens'] },
+  { label: 'Testing and quality', items: ['Pest 3', 'Larastan · PHPStan L5', 'Laravel Pint', 'Playwright', 'pytest', 'flutter test', 'ESLint'] },
+  { label: 'Deploy and infra', items: ['Docker · Compose', 'Coolify · Dokploy', 'Traefik · Nginx', 'Linux VPS', 'Hostinger', 'Vercel', 'Grafana'] },
+  { label: 'Applied AI', items: ['faster-whisper · sherpa-onnx', 'Kokoro · edge-tts', 'Gemini structured output', 'Tesseract OCR', 'Ollama', 'model2vec', 'scikit-learn'] },
 ]
 
-// Compare on the bare name so an annotated entry — "Pest (PHP testing)" — still
-// suppresses the plain "Pest" that the project stacks would otherwise duplicate.
-const curated = new Set(CURATED.flatMap((group) => group.items.map((item) => item.replace(/\s*\(.+\)$/, ''))))
+// Project technology names the curated groups above already cover, so the
+// derived list below does not repeat them under their plain names.
+const curated = new Set([
+  'PHP', 'TypeScript', 'JavaScript', 'Python', 'Dart',
+  'Laravel', 'Inertia.js', 'Vue.js', 'React', 'Flutter', 'FastAPI', 'Electron', 'Alpine.js', 'htmx', 'Tailwind CSS',
+  'PostgreSQL', 'MySQL', 'SQLite', 'ClickHouse', 'Apache ECharts', 'Chart.js',
+  'Laravel Reverb', 'Laravel Sanctum', 'Laravel Queues', 'SMTP', 'Cloudflare Turnstile',
+  'Pest (PHP testing)', 'PHPStan / Larastan', 'Docker', 'Docker Compose',
+])
 
 // Everything else the shipped systems actually run on. Derived rather than
 // listed, so adding a project surfaces its stack here automatically. Only live
 // and internal systems count: a demo or an unfinished app is not production.
 const inProduction = projectFacts.filter((project) => project.status === 'live' || project.status === 'internal')
+
+export const stackGroups = CURATED
 
 export const skillGroups: SkillGroup[] = [
   ...CURATED,

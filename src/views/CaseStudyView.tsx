@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { Band } from '../components/layout/Band'
 import { Halftone } from '../components/ui/Halftone'
 import { projectFacts } from '../data/facts'
-import { featuredProjects, previewAltFor, previewFor } from '../data/projects'
+import { alsoProjects, previewAltFor, previewFor, suiteProjects } from '../data/projects'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { NotFoundView } from './NotFoundView'
 
@@ -12,7 +12,7 @@ const STATUS: Record<string, string> = { live: 'Live', internal: 'Internal', 'in
 // The next featured project with its own case study, wrapping around. Never the
 // current one: with a single case study there is no "Next" at all.
 function nextCaseStudy(slug: string) {
-  const withCase = featuredProjects.filter((p) => p.caseStudy)
+  const withCase = [...suiteProjects, ...alsoProjects].filter((p) => p.caseStudy)
   const i = withCase.findIndex((p) => p.slug === slug)
   const next = i === -1 ? undefined : withCase[(i + 1) % withCase.length]
   return next && next.slug !== slug ? next : undefined

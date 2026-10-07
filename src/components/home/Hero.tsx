@@ -1,14 +1,11 @@
 import { Fragment, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import resume from '../../assets/full.pdf'
-import { credits, hero, site, socialLinks } from '../../data/site'
+import { credits, hero } from '../../data/site'
 import { Band } from '../layout/Band'
+import { DotField } from './DotField'
 import { Portrait } from './Portrait'
 
-const PROFILES = [
-  ...socialLinks.map(({ label, href }) => ({ label, href })),
-  { label: 'Email', href: `mailto:${site.email}` },
-]
 
 const HEADER_HEIGHT = 60
 
@@ -37,27 +34,18 @@ export function Hero() {
   const nameRef = useHeroNameFlag()
   return (
     <Band as="div" tone="dark" className="hero">
+      <DotField />
       <div className="wrap">
         <div className="intro">
-          <Portrait />
-          <div>
+          <div className="intro-text" data-depth="-0.06">
             <h1 ref={nameRef} className="display">
               {hero.name.map((part, i) => (
                 <Fragment key={part}>{i > 0 && ' '}<span>{part}</span></Fragment>
               ))}
             </h1>
             <p className="tagline">{hero.tagline}</p>
-            <p className="lede">{hero.lede}</p>
-            <nav className="social ui" aria-label="Profiles">
-              {PROFILES.map((p) => (
-                <a key={p.label} href={p.href}>
-                  {p.label}{' '}
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                    <path d="M7 17 17 7M8 7h9v9" />
-                  </svg>
-                </a>
-              ))}
-            </nav>
+            <p className="applied"><span className="long">{hero.applied}</span><span className="short">{hero.appliedShort}</span></p>
+            <p className="lede"><span className="long">{hero.lede}</span><span className="short">{hero.ledeShort}</span></p>
             <div className="btns">
               <Link className="btn solid" to="/#work">View work</Link>
               <a className="btn tint" href={resume}>
@@ -67,17 +55,23 @@ export function Hero() {
                 Résumé
               </a>
             </div>
+            <dl className="credits ui">
+              {credits.map((c) => (
+                <div key={c.term}>
+                  <dt>{c.term}</dt>
+                  <dd>{c.detail}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div className="portrait-rail" data-depth="0.12">
+            <span className="ring" aria-hidden="true" />
+            <span className="ring b" aria-hidden="true" />
+            <Portrait />
           </div>
         </div>
-        <dl className="credits">
-          {credits.map((c) => (
-            <div key={c.term}>
-              <dt className="ui">{c.term}</dt>
-              <dd>{c.detail}</dd>
-            </div>
-          ))}
-        </dl>
       </div>
+      <div className="scroll-cue ui" aria-hidden="true"><span>Scroll</span><i /></div>
     </Band>
   )
 }

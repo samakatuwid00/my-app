@@ -1,5 +1,17 @@
 export type ProjectStatus = 'live' | 'internal' | 'demo' | 'in-progress' | 'private'
 
+export type ProjectGroup = 'suite' | 'also' | 'log'
+
+export type ProjectCard = {
+  name: string // the name on the card, e.g. "iRIMS-V Inventory"
+  label: string // the eyebrow, e.g. "Inventory"
+  note: string // the status line, e.g. "live · 13 divisions"
+  lede: string // one sentence
+  points: string[] // three at most
+  role: string
+  stack: string // one line, dot-separated
+}
+
 // Case-study copy. Every featured project has one, built only from facts
 // already on the site; a project without `caseStudy` has no case-study route.
 export type CaseStudy = {
@@ -24,7 +36,12 @@ export type ProjectFacts = {
   technologies: string[] // full list, used by the assistant
   features: string[]
   status: ProjectStatus
-  featured?: boolean // appears as a large case row
+  // Where the home page shows it: one of the four iRIMS-V suite cards, the
+  // "Also in production" pair, or the build log.
+  group: ProjectGroup
+  // The short card copy. Kept apart from `description` so the assistant keeps
+  // its full paragraph while the page stays brief.
+  card?: ProjectCard
   liveUrl?: string
   // Public source repo. Leave it off any repo that is private or exposes
   // private data: a visitor who follows it lands on a 404 or on data that was

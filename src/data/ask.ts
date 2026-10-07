@@ -12,19 +12,19 @@ export type Intent = {
   answer: () => string
 }
 
-const featured = projectFacts.filter((p) => p.featured)
-// Everything that is not a featured system: internal tools, unfinished work and
-// experiments. Each is named with its status so none of it reads as production.
+// Grouped the way the page groups them: the four iRIMS-V suite systems, the
+// two other production systems, and the build log. Anything not live is named
+// with its status so none of it reads as production.
 const STATUS_NOTE: Record<string, string> = {
   internal: 'internal tool',
   'in-progress': 'in progress',
-  demo: 'experiment',
-  private: 'private experiment',
+  demo: 'not deployed',
+  private: 'private',
 }
-const otherWork = projectFacts.filter((p) => !p.featured)
-
-const projectLines = () =>
-  featured.map((p) => `${p.title} – ${p.caseStudy?.problem ?? p.description} Stack: ${p.technologies.join(', ')}.`)
+const inGroup = (group: string) => projectFacts.filter((p) => p.group === group)
+const statusOf = (p: { status: string }) => (p.status === 'live' ? '' : ` (${STATUS_NOTE[p.status] ?? p.status})`)
+const line = (p: (typeof projectFacts)[number]) =>
+  `${p.title}${statusOf(p)} – ${p.caseStudy?.problem ?? p.description} Stack: ${p.technologies.join(', ')}.`
 
 export const suggestions = ["what's your stack?", 'show me a government system', 'are you available?']
 
@@ -50,9 +50,10 @@ export const intents: Intent[] = [
     id: 'projects',
     patterns: [/\bprojects?\b/, /\bbuilt\b/, /\bportfolio\b/, /\bsystems?\b/, /\bwork(ed)? on\b/],
     answer: () =>
-      `${featured.length} featured systems:\n\n${projectLines().join('\n\n')}\n\n` +
-      `Other work, not featured: ${otherWork.map((p) => `${p.title} (${STATUS_NOTE[p.status] ?? p.status})`).join(', ')}.\n\n` +
-      'Full details in the Work and Experiments sections at /#work and /#experiments, and case studies at /work/irims-v, /work/eduleave, /work/lrmis and /work/irims-v-library.',
+      `The iRIMS-V suite, four systems for DepEd Region V:\n\n${inGroup('suite').map(line).join('\n\n')}\n\n` +
+      `Also in production:\n\n${inGroup('also').map(line).join('\n\n')}\n\n` +
+      `Build log: ${inGroup('log').map((p) => `${p.title}${statusOf(p) || ' (live)'}`).join(', ')}.\n\n` +
+      'Details in the Work and Build log sections at /#work and /#more, and case studies at /work/irims-v, /work/irims-v-library, /work/eduleave and /work/lrmis.',
   },
   {
     id: 'availability',
@@ -74,7 +75,7 @@ export const intents: Intent[] = [
   {
     id: 'resume',
     patterns: [/\bresume\b/, /\bcv\b/, /\bcredentials?\b/],
-    answer: () => 'The résumé downloads from the Résumé button in the site header, or from the menu on a phone.',
+    answer: () => 'The résumé downloads from the Résumé button at the top of the home page.',
   },
   {
     id: 'contact',
@@ -173,6 +174,6 @@ export function buildContext(): string {
     'Trust signals:',
     ...site.trustBadges.map((badge) => `- ${badge}`),
     '',
-    'Site: one page at / with sections Work, Services, Experience, Recognition, Experiments, FAQ and Contact; case studies at /work/irims-v, /work/eduleave, /work/lrmis and /work/irims-v-library. The résumé downloads from the header.',
+    'Site: one page at / with sections Work (the iRIMS-V suite), Also in production, Build log, Services, Experience, Recognition, FAQ and Contact; case studies at /work/irims-v, /work/irims-v-library, /work/eduleave and /work/lrmis. The résumé downloads from the Résumé button at the top of the home page.',
   ].join('\n')
 }
