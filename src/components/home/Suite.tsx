@@ -6,6 +6,8 @@ import type { ProjectFacts } from '../../types/portfolio'
 import { Band } from '../layout/Band'
 import { useCarriedShot } from '../../hooks/useCarriedShot'
 import { CaseStudyLink } from '../screens/CaseStudyLink'
+import { Figure } from '../screens/Figure'
+import type { FigureName } from '../screens/figures'
 import { PhoneFan, PhoneRow } from '../screens/PhoneSet'
 import { ScreenFrame } from '../screens/ScreenFrame'
 import { Arrow } from '../ui/Arrow'
@@ -53,17 +55,31 @@ function Collage() {
   )
 }
 
-// What each card shows on its left: a live screen, the phone set, or the sign-in figure.
+// The schematic drawn over each card's screen.
+const FIGURE: Record<string, FigureName> = {
+  'irims-v': 'inventory',
+  'irims-v-library': 'library',
+  'irims-v-library-app': 'libraryApp',
+  'irims-v-accounts': 'accounts',
+}
+
+// What each card shows on its left: a live screen, or the app's phone set.
 function CaseShot({ p }: { p: ProjectFacts }) {
   const carried = useCarriedShot(p.slug)
   if (p.slug === 'irims-v-library-app')
-    return <div className="sf phones-frame"><PhoneFan phones={phoneSets.app} /></div>
+    return (
+      <div className="sf phones-frame" data-fig="">
+        <PhoneFan phones={phoneSets.app} />
+        <div className="scrim" />
+        <Figure name={FIGURE[p.slug]} />
+      </div>
+    )
   return (
     <ScreenFrame
       source={preview(p.slug)}
       alt={previewAltFor(p.slug)!}
       sizes="(max-width: 960px) 92vw, 560px"
-      figure={p.slug === 'irims-v' ? 'inventory' : p.slug === 'irims-v-library' ? 'library' : undefined}
+      figure={FIGURE[p.slug]}
       style={carried}
     />
   )
@@ -80,14 +96,15 @@ function Case({ p, n }: { p: ProjectFacts; n: number }) {
   const card = p.card!
   // Cards alternate inks; the header reads data-band to match the one under it.
   const tone = n % 2 === 0 ? 'dark' : 'light'
-  const hasScreen = Boolean(previewFor(p.slug))
+  // A schematic covers the real screen until hover or tap
+  const hasOverlay = Boolean(FIGURE[p.slug])
   return (
     <article className="case" id={p.slug} data-band={tone}>
       <div className="wrap">
         <div className="shot" data-tilt>
           <CaseShot p={p} />
           <div className="cap">
-            <span>{CAPTION[p.slug]}{hasScreen && <em> · <span className="hint">hover</span> for the real screen</em>}</span>
+            <span>{CAPTION[p.slug]}{hasOverlay && <em> · <span className="hint">hover</span> for the real screen</em>}</span>
             {p.liveUrl && <a href={p.liveUrl}>{host(p.liveUrl)} ↗</a>}
           </div>
         </div>

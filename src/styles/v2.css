@@ -126,7 +126,7 @@ section.band.hero, div.band.hero { padding: 0; }
 :is(.cell:hover, .cell.show, .shot:hover) .phones picture:nth-child(3) img { transform: rotate(9deg) translateY(-4%); }
 :is(.cell:hover, .cell.show) .phones.two picture:nth-child(2) img { transform: rotate(6deg) translateY(-4%); }
 .phones-frame { aspect-ratio: 16 / 10; }
-.phones-frame .phones { position: absolute; inset: 0; aspect-ratio: auto; border: 0; }
+.phones-frame .phones { position: absolute; inset: 0; z-index: 0; aspect-ratio: auto; border: 0; }
 .shot .phones img { width: 30%; }
 .shot .phones picture:nth-child(2) img { left: 35%; }
 .phones-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 10px 10px; }
