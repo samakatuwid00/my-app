@@ -229,21 +229,24 @@ test.describe('work', () => {
       await expect(page.locator('.cs-sec h2')).toHaveText(['Problem', 'Approach', 'Result'])
     }
   })
-  test('screenshots are halftoned grayscale under a live schematic', async ({ page }) => {
+  test('suite screens show in colour under a live schematic; the build log stays halftoned', async ({ page }) => {
     await page.goto('/#irims-v')
     const frame = page.locator('#irims-v .sf').first()
-    await expect(frame.locator('img')).toHaveCSS('filter', /grayscale\(1\)/)
-    expect(await frame.evaluate((el) => getComputedStyle(el, '::after').backgroundImage)).toContain('radial-gradient')
+    await expect(frame.locator('img')).toHaveCSS('filter', 'none')
+    expect(await frame.evaluate((el) => getComputedStyle(el, '::after').content)).toBe('none')
     await expect(frame.locator('svg.fig')).toHaveCount(1)
     await expect(frame.locator('svg.fig')).toHaveClass(/\bon\b/)
+    const log = page.locator('#cygnus .sf')
+    await expect(log.locator('img')).toHaveCSS('filter', /grayscale\(1\)/)
+    expect(await log.evaluate((el) => getComputedStyle(el, '::after').backgroundImage)).toContain('radial-gradient')
   })
-  test('hover clears the dot screen and the schematic', async ({ page, isMobile }) => {
+  test('hover clears the schematic and shows the real screen', async ({ page, isMobile }) => {
     test.skip(isMobile, 'hover')
     await page.goto('/#irims-v')
     const frame = page.locator('#irims-v .sf').first()
     await frame.hover()
-    await expect.poll(() => frame.evaluate((el) => getComputedStyle(el, '::after').opacity)).toBe('0')
     await expect.poll(() => frame.locator('svg.fig').evaluate((el) => getComputedStyle(el).opacity)).toBe('0')
+    await expect.poll(() => frame.locator('.scrim').evaluate((el) => getComputedStyle(el).opacity)).toBe('0')
   })
   test('the build log shows every other project, linking only to public source', async ({ page }) => {
     await page.goto('/#more')
@@ -282,9 +285,10 @@ test.describe('proof', () => {
     await expect(page.locator('a[href*="second-brain-vault"]')).toHaveCount(0)
     await expect(page.locator('#more')).toContainText('Cygnus')
   })
-  test('award is a halftoned picture with its caption', async ({ page }) => {
+  test('award is a picture under a drawing of itself, with its caption', async ({ page }) => {
     await page.goto('/#recognition')
-    await expect(page.locator('#recognition figure .ht picture img')).toHaveCount(1)
+    await expect(page.locator('#recognition figure .sf picture img')).toHaveCount(1)
+    await expect(page.locator('#recognition figure .sf svg.fig')).toHaveCount(1)
     await expect(page.locator('#recognition figcaption')).toContainText('Full Stack Developer Award')
   })
   test('faq opens', async ({ page }) => {

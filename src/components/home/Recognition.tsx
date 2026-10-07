@@ -1,7 +1,7 @@
 import { site } from '../../data/site'
 import { testimonials } from '../../data/testimonials'
 import { Band } from '../layout/Band'
-import { Halftone } from '../ui/Halftone'
+import { ScreenFrame } from '../screens/ScreenFrame'
 import award from '../../assets/award.png?w=640;1280&format=avif;webp&as=picture'
 
 export function Recognition() {
@@ -13,11 +13,13 @@ export function Recognition() {
           <p>From the people who use the systems every day.</p>
         </div>
         <div className="recog">
-          <figure>
-            <Halftone
+          <figure data-tilt>
+            {/* A drawing of the certificate and plaque; hover or a tap shows the photo. */}
+            <ScreenFrame
               source={award}
               alt={`Certificate and plaque for the ${site.award.title}`}
               sizes="(max-width: 960px) 100vw, 560px"
+              figure="award"
             />
             <figcaption className="ui"><span>{site.award.title}</span><span className="soft">{site.org}</span></figcaption>
           </figure>

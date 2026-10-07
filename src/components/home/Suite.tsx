@@ -40,7 +40,7 @@ function Collage() {
         <ScreenFrame source={preview('irims-v-library')} alt={previewAltFor('irims-v-library')!} sizes="(max-width: 700px) 80vw, 560px" />
       </Piece>
       <Piece href="#irims-v" className="p-inv" from="-60,30,-5" rot={-1.5} depth={0.03} title="Inventory" note="irimsv.net">
-        <ScreenFrame source={preview('irims-v')} alt={previewAltFor('irims-v')!} sizes="(max-width: 700px) 92vw, 720px" figure="opener" loading="eager" />
+        <ScreenFrame source={preview('irims-v')} alt={previewAltFor('irims-v')!} sizes="(max-width: 700px) 92vw, 720px" loading="eager" />
       </Piece>
       <Piece href="#irims-v-accounts" className="p-sso" from="-50,80,-8" rot={1.5} depth={0.16} title="Accounts" note="running locally">
         <ScreenFrame source={accountsSignIn.source} alt={accountsSignIn.alt} sizes="(max-width: 700px) 50vw, 420px" />

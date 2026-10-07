@@ -152,10 +152,6 @@ a.piece:hover, a.piece:focus-visible { z-index: 8 !important; border-color: var(
 .pbar b { color: var(--paper); font-weight: 500; margin-left: 4px; }
 .pbar em { font-style: normal; margin-left: auto; padding-left: 10px; }
 .piece .sf { border: 0; }
-.opener .fig { stroke-width: .6; }
-.opener .fig text { font-size: 3.4px; }
-.opener .fig text.tiny { font-size: 2.8px; }
-.opener .fig text.big { font-size: 8px; }
 .p-inv { left: 0; top: 8%; width: 60%; z-index: 3; }
 .p-lib { right: 0; top: 0; width: 47%; z-index: 1; }
 .p-sso { left: 6%; bottom: 0; width: 35%; z-index: 4; }
@@ -193,6 +189,13 @@ a.piece:hover, a.piece:focus-visible { z-index: 8 !important; border-color: var(
 .shot .cap { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; color: var(--soft); font: 400 12px/1.4 var(--mono); }
 .shot .cap a { color: inherit; }
 .shot .cap em { font-style: normal; }
+
+/* The suite shows its screens as captured: full colour, no dot screen.
+   The schematics still sit on top until hover or tap. */
+:is(.opener, .cases) .sf img, :is(.opener, .cases) .phones img, .phones-row img { filter: none; }
+:is(.opener, .cases) .sf::after { content: none; }
+/* Also in production keeps its gray screens, without the dot screen. */
+.also .sf::after { content: none; }
 
 /* ============ Also in production ============ */
 section.band.also { padding: clamp(56px, 8vw, 104px) 0 clamp(24px, 4vw, 48px); }
@@ -339,8 +342,6 @@ section.band.more { padding: clamp(40px, 6vw, 80px) 0 clamp(56px, 8vw, 112px); }
   .p-note { display: none; }
   .pbar { height: 26px; font-size: 10.5px; padding: 0 9px; }
   .pbar em { display: none; }
-  .opener .fig text { font-size: 5px; }
-  .opener .fig text.big { font-size: 11px; }
   section.band.opener { padding-bottom: 30vw; }
   .ghost-word { top: auto; bottom: 2vw; font-size: 30vw; }
   .case .points li { font-size: 15px; }
