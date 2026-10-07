@@ -13,6 +13,8 @@ import eurasianPreview from '../assets/shots/eurasian.png?w=640;1280&format=avif
 import schemaPreview from '../assets/shots/schema-mapper.png?w=640;1280&format=avif;webp&as=picture'
 import stickyPreview from '../assets/shots/sticky-board.png?w=360;450&format=avif;webp&as=picture'
 import secondBrainPreview from '../assets/shots/second-brain.png?w=640;1280&format=avif;webp&as=picture'
+import accountsRegister from '../assets/shots/accounts-register.png?w=640;1088&format=avif;webp&as=picture'
+import accountsLogin from '../assets/shots/accounts-login.png?w=480;960&format=avif;webp&as=picture'
 import appHome from '../assets/shots/app-home.png?w=240;480&format=avif;webp&as=picture'
 import appReady from '../assets/shots/app-ready.png?w=240;480&format=avif;webp&as=picture'
 import appJunior from '../assets/shots/app-junior.png?w=240;480&format=avif;webp&as=picture'
@@ -30,11 +32,12 @@ export const suiteProjects: ProjectFacts[] = ['irims-v', 'irims-v-library', 'iri
 export const alsoProjects: ProjectFacts[] = ['eduleave', 'lrmis'].map(bySlug)
 export const logProjects: ProjectFacts[] = ['cygnus', 'eurasian', 'schema-mapper', 'sticky-brain', 'second-brain', 'cerebrum-sizer'].map(bySlug)
 
-// One wide screenshot per project that has one. The library app, the sizer and
-// Accounts have no single screen; they use the phone sets and the sign-in figure.
+// One wide screenshot per project that has one. The library app and the sizer
+// have no single screen; they use the phone sets.
 const previews: Partial<Record<string, PictureSource>> = {
   'irims-v': irimsvPreview,
   'irims-v-library': libraryPreview,
+  'irims-v-accounts': accountsRegister,
   eduleave: eduleavePreview,
   lrmis: lrmisPreview,
   cygnus: cygnusPreview,
@@ -48,6 +51,7 @@ const previews: Partial<Record<string, PictureSource>> = {
 const previewAlts: Partial<Record<string, string>> = {
   'irims-v': 'iRIMS-V division dashboard: learning resources, population, ratio and needs',
   'irims-v-library': 'iRIMS-V Library System catalog of print resources',
+  'irims-v-accounts': 'iRIMS-V Accounts registration, step 1 of 6: who the account is for',
   eduleave: 'EDULEAVE landing page: Time off hassle free',
   lrmis: 'LRMIS national map dashboard',
   cygnus: 'CYGNUS HUD: system status, the orb, the transcript and the Running panel',
@@ -68,6 +72,9 @@ export const phoneSets = {
     { source: sizerSized, alt: 'Cerebrum Sizer showing invest and leverage for a pasted signal' },
   ],
 }
+
+// The Accounts sign-in screen, for its window in the collage.
+export const accountsSignIn = { source: accountsLogin, alt: 'iRIMS-V Accounts sign-in: one account for every iRIMS-V system' }
 
 export const previewFor = (slug: string) => previews[slug]
 export const previewAltFor = (slug: string) => previewAlts[slug]

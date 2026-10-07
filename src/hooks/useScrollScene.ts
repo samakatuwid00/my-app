@@ -21,7 +21,7 @@ export function useScrollScene() {
     const rails = q('[data-depth]')
     const moires = q('[data-moire]')
     const cases = q('.cases .case')
-    const leaners = fine ? [] : q('.shot .sf, .shot .phones-frame, .shot .sso-frame, .recog figure .ht, .cell .thumb')
+    const leaners = fine ? [] : q('.shot .sf, .shot .phones-frame, .recog figure .ht, .cell .thumb')
     const collage = document.querySelector<HTMLElement>('[data-collage]')
     const pieces = (collage ? q('[data-collage] .piece') : []) as Piece[]
     for (const p of pieces) {

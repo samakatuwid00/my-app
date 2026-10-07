@@ -109,12 +109,7 @@ section.band.hero, div.band.hero { padding: 0; }
 .figs-armed .fig.on .blinkc { animation: blinkc 1.2s steps(2, end) infinite; }
 @keyframes blinkc { 50% { opacity: 0; } }
 
-/* The sign-in diagram and the phone sets, used where there is no single screen */
-.sso { display: block; width: 100%; height: auto; aspect-ratio: 240 / 124; fill: none; stroke: currentColor; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; font-family: var(--mono); }
-.sso text { fill: currentColor; stroke: none; }
-.sso .ink { fill: currentColor; stroke: none; }
-.sso-frame { background: var(--black); color: var(--paper); border: 1px solid rgba(242,242,240,.2); padding: 7% 6%; transition: transform .5s var(--ease); }
-.sso-frame .sso { max-width: 720px; margin: 0 auto; }
+/* The phone sets, used where there is no single screen */
 .phones { margin: 0; position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-top: 1px solid var(--rule); }
 .phones picture { display: contents; }
 .phones img { position: absolute; top: 7%; width: 34%; height: auto; border: 1px solid var(--rule); border-radius: 4% / 2%; box-shadow: 0 30px 60px -30px rgba(0,0,0,.9); filter: grayscale(1) contrast(1.05); transition: filter .5s var(--ease), transform .7s var(--ease); background: var(--black); }
@@ -164,7 +159,6 @@ a.piece:hover, a.piece:focus-visible { z-index: 8 !important; border-color: var(
 .p-inv { left: 0; top: 8%; width: 60%; z-index: 3; }
 .p-lib { right: 0; top: 0; width: 47%; z-index: 1; }
 .p-sso { left: 6%; bottom: 0; width: 35%; z-index: 4; }
-.p-sso .sso-body { padding: 7% 7% 5%; }
 .p-app { right: 4%; bottom: 0; width: 28%; z-index: 5; }
 .p-app .pbar { border-bottom: 0; }
 .p-note { left: 45%; bottom: 7%; width: 19%; z-index: 2; display: grid; gap: 2px; padding: 14px 16px; font: 300 clamp(16px, 1.7vw, 22px)/1.25 var(--display); text-transform: uppercase; letter-spacing: .01em; box-shadow: none; }
@@ -342,7 +336,6 @@ section.band.more { padding: clamp(40px, 6vw, 80px) 0 clamp(56px, 8vw, 112px); }
   .p-lib { right: 0; left: auto; top: 34%; width: 78%; }
   .p-app { left: 0; right: auto; bottom: 0; width: 46%; }
   .p-sso { left: auto; right: 0; bottom: 4%; width: 51%; }
-  .p-sso .sso-body { padding: 6% 5% 4%; }
   .p-note { display: none; }
   .pbar { height: 26px; font-size: 10.5px; padding: 0 9px; }
   .pbar em { display: none; }

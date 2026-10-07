@@ -1,12 +1,11 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { phoneSets, previewAltFor, previewFor, suiteProjects } from '../../data/projects'
+import { accountsSignIn, phoneSets, previewAltFor, previewFor, suiteProjects } from '../../data/projects'
 import { site } from '../../data/site'
 import type { ProjectFacts } from '../../types/portfolio'
 import { Band } from '../layout/Band'
 import { useCarriedShot } from '../../hooks/useCarriedShot'
 import { CaseStudyLink } from '../screens/CaseStudyLink'
-import { Figure } from '../screens/Figure'
 import { PhoneFan, PhoneRow } from '../screens/PhoneSet'
 import { ScreenFrame } from '../screens/ScreenFrame'
 import { Arrow } from '../ui/Arrow'
@@ -41,8 +40,8 @@ function Collage() {
       <Piece href="#irims-v" className="p-inv" from="-60,30,-5" rot={-1.5} depth={0.03} title="Inventory" note="irimsv.net">
         <ScreenFrame source={preview('irims-v')} alt={previewAltFor('irims-v')!} sizes="(max-width: 700px) 92vw, 720px" figure="opener" loading="eager" />
       </Piece>
-      <Piece href="#irims-v-accounts" className="p-sso" from="-50,80,-8" rot={1.5} depth={0.16} title="Accounts" note="in progress">
-        <div className="sso-body"><Figure name="sso" className="sso" /></div>
+      <Piece href="#irims-v-accounts" className="p-sso" from="-50,80,-8" rot={1.5} depth={0.16} title="Accounts" note="running locally">
+        <ScreenFrame source={accountsSignIn.source} alt={accountsSignIn.alt} sizes="(max-width: 700px) 50vw, 420px" />
       </Piece>
       <div className="piece p-note" data-from="0,90,0" data-rot="0" data-depth-c="0.24" aria-hidden="true">
         <span>13 divisions</span><span>1 sign-in</span><span>1 server</span>
@@ -59,14 +58,12 @@ function CaseShot({ p }: { p: ProjectFacts }) {
   const carried = useCarriedShot(p.slug)
   if (p.slug === 'irims-v-library-app')
     return <div className="sf phones-frame"><PhoneFan phones={phoneSets.app} /></div>
-  if (p.slug === 'irims-v-accounts')
-    return <div className="sso-frame"><Figure name="sso" className="sso" /></div>
   return (
     <ScreenFrame
       source={preview(p.slug)}
       alt={previewAltFor(p.slug)!}
       sizes="(max-width: 960px) 92vw, 560px"
-      figure={p.slug === 'irims-v' ? 'inventory' : 'library'}
+      figure={p.slug === 'irims-v' ? 'inventory' : p.slug === 'irims-v-library' ? 'library' : undefined}
       style={carried}
     />
   )
@@ -76,7 +73,7 @@ const CAPTION: Record<string, string> = {
   'irims-v': 'Division dashboard',
   'irims-v-library': 'Catalog',
   'irims-v-library-app': '17 test builds since Oct 3 · pilot next',
-  'irims-v-accounts': 'How the sign-in hands off',
+  'irims-v-accounts': 'Registration, step 1 of 6',
 }
 
 function Case({ p, n }: { p: ProjectFacts; n: number }) {

@@ -48,7 +48,7 @@ export function useLiveScreens() {
 
     if (fine && !reduce) {
       for (const el of document.querySelectorAll<HTMLElement>('[data-tilt]')) {
-        const target = el.querySelector<HTMLElement>('.sf, .phones-frame, .sso-frame') ?? el
+        const target = el.querySelector<HTMLElement>('.sf, .phones-frame') ?? el
         const move = (e: PointerEvent) => {
           const r = el.getBoundingClientRect()
           const x = (e.clientX - r.left) / r.width - 0.5
