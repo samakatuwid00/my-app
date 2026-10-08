@@ -285,10 +285,10 @@ test.describe('proof', () => {
     await expect(page.locator('a[href*="second-brain-vault"]')).toHaveCount(0)
     await expect(page.locator('#more')).toContainText('Cygnus')
   })
-  test('award is a picture under a drawing of itself, with its caption', async ({ page }) => {
+  test('award is a plain picture, no drawing over it, with its caption', async ({ page }) => {
     await page.goto('/#recognition')
     await expect(page.locator('#recognition figure .sf picture img')).toHaveCount(1)
-    await expect(page.locator('#recognition figure .sf svg.fig')).toHaveCount(1)
+    await expect(page.locator('#recognition figure .sf svg.fig')).toHaveCount(0)
     await expect(page.locator('#recognition figcaption')).toContainText('Full Stack Developer Award')
   })
   test('faq opens', async ({ page }) => {

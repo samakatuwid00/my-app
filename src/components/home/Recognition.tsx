@@ -14,12 +14,10 @@ export function Recognition() {
         </div>
         <div className="recog">
           <figure data-tilt>
-            {/* A drawing of the certificate and plaque; hover or a tap shows the photo. */}
             <ScreenFrame
               source={award}
               alt={`Certificate and plaque for the ${site.award.title}`}
               sizes="(max-width: 960px) 100vw, 560px"
-              figure="award"
             />
             <figcaption className="ui"><span>{site.award.title}</span><span className="soft">{site.org}</span></figcaption>
           </figure>
