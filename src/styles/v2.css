@@ -132,7 +132,6 @@ section.band.hero, div.band.hero { padding: 0; }
 .phones-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 10px 10px; }
 .phones-row picture { display: block; min-width: 0; }
 .phones-row img { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--rule); filter: grayscale(1) contrast(1.05); transition: filter .5s var(--ease); }
-a.p-app:hover .phones-row img { filter: none; }
 
 /* ============ The suite: collage ============
    Each piece is a real screen in its own window, layered with a little rotation.
