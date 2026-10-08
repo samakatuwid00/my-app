@@ -57,11 +57,49 @@ function askDevServer(env: Record<string, string>): Plugin {
   }
 }
 
+// Fontsource faces are found late: the browser requests them only once the CSS
+// is parsed and React has put text on the page, so the first paint lands in the
+// fallback faces and swaps a beat later. Preloading the latin subsets the first
+// screen uses starts those downloads alongside the bundle. Build only: the dev
+// server serves fonts from node_modules under different names.
+const PRELOAD_FONTS = [
+  /^assets\/antonio-latin-wght-normal-.+\.woff2$/,
+  /^assets\/barlow-condensed-latin-(500|600)-normal-.+\.woff2$/,
+  /^assets\/inter-tight-latin-wght-normal-.+\.woff2$/,
+  /^assets\/jetbrains-mono-latin-wght-normal-.+\.woff2$/,
+]
+
+function preloadFonts(): Plugin {
+  let base = '/'
+  return {
+    name: 'preload-fonts',
+    apply: 'build',
+    configResolved(config) {
+      base = config.base
+    },
+    transformIndexHtml: {
+      order: 'post',
+      handler(_html, ctx) {
+        if (!ctx.bundle) return
+        return Object.keys(ctx.bundle)
+          .filter((file) => PRELOAD_FONTS.some((pattern) => pattern.test(file)))
+          .map((file) => ({
+            tag: 'link',
+            // crossorigin is required: fonts are fetched in CORS mode, and a
+            // preload without it is thrown away and downloaded a second time.
+            attrs: { rel: 'preload', href: `${base}${file}`, as: 'font', type: 'font/woff2', crossorigin: true },
+            injectTo: 'head' as const,
+          }))
+      },
+    },
+  }
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
   return {
-    plugins: [react(), tailwindcss(), imagetools(), askDevServer(env)],
+    plugins: [react(), tailwindcss(), imagetools(), askDevServer(env), preloadFonts()],
     build: {
       // Images must stay files. The default 4096-byte inline limit turns the
       // small AVIF variants — a 192px award thumbnail lands near 6KB, some
